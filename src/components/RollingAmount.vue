@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -12,6 +12,8 @@ const props = withDefaults(
 );
 
 const digitRows = Array.from({ length: 10 }, (_, digit) => String(digit));
+const isTicking = ref(false);
+let pulseTimer = 0;
 
 const chars = computed(() =>
   [...props.value].map((char, index) => ({
@@ -20,10 +22,34 @@ const chars = computed(() =>
     digit: /^\d$/.test(char) ? Number(char) : null,
   })),
 );
+
+watch(
+  () => props.value,
+  (value, previousValue) => {
+    if (!previousValue || value === previousValue) return;
+
+    window.clearTimeout(pulseTimer);
+    isTicking.value = false;
+
+    requestAnimationFrame(() => {
+      isTicking.value = true;
+      pulseTimer = window.setTimeout(() => {
+        isTicking.value = false;
+      }, 220);
+    });
+  },
+);
+
+onBeforeUnmount(() => {
+  window.clearTimeout(pulseTimer);
+});
 </script>
 
 <template>
-  <span class="rolling-amount" :class="`rolling-amount--${variant}`">
+  <span
+    class="rolling-amount"
+    :class="[`rolling-amount--${variant}`, { 'is-ticking': isTicking }]"
+  >
     <span class="rolling-amount__currency">¥</span>
     <span class="rolling-amount__value" aria-live="off">
       <span
@@ -56,12 +82,17 @@ const chars = computed(() =>
   font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
+  transform-origin: center bottom;
+  transition:
+    filter 220ms ease,
+    transform 220ms ease;
 }
 
 .rolling-amount__currency {
   flex: 0 0 auto;
   color: var(--muted);
   font-weight: 650;
+  transition: color 220ms ease;
 }
 
 .rolling-amount__value {
@@ -89,7 +120,7 @@ const chars = computed(() =>
 .rolling-amount__digit-strip {
   display: grid;
   will-change: transform;
-  transition: transform 180ms cubic-bezier(0.2, 0.72, 0.28, 1);
+  transition: transform 260ms cubic-bezier(0.16, 0.84, 0.28, 1);
 }
 
 .rolling-amount__digit-strip span {
@@ -114,5 +145,14 @@ const chars = computed(() =>
 
 .rolling-amount--mini .rolling-amount__currency {
   font-size: 0.78em;
+}
+
+.rolling-amount--hero.is-ticking {
+  filter: drop-shadow(0 12px 24px rgb(34 197 94 / 0.12));
+  transform: translateY(-1px) scale(1.006);
+}
+
+.rolling-amount--hero.is-ticking .rolling-amount__currency {
+  color: rgb(34 197 94);
 }
 </style>
