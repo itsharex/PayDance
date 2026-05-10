@@ -33,76 +33,90 @@ const readChecked = (event: Event) => (event.target as HTMLInputElement).checked
       {{ firstIssue }}
     </div>
 
-    <div class="grid grid-cols-2 gap-3">
-      <label class="field" :class="{ 'is-invalid': hasIssue('monthlySalary') }">
-        <span>月薪</span>
-        <input
-          :value="config.monthlySalary"
-          min="0"
-          step="100"
-          type="number"
-          @input="updateConfig('monthlySalary', readNumber($event))"
-        />
-      </label>
-      <label class="field" :class="{ 'is-invalid': hasIssue('workDaysPerMonth') }">
-        <span>每月工作天数</span>
-        <input
-          :value="config.workDaysPerMonth"
-          min="1"
-          step="0.5"
-          type="number"
-          @input="updateConfig('workDaysPerMonth', readNumber($event))"
-        />
-      </label>
+    <div class="settings-group">
+      <div class="group-title">
+        <strong>薪资</strong>
+      </div>
+      <div class="field-grid">
+        <label class="field" :class="{ 'is-invalid': hasIssue('monthlySalary') }">
+          <span>月薪</span>
+          <input
+            :value="config.monthlySalary"
+            min="0"
+            step="100"
+            type="number"
+            @input="updateConfig('monthlySalary', readNumber($event))"
+          />
+        </label>
+        <label class="field" :class="{ 'is-invalid': hasIssue('workDaysPerMonth') }">
+          <span>每月工作天数</span>
+          <input
+            :value="config.workDaysPerMonth"
+            min="1"
+            step="0.5"
+            type="number"
+            @input="updateConfig('workDaysPerMonth', readNumber($event))"
+          />
+        </label>
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-3">
-      <label class="field" :class="{ 'is-invalid': hasIssue('startTime') || hasIssue('workTime') }">
-        <span>上班</span>
-        <input
-          :value="config.startTime"
-          type="time"
-          @input="updateConfig('startTime', readText($event))"
-        />
-      </label>
-      <label class="field" :class="{ 'is-invalid': hasIssue('endTime') || hasIssue('workTime') }">
-        <span>下班</span>
-        <input
-          :value="config.endTime"
-          type="time"
-          @input="updateConfig('endTime', readText($event))"
-        />
-      </label>
+    <div class="settings-group">
+      <div class="group-title">
+        <strong>工作时间</strong>
+      </div>
+      <div class="field-grid">
+        <label class="field" :class="{ 'is-invalid': hasIssue('startTime') || hasIssue('workTime') }">
+          <span>上班</span>
+          <input
+            :value="config.startTime"
+            type="time"
+            @input="updateConfig('startTime', readText($event))"
+          />
+        </label>
+        <label class="field" :class="{ 'is-invalid': hasIssue('endTime') || hasIssue('workTime') }">
+          <span>下班</span>
+          <input
+            :value="config.endTime"
+            type="time"
+            @input="updateConfig('endTime', readText($event))"
+          />
+        </label>
+      </div>
     </div>
 
-    <label class="checkbox-row">
-      <input
-        :checked="config.enableLunchBreak"
-        type="checkbox"
-        @change="updateConfig('enableLunchBreak', readChecked($event))"
-      />
-      剔除午休时间
-    </label>
-
-    <div class="grid grid-cols-2 gap-3">
-      <label class="field" :class="{ 'is-invalid': hasIssue('lunchStart') || hasIssue('workTime') }">
-        <span>午休开始</span>
-        <input
-          :disabled="!config.enableLunchBreak"
-          :value="config.lunchStart"
-          type="time"
-          @input="updateConfig('lunchStart', readText($event))"
-        />
-      </label>
-      <label class="field" :class="{ 'is-invalid': hasIssue('lunchEnd') || hasIssue('workTime') }">
-        <span>午休结束</span>
-        <input
-          :disabled="!config.enableLunchBreak"
-          :value="config.lunchEnd"
-          type="time"
-          @input="updateConfig('lunchEnd', readText($event))"
-        />
-      </label>
+    <div class="settings-group">
+      <div class="group-title group-title--split">
+        <strong>午休</strong>
+        <label class="switch-row">
+          <input
+            :checked="config.enableLunchBreak"
+            type="checkbox"
+            @change="updateConfig('enableLunchBreak', readChecked($event))"
+          />
+          <span>剔除</span>
+        </label>
+      </div>
+      <div class="field-grid">
+        <label class="field" :class="{ 'is-invalid': hasIssue('lunchStart') || hasIssue('workTime') }">
+          <span>开始</span>
+          <input
+            :disabled="!config.enableLunchBreak"
+            :value="config.lunchStart"
+            type="time"
+            @input="updateConfig('lunchStart', readText($event))"
+          />
+        </label>
+        <label class="field" :class="{ 'is-invalid': hasIssue('lunchEnd') || hasIssue('workTime') }">
+          <span>结束</span>
+          <input
+            :disabled="!config.enableLunchBreak"
+            :value="config.lunchEnd"
+            type="time"
+            @input="updateConfig('lunchEnd', readText($event))"
+          />
+        </label>
+      </div>
     </div>
   </section>
 </template>
@@ -111,10 +125,10 @@ const readChecked = (event: Event) => (event.target as HTMLInputElement).checked
 .settings-panel {
   display: grid;
   flex: 0 0 auto;
-  gap: 12px;
+  gap: 10px;
   border-top: 1px solid var(--line);
   background: var(--panel-soft);
-  padding: 20px;
+  padding: 16px 18px 18px;
 }
 
 .settings-alert {
@@ -126,6 +140,38 @@ const readChecked = (event: Event) => (event.target as HTMLInputElement).checked
   font-size: 12px;
   font-weight: 600;
   text-align: left;
+}
+
+.settings-group {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 12px;
+}
+
+.group-title {
+  display: flex;
+  min-height: 24px;
+  align-items: center;
+}
+
+.group-title--split {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.group-title strong {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .field {
@@ -169,16 +215,16 @@ const readChecked = (event: Event) => (event.target as HTMLInputElement).checked
   color: var(--muted);
 }
 
-.checkbox-row {
+.switch-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
 }
 
-.checkbox-row input {
+.switch-row input {
   width: 16px;
   height: 16px;
   accent-color: var(--accent);

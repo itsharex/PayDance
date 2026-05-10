@@ -15,6 +15,7 @@ import {
 import MiniWindow from "./components/MiniWindow.vue";
 import RollingAmount from "./components/RollingAmount.vue";
 import SettingsPanel from "./components/SettingsPanel.vue";
+import StatsPanel from "./components/StatsPanel.vue";
 import WindowTitlebar from "./components/WindowTitlebar.vue";
 
 type ThemeMode = "light" | "dark";
@@ -26,10 +27,12 @@ type WindowSize = {
 const store = new LazyStore("salary-settings.json");
 const appWindow = getCurrentWindow();
 const settingsSchemaVersion = 1;
-const fullWindowWidth = 420;
-const fullWindowMinWidth = 360;
-const fullWindowMinHeight = 480;
-const compactWindowMinHeight = 340;
+const fullWindowWidth = 468;
+const fullWindowMinWidth = 420;
+const settingsWindowHeight = 760;
+const compactWindowHeight = 432;
+const settingsWindowMinHeight = 720;
+const compactWindowMinHeight = 390;
 const miniDefaultSize: WindowSize = { width: 238, height: 86 };
 const miniMinSize: WindowSize = { width: 168, height: 58 };
 const miniResizeEdgeSize = 12;
@@ -53,6 +56,10 @@ const yuanFormatter = new Intl.NumberFormat("zh-CN", {
 
 const earnedText = computed(() => yuanFormatter.format(snapshot.value.earnedToday));
 const progressPercent = computed(() => `${snapshot.value.progress * 100}%`);
+const dailyTotalText = computed(() => yuanFormatter.format(snapshot.value.dailySalary));
+const remainingEarnText = computed(() =>
+  yuanFormatter.format(Math.max(0, snapshot.value.dailySalary - snapshot.value.earnedToday)),
+);
 const configIssues = computed(() => validateSalaryConfig(config.value));
 const firstConfigIssue = computed(() => configIssues.value[0]?.message ?? "");
 const hasConfigIssues = computed(() => configIssues.value.length > 0);
@@ -65,6 +72,23 @@ const workDurationText = computed(() => {
   const hours = snapshot.value.workMsToday / 3_600_000;
   return Number.isFinite(hours) ? `${hours.toFixed(1)}h` : "0.0h";
 });
+
+const formatDuration = (ms: number) => {
+  if (!Number.isFinite(ms) || ms <= 0) return "0m";
+
+  const totalMinutes = Math.floor(ms / 60_000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours <= 0) return `${minutes}m`;
+  if (minutes <= 0) return `${hours}h`;
+  return `${hours}h ${minutes}m`;
+};
+
+const workedTimeText = computed(() => formatDuration(snapshot.value.elapsedWorkMs));
+const remainingTimeText = computed(() =>
+  formatDuration(snapshot.value.workMsToday - snapshot.value.elapsedWorkMs),
+);
 
 const shellClass = computed(() =>
   themeMode.value === "dark" ? "theme-dark" : "theme-light",
@@ -104,10 +128,12 @@ const applyWindowMode = async () => {
   await appWindow.setMinSize(
     new LogicalSize(
       fullWindowMinWidth,
-      showSettings.value ? fullWindowMinHeight : compactWindowMinHeight,
+      showSettings.value ? settingsWindowMinHeight : compactWindowMinHeight,
     ),
   );
-  await appWindow.setSize(new LogicalSize(fullWindowWidth, showSettings.value ? 560 : 400));
+  await appWindow.setSize(
+    new LogicalSize(fullWindowWidth, showSettings.value ? settingsWindowHeight : compactWindowHeight),
+  );
   await appWindow.setAlwaysOnTop(alwaysOnTop.value);
 };
 
@@ -326,7 +352,7 @@ onBeforeUnmount(() => {
       @restore="setMiniMode(false)"
     />
 
-    <div v-else class="app-window">
+    <div v-else class="app-window" :class="{ 'has-settings': showSettings }">
       <WindowTitlebar
         :always-on-top="alwaysOnTop"
         :has-config-issues="hasConfigIssues"
@@ -350,6 +376,13 @@ onBeforeUnmount(() => {
         <button class="amount-display" title="双击进入迷你悬浮模式" @dblclick="setMiniMode(true)">
           <RollingAmount :value="earnedText" />
         </button>
+
+        <StatsPanel
+          :daily-total="dailyTotalText"
+          :remaining-earn="remainingEarnText"
+          :remaining-time="remainingTimeText"
+          :worked-time="workedTimeText"
+        />
 
         <div class="progress-track">
           <div class="progress-fill" :style="{ width: progressPercent }" />
@@ -426,13 +459,20 @@ onBeforeUnmount(() => {
 
 .hero-panel {
   display: flex;
-  min-height: 0;
+  min-height: 334px;
   flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 22px 32px 28px;
+  padding: 26px 32px 28px;
   text-align: center;
+}
+
+.app-window.has-settings .hero-panel {
+  min-height: 374px;
+  flex: 0 0 auto;
+  padding-top: 28px;
+  padding-bottom: 24px;
 }
 
 .hero-meta {
@@ -462,14 +502,14 @@ onBeforeUnmount(() => {
   display: grid;
   max-width: 100%;
   place-items: center;
-  margin-top: 28px;
+  margin-top: 26px;
   color: var(--text);
 }
 
 .progress-track {
   width: 100%;
   height: 6px;
-  margin-top: 32px;
+  margin-top: 20px;
   overflow: hidden;
   border-radius: 999px;
   background: var(--subtle);
