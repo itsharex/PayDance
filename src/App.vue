@@ -19,9 +19,12 @@ import {
 import {
   calculateSalarySnapshot,
   defaultSalaryConfig,
+  validateSalaryConfig,
+  type SalaryConfigIssue,
   type SalaryConfig,
   type SalarySnapshot,
 } from "./lib/salary";
+import RollingAmount from "./components/RollingAmount.vue";
 
 type ThemeMode = "light" | "dark";
 
@@ -46,6 +49,13 @@ const yuanFormatter = new Intl.NumberFormat("zh-CN", {
 
 const earnedText = computed(() => yuanFormatter.format(snapshot.value.earnedToday));
 const progressPercent = computed(() => `${snapshot.value.progress * 100}%`);
+const configIssues = computed(() => validateSalaryConfig(config.value));
+const firstConfigIssue = computed(() => configIssues.value[0]?.message ?? "");
+const hasConfigIssues = computed(() => configIssues.value.length > 0);
+const statusText = computed(() => {
+  if (hasConfigIssues.value) return "配置待修正";
+  return snapshot.value.isWorking ? "正在赚钱" : "休息时间";
+});
 
 const workDurationText = computed(() => {
   const hours = snapshot.value.workMsToday / 3_600_000;
@@ -118,6 +128,44 @@ const startDrag = async (event: MouseEvent) => {
   if (target.closest("button, input, label")) return;
 
   await appWindow.startDragging();
+};
+
+const hasIssue = (field: SalaryConfigIssue["field"]) =>
+  configIssues.value.some((issue) => issue.field === field);
+
+let clearMiniDragListeners: (() => void) | undefined;
+
+const clearMiniDrag = () => {
+  clearMiniDragListeners?.();
+  clearMiniDragListeners = undefined;
+};
+
+const startMiniDrag = (event: PointerEvent) => {
+  if (event.button !== 0 || event.detail > 1) return;
+
+  const startX = event.screenX;
+  const startY = event.screenY;
+
+  const handlePointerMove = (moveEvent: PointerEvent) => {
+    const distance = Math.hypot(moveEvent.screenX - startX, moveEvent.screenY - startY);
+    if (distance < 4) return;
+
+    clearMiniDrag();
+    void appWindow.startDragging();
+  };
+
+  const handlePointerEnd = () => clearMiniDrag();
+
+  clearMiniDrag();
+  window.addEventListener("pointermove", handlePointerMove);
+  window.addEventListener("pointerup", handlePointerEnd, { once: true });
+  window.addEventListener("pointercancel", handlePointerEnd, { once: true });
+
+  clearMiniDragListeners = () => {
+    window.removeEventListener("pointermove", handlePointerMove);
+    window.removeEventListener("pointerup", handlePointerEnd);
+    window.removeEventListener("pointercancel", handlePointerEnd);
+  };
 };
 
 watch(config, saveState, { deep: true });
@@ -198,6 +246,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   cancelAnimationFrame(rafId);
+  clearMiniDrag();
   for (const unlisten of unlisteners) {
     unlisten();
   }
@@ -213,9 +262,10 @@ onBeforeUnmount(() => {
       v-if="isMiniMode"
       class="mini-window"
       title="双击恢复完整窗口"
+      @pointerdown="startMiniDrag"
       @dblclick="setMiniMode(false)"
     >
-      <span>¥{{ earnedText }}</span>
+      <RollingAmount :value="earnedText" variant="mini" />
     </div>
 
     <div v-else class="app-window">
@@ -223,9 +273,9 @@ onBeforeUnmount(() => {
         <div class="status-chip">
           <span
             class="status-dot"
-            :class="snapshot.isWorking ? 'bg-emerald-500' : 'bg-zinc-300'"
+            :class="hasConfigIssues ? 'bg-amber-500' : snapshot.isWorking ? 'bg-emerald-500' : 'bg-zinc-300'"
           />
-          <span>{{ snapshot.isWorking ? "正在赚钱" : "休息时间" }}</span>
+          <span>{{ statusText }}</span>
         </div>
 
         <div class="window-actions">
@@ -263,8 +313,7 @@ onBeforeUnmount(() => {
         </div>
 
         <button class="amount-display" title="双击进入迷你悬浮模式" @dblclick="setMiniMode(true)">
-          <span class="currency">¥</span>
-          <strong>{{ earnedText }}</strong>
+          <RollingAmount :value="earnedText" />
         </button>
 
         <div class="progress-track">
@@ -291,23 +340,27 @@ onBeforeUnmount(() => {
       </section>
 
       <section v-if="showSettings" class="settings-panel">
+        <div v-if="firstConfigIssue" class="settings-alert">
+          {{ firstConfigIssue }}
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
-          <label class="field">
+          <label class="field" :class="{ 'is-invalid': hasIssue('monthlySalary') }">
             <span>月薪</span>
             <input v-model.number="config.monthlySalary" min="0" step="100" type="number" />
           </label>
-          <label class="field">
+          <label class="field" :class="{ 'is-invalid': hasIssue('workDaysPerMonth') }">
             <span>每月工作天数</span>
             <input v-model.number="config.workDaysPerMonth" min="1" step="0.5" type="number" />
           </label>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <label class="field">
+          <label class="field" :class="{ 'is-invalid': hasIssue('startTime') || hasIssue('workTime') }">
             <span>上班</span>
             <input v-model="config.startTime" type="time" />
           </label>
-          <label class="field">
+          <label class="field" :class="{ 'is-invalid': hasIssue('endTime') || hasIssue('workTime') }">
             <span>下班</span>
             <input v-model="config.endTime" type="time" />
           </label>
@@ -319,11 +372,11 @@ onBeforeUnmount(() => {
         </label>
 
         <div class="grid grid-cols-2 gap-3">
-          <label class="field">
+          <label class="field" :class="{ 'is-invalid': hasIssue('lunchStart') || hasIssue('workTime') }">
             <span>午休开始</span>
             <input v-model="config.lunchStart" :disabled="!config.enableLunchBreak" type="time" />
           </label>
-          <label class="field">
+          <label class="field" :class="{ 'is-invalid': hasIssue('lunchEnd') || hasIssue('workTime') }">
             <span>午休结束</span>
             <input v-model="config.lunchEnd" :disabled="!config.enableLunchBreak" type="time" />
           </label>
@@ -466,34 +519,11 @@ onBeforeUnmount(() => {
 }
 
 .amount-display {
-  display: flex;
+  display: grid;
   max-width: 100%;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 10px;
+  place-items: center;
   margin-top: 28px;
   color: var(--text);
-}
-
-.amount-display .currency {
-  padding-bottom: 8px;
-  color: var(--muted);
-  font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
-  font-size: 34px;
-  font-weight: 650;
-}
-
-.amount-display strong {
-  overflow: hidden;
-  max-width: 100%;
-  font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
-  font-size: 58px;
-  font-weight: 700;
-  line-height: 0.98;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
 }
 
 .progress-track {
@@ -561,6 +591,17 @@ onBeforeUnmount(() => {
   padding: 20px;
 }
 
+.settings-alert {
+  border: 1px solid rgb(245 158 11 / 0.26);
+  border-radius: 10px;
+  background: rgb(245 158 11 / 0.12);
+  padding: 9px 11px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+}
+
 .field {
   display: grid;
   gap: 6px;
@@ -590,6 +631,11 @@ onBeforeUnmount(() => {
 .field input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgb(127 127 127 / 0.14);
+}
+
+.field.is-invalid input {
+  border-color: rgb(245 158 11 / 0.68);
+  box-shadow: 0 0 0 3px rgb(245 158 11 / 0.12);
 }
 
 .field input:disabled {
@@ -623,18 +669,11 @@ onBeforeUnmount(() => {
   box-shadow: var(--shadow);
   color: var(--text);
   backdrop-filter: blur(30px);
+  cursor: move;
 }
 
-.mini-window span {
+.mini-window :deep(.rolling-amount) {
   overflow: hidden;
   max-width: calc(100vw - 28px);
-  font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
-  font-size: 31px;
-  font-weight: 750;
-  line-height: 1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
 }
 </style>
