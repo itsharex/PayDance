@@ -108,7 +108,7 @@ const chars = computed(() =>
 }
 
 .rolling-amount--mini {
-  font-size: 31px;
+  font-size: clamp(24px, min(13vw, 46vh), 46px);
   font-weight: 750;
 }
 

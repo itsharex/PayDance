@@ -27,15 +27,27 @@ import {
 import RollingAmount from "./components/RollingAmount.vue";
 
 type ThemeMode = "light" | "dark";
+type WindowSize = {
+  width: number;
+  height: number;
+};
 
 const store = new LazyStore("salary-settings.json");
 const appWindow = getCurrentWindow();
+const fullWindowWidth = 420;
+const fullWindowMinWidth = 360;
+const fullWindowMinHeight = 480;
+const compactWindowMinHeight = 340;
+const miniDefaultSize: WindowSize = { width: 238, height: 86 };
+const miniMinSize: WindowSize = { width: 168, height: 58 };
+const miniResizeEdgeSize = 12;
 
 const config = ref<SalaryConfig>({ ...defaultSalaryConfig });
 const alwaysOnTop = ref(false);
 const isMiniMode = ref(false);
 const showSettings = ref(true);
 const themeMode = ref<ThemeMode>("light");
+const miniSize = ref<WindowSize>({ ...miniDefaultSize });
 const isReady = ref(false);
 
 const snapshot = ref<SalarySnapshot>(
@@ -74,18 +86,35 @@ const saveState = async () => {
   await store.set("isMiniMode", isMiniMode.value);
   await store.set("showSettings", showSettings.value);
   await store.set("themeMode", themeMode.value);
+  await store.set("miniSize", miniSize.value);
   await store.save();
 };
 
+const normalizeMiniSize = (size: Partial<WindowSize> | null | undefined): WindowSize => ({
+  width: Math.max(miniMinSize.width, Math.round(size?.width ?? miniDefaultSize.width)),
+  height: Math.max(miniMinSize.height, Math.round(size?.height ?? miniDefaultSize.height)),
+});
+
 const applyWindowMode = async () => {
+  await appWindow.setResizable(true);
+
   if (isMiniMode.value) {
-    await appWindow.setSize(new LogicalSize(238, 86));
+    const size = normalizeMiniSize(miniSize.value);
+    miniSize.value = size;
+    await appWindow.setMinSize(new LogicalSize(miniMinSize.width, miniMinSize.height));
+    await appWindow.setSize(new LogicalSize(size.width, size.height));
     await appWindow.setAlwaysOnTop(true);
     alwaysOnTop.value = true;
     return;
   }
 
-  await appWindow.setSize(new LogicalSize(420, showSettings.value ? 560 : 400));
+  await appWindow.setMinSize(
+    new LogicalSize(
+      fullWindowMinWidth,
+      showSettings.value ? fullWindowMinHeight : compactWindowMinHeight,
+    ),
+  );
+  await appWindow.setSize(new LogicalSize(fullWindowWidth, showSettings.value ? 560 : 400));
   await appWindow.setAlwaysOnTop(alwaysOnTop.value);
 };
 
@@ -140,8 +169,22 @@ const clearMiniDrag = () => {
   clearMiniDragListeners = undefined;
 };
 
+const isNearResizeEdge = (event: PointerEvent) => {
+  const target = event.currentTarget as HTMLElement | null;
+  const rect = target?.getBoundingClientRect();
+  if (!rect) return false;
+
+  return (
+    event.clientX - rect.left <= miniResizeEdgeSize ||
+    rect.right - event.clientX <= miniResizeEdgeSize ||
+    event.clientY - rect.top <= miniResizeEdgeSize ||
+    rect.bottom - event.clientY <= miniResizeEdgeSize
+  );
+};
+
 const startMiniDrag = (event: PointerEvent) => {
   if (event.button !== 0 || event.detail > 1) return;
+  if (isNearResizeEdge(event)) return;
 
   const startX = event.screenX;
   const startY = event.screenY;
@@ -176,6 +219,7 @@ watch(showSettings, async () => {
 });
 
 let rafId = 0;
+let saveMiniSizeTimer = 0;
 const unlisteners: Array<() => void> = [];
 
 const startTicker = () => {
@@ -197,6 +241,7 @@ onMounted(async () => {
   const savedMini = await store.get<boolean>("isMiniMode");
   const savedSettings = await store.get<boolean>("showSettings");
   const savedTheme = await store.get<ThemeMode>("themeMode");
+  const savedMiniSize = await store.get<WindowSize>("miniSize");
 
   if (savedConfig) {
     config.value = { ...defaultSalaryConfig, ...savedConfig };
@@ -217,6 +262,8 @@ onMounted(async () => {
   if (savedTheme === "dark" || savedTheme === "light") {
     themeMode.value = savedTheme;
   }
+
+  miniSize.value = normalizeMiniSize(savedMiniSize);
 
   await appWindow.setTheme(themeMode.value);
   await applyWindowMode();
@@ -240,12 +287,28 @@ onMounted(async () => {
     }),
   );
 
+  unlisteners.push(
+    await appWindow.onResized(() => {
+      if (!isReady.value || !isMiniMode.value) return;
+
+      window.clearTimeout(saveMiniSizeTimer);
+      saveMiniSizeTimer = window.setTimeout(() => {
+        miniSize.value = normalizeMiniSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+        void saveState();
+      }, 180);
+    }),
+  );
+
   isReady.value = true;
   startTicker();
 });
 
 onBeforeUnmount(() => {
   cancelAnimationFrame(rafId);
+  window.clearTimeout(saveMiniSizeTimer);
   clearMiniDrag();
   for (const unlisten of unlisteners) {
     unlisten();
@@ -669,7 +732,6 @@ onBeforeUnmount(() => {
   box-shadow: var(--shadow);
   color: var(--text);
   backdrop-filter: blur(30px);
-  cursor: move;
 }
 
 .mini-window :deep(.rolling-amount) {
