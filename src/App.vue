@@ -65,12 +65,7 @@ const firstConfigIssue = computed(() => configIssues.value[0]?.message ?? "");
 const hasConfigIssues = computed(() => configIssues.value.length > 0);
 const statusText = computed(() => {
   if (hasConfigIssues.value) return "配置待修正";
-  return snapshot.value.isWorking ? "正在赚钱" : "休息时间";
-});
-
-const workDurationText = computed(() => {
-  const hours = snapshot.value.workMsToday / 3_600_000;
-  return Number.isFinite(hours) ? `${hours.toFixed(1)}h` : "0.0h";
+  return snapshot.value.isWorking ? "正在上班" : "休息时间";
 });
 
 const formatDuration = (ms: number) => {
@@ -369,8 +364,7 @@ onBeforeUnmount(() => {
 
       <section class="hero-panel">
         <div class="hero-meta">
-          <p>今日已入账</p>
-          <span>{{ workDurationText }}</span>
+          <p>今天我已经挣了</p>
         </div>
 
         <button class="amount-display" title="双击进入迷你悬浮模式" @dblclick="setMiniMode(true)">
@@ -480,22 +474,15 @@ onBeforeUnmount(() => {
   width: 100%;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   color: var(--muted);
+  text-align: center;
 }
 
 .hero-meta p {
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-}
-
-.hero-meta span {
-  border-radius: 999px;
-  background: var(--subtle);
-  padding: 4px 10px;
-  font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
-  font-size: 12px;
+  width: 100%;
 }
 
 .amount-display {
@@ -534,12 +521,13 @@ onBeforeUnmount(() => {
   display: grid;
   min-width: 0;
   gap: 5px;
+  place-items: center;
   padding: 13px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel-soft);
   box-shadow: 0 8px 24px rgb(15 23 42 / 0.05);
-  text-align: left;
+  text-align: center;
 }
 
 .rate-card svg,

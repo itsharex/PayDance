@@ -10,7 +10,7 @@ defineProps<{
 <template>
   <div class="stats-panel" aria-label="今日工资统计">
     <article class="stat-item">
-      <span>今日预计</span>
+      <span>今日预计入账</span>
       <strong>¥{{ dailyTotal }}</strong>
     </article>
     <article class="stat-item">
@@ -41,11 +41,12 @@ defineProps<{
   display: grid;
   min-width: 0;
   gap: 5px;
+  place-items: center;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--panel-soft);
   padding: 10px 9px;
-  text-align: left;
+  text-align: center;
 }
 
 .stat-item span {

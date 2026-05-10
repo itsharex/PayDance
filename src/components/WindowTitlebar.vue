@@ -33,7 +33,7 @@ defineEmits<{
     <div class="status-chip">
       <span
         class="status-dot"
-        :class="hasConfigIssues ? 'bg-amber-500' : statusText === '正在赚钱' ? 'bg-emerald-500' : 'bg-zinc-300'"
+        :class="hasConfigIssues ? 'bg-amber-500' : statusText === '正在上班' ? 'bg-emerald-500' : 'bg-zinc-300'"
       />
       <span>{{ statusText }}</span>
     </div>

@@ -77,7 +77,6 @@ onBeforeUnmount(() => {
   max-width: 100%;
   align-items: flex-end;
   justify-content: center;
-  gap: 10px;
   color: var(--text);
   font-family: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
   font-variant-numeric: tabular-nums;
@@ -93,6 +92,7 @@ onBeforeUnmount(() => {
   color: var(--muted);
   font-weight: 650;
   transition: color 220ms ease;
+  transform: translateX(-0.28em);
 }
 
 .rolling-amount__value {
@@ -100,6 +100,7 @@ onBeforeUnmount(() => {
   max-width: 100%;
   overflow: hidden;
   align-items: center;
+  transform: translateX(-0.28em);
   line-height: 1;
   white-space: nowrap;
 }
@@ -136,6 +137,11 @@ onBeforeUnmount(() => {
 .rolling-amount--hero .rolling-amount__currency {
   padding-bottom: 8px;
   font-size: 34px;
+  transform: translateX(-0.34em);
+}
+
+.rolling-amount--hero .rolling-amount__value {
+  transform: translateX(-0.34em);
 }
 
 .rolling-amount--mini {
