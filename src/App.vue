@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { LazyStore } from "@tauri-apps/plugin-store";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { Banknote, Clock3, Coffee } from "lucide-vue-next";
+import { Banknote, Clock3, Coffee, X } from "lucide-vue-next";
 import {
   calculateSalarySnapshot,
   defaultSalaryConfig,
@@ -13,6 +13,7 @@ import {
   type SalarySnapshot,
 } from "./lib/salary";
 import MiniWindow from "./components/MiniWindow.vue";
+import IncomeProgress from "./components/IncomeProgress.vue";
 import RollingAmount from "./components/RollingAmount.vue";
 import SettingsPanel from "./components/SettingsPanel.vue";
 import StatsPanel from "./components/StatsPanel.vue";
@@ -29,9 +30,7 @@ const appWindow = getCurrentWindow();
 const settingsSchemaVersion = 1;
 const fullWindowWidth = 468;
 const fullWindowMinWidth = 420;
-const settingsWindowHeight = 760;
 const compactWindowHeight = 432;
-const settingsWindowMinHeight = 720;
 const compactWindowMinHeight = 390;
 const miniDefaultSize: WindowSize = { width: 238, height: 86 };
 const miniMinSize: WindowSize = { width: 168, height: 58 };
@@ -55,7 +54,6 @@ const yuanFormatter = new Intl.NumberFormat("zh-CN", {
 });
 
 const earnedText = computed(() => yuanFormatter.format(snapshot.value.earnedToday));
-const progressPercent = computed(() => `${snapshot.value.progress * 100}%`);
 const dailyTotalText = computed(() => yuanFormatter.format(snapshot.value.dailySalary));
 const remainingEarnText = computed(() =>
   yuanFormatter.format(Math.max(0, snapshot.value.dailySalary - snapshot.value.earnedToday)),
@@ -123,11 +121,11 @@ const applyWindowMode = async () => {
   await appWindow.setMinSize(
     new LogicalSize(
       fullWindowMinWidth,
-      showSettings.value ? settingsWindowMinHeight : compactWindowMinHeight,
+      compactWindowMinHeight,
     ),
   );
   await appWindow.setSize(
-    new LogicalSize(fullWindowWidth, showSettings.value ? settingsWindowHeight : compactWindowHeight),
+    new LogicalSize(fullWindowWidth, compactWindowHeight),
   );
   await appWindow.setAlwaysOnTop(alwaysOnTop.value);
 };
@@ -228,7 +226,6 @@ const startMiniDrag = (event: PointerEvent) => {
 watch(config, saveState, { deep: true });
 watch(showSettings, async () => {
   if (!isReady.value || isMiniMode.value) return;
-  await applyWindowMode();
   await saveState();
 });
 
@@ -347,7 +344,7 @@ onBeforeUnmount(() => {
       @restore="setMiniMode(false)"
     />
 
-    <div v-else class="app-window" :class="{ 'has-settings': showSettings }">
+    <div v-else class="app-window">
       <WindowTitlebar
         :always-on-top="alwaysOnTop"
         :has-config-issues="hasConfigIssues"
@@ -378,9 +375,7 @@ onBeforeUnmount(() => {
           :worked-time="workedTimeText"
         />
 
-        <div class="progress-track">
-          <div class="progress-fill" :style="{ width: progressPercent }" />
-        </div>
+        <IncomeProgress :is-working="snapshot.isWorking" :progress="snapshot.progress" />
 
         <div class="rate-grid">
           <article class="rate-card">
@@ -401,12 +396,28 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <SettingsPanel
-        v-if="showSettings"
-        v-model:config="config"
-        :first-issue="firstConfigIssue"
-        :has-issue="hasIssue"
-      />
+      <Transition name="settings-sheet">
+        <div v-if="showSettings" class="settings-overlay" @click.self="showSettings = false">
+          <section class="settings-sheet" aria-label="设置中心">
+            <header class="settings-sheet__header">
+              <div>
+                <strong>设置</strong>
+                <span>薪资和工作时间</span>
+              </div>
+              <button class="sheet-close-button" title="关闭设置" @click="showSettings = false">
+                <X :size="16" />
+              </button>
+            </header>
+            <div class="settings-sheet__body">
+              <SettingsPanel
+                v-model:config="config"
+                :first-issue="firstConfigIssue"
+                :has-issue="hasIssue"
+              />
+            </div>
+          </section>
+        </div>
+      </Transition>
     </div>
   </main>
 </template>
@@ -439,6 +450,7 @@ onBeforeUnmount(() => {
 }
 
 .app-window {
+  position: relative;
   display: flex;
   height: 100%;
   overflow: hidden;
@@ -460,13 +472,6 @@ onBeforeUnmount(() => {
   justify-content: center;
   padding: 26px 32px 28px;
   text-align: center;
-}
-
-.app-window.has-settings .hero-panel {
-  min-height: 374px;
-  flex: 0 0 auto;
-  padding-top: 28px;
-  padding-bottom: 24px;
 }
 
 .hero-meta {
@@ -491,22 +496,6 @@ onBeforeUnmount(() => {
   place-items: center;
   margin-top: 26px;
   color: var(--text);
-}
-
-.progress-track {
-  width: 100%;
-  height: 6px;
-  margin-top: 20px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--subtle);
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-  transition: width 200ms ease-out;
 }
 
 .rate-grid {
@@ -548,6 +537,126 @@ onBeforeUnmount(() => {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+
+.settings-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  border-radius: inherit;
+  background: rgb(0 0 0 / 0.16);
+  backdrop-filter: blur(6px);
+  z-index: 10;
+}
+
+.settings-sheet {
+  display: flex;
+  width: 100%;
+  max-height: calc(100% - 34px);
+  flex-direction: column;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-radius: 18px 18px 20px 20px;
+  background: var(--panel);
+  box-shadow: 0 -18px 48px rgb(15 23 42 / 0.18);
+}
+
+.settings-sheet__header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding: 14px 16px 12px 18px;
+}
+
+.settings-sheet__header div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  text-align: left;
+}
+
+.settings-sheet__header strong {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.settings-sheet__header span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sheet-close-button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--muted);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.sheet-close-button:hover {
+  background: var(--subtle);
+  color: var(--text);
+}
+
+.sheet-close-button:active {
+  transform: scale(0.96);
+}
+
+.settings-sheet__body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  scrollbar-gutter: stable;
+}
+
+.settings-sheet__body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.settings-sheet__body::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 48%, transparent);
+  background-clip: content-box;
+}
+
+.settings-sheet-enter-active,
+.settings-sheet-leave-active {
+  transition:
+    opacity 180ms ease,
+    backdrop-filter 180ms ease;
+}
+
+.settings-sheet-enter-active .settings-sheet,
+.settings-sheet-leave-active .settings-sheet {
+  transition:
+    opacity 220ms ease,
+    transform 220ms cubic-bezier(0.2, 0.72, 0.28, 1);
+}
+
+.settings-sheet-enter-from,
+.settings-sheet-leave-to {
+  opacity: 0;
+  backdrop-filter: blur(0);
+}
+
+.settings-sheet-enter-from .settings-sheet,
+.settings-sheet-leave-to .settings-sheet {
+  opacity: 0;
+  transform: translateY(22px);
 }
 
 </style>
