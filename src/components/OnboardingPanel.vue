@@ -99,7 +99,7 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="onboarding-overlay">
+  <div class="onboarding-overlay" @mousedown.left.self="emit('dragStart', $event)">
     <button
       class="resize-handle resize-handle--north"
       aria-hidden="true"
@@ -157,7 +157,7 @@ const goBack = () => {
       @mousedown.left.stop.prevent="emit('resizeStart', 'SouthWest')"
     />
     <section class="onboarding-panel" aria-label="首次配置">
-      <header class="onboarding-header" @mousedown.left="$emit('dragStart', $event)">
+      <header class="onboarding-header">
         <div>
           <strong>{{ stepTitles[step] }}</strong>
         </div>
@@ -272,11 +272,15 @@ const goBack = () => {
           <div class="field-grid">
             <label class="field" :class="{ 'is-invalid': hasIssue('startTime') || hasIssue('workTime') }">
               <span>上班</span>
-              <input :value="config.startTime" type="time" @input="updateConfig('startTime', readText($event))" />
+              <span class="field-input-wrap field-input-wrap--time">
+                <input :value="config.startTime" type="time" @input="updateConfig('startTime', readText($event))" />
+              </span>
             </label>
             <label class="field" :class="{ 'is-invalid': hasIssue('endTime') || hasIssue('workTime') }">
               <span>下班</span>
-              <input :value="config.endTime" type="time" @input="updateConfig('endTime', readText($event))" />
+              <span class="field-input-wrap field-input-wrap--time">
+                <input :value="config.endTime" type="time" @input="updateConfig('endTime', readText($event))" />
+              </span>
             </label>
           </div>
 
@@ -292,21 +296,25 @@ const goBack = () => {
           <div class="field-grid">
             <label class="field" :class="{ 'is-invalid': hasIssue('lunchStart') || hasIssue('workTime') }">
               <span>开始</span>
-              <input
-                :disabled="!config.enableLunchBreak"
-                :value="config.lunchStart"
-                type="time"
-                @input="updateConfig('lunchStart', readText($event))"
-              />
+              <span class="field-input-wrap field-input-wrap--time">
+                <input
+                  :disabled="!config.enableLunchBreak"
+                  :value="config.lunchStart"
+                  type="time"
+                  @input="updateConfig('lunchStart', readText($event))"
+                />
+              </span>
             </label>
             <label class="field" :class="{ 'is-invalid': hasIssue('lunchEnd') || hasIssue('workTime') }">
               <span>结束</span>
-              <input
-                :disabled="!config.enableLunchBreak"
-                :value="config.lunchEnd"
-                type="time"
-                @input="updateConfig('lunchEnd', readText($event))"
-              />
+              <span class="field-input-wrap field-input-wrap--time">
+                <input
+                  :disabled="!config.enableLunchBreak"
+                  :value="config.lunchEnd"
+                  type="time"
+                  @input="updateConfig('lunchEnd', readText($event))"
+                />
+              </span>
             </label>
           </div>
         </section>
@@ -367,6 +375,7 @@ const goBack = () => {
   backdrop-filter: blur(12px) saturate(1.12);
   padding: var(--ui-pad-md, 18px);
   z-index: 20;
+  cursor: move;
 }
 
 .onboarding-panel {
@@ -381,6 +390,7 @@ const goBack = () => {
   box-shadow: var(--shadow);
   color: var(--text);
   backdrop-filter: blur(30px) saturate(1.08);
+  cursor: default;
   z-index: 1;
 }
 
@@ -390,7 +400,6 @@ const goBack = () => {
   justify-content: space-between;
   gap: var(--ui-gap-md, 16px);
   border-bottom: 1px solid var(--line);
-  cursor: move;
   padding: var(--ui-pad-md, 16px);
 }
 
@@ -534,43 +543,72 @@ const goBack = () => {
 }
 
 .field-input-wrap {
-  position: relative;
-  display: block;
+  display: grid;
+  height: clamp(34px, 8.2cqh, 40px);
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius-sm, 10px);
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.field-input-wrap--time {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .field input {
   width: 100%;
-  height: clamp(34px, 8.2cqh, 40px);
+  height: 100%;
   min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--ui-radius-sm, 10px);
-  background: var(--panel);
+  border: 0;
+  background: transparent;
   color: var(--text);
   font-family: var(--font-mono);
   font-size: var(--ui-font-sm, 14px);
   outline: none;
-  padding: 0 clamp(54px, 14cqw, 72px) 0 var(--ui-pad-sm, 10px);
+  padding: 0 clamp(4px, 1.2cqw, 8px) 0 clamp(26px, 6cqw, 34px);
+  text-align: center;
+}
+
+.field input[type="number"] {
+  padding-left: clamp(48px, 12cqw, 64px);
+  padding-right: clamp(4px, 1cqw, 7px);
+}
+
+.field input[type="time"] {
+  padding-left: clamp(28px, 6.4cqw, 38px);
+  padding-right: clamp(5px, 1.2cqw, 8px);
+}
+
+.field input[type="time"]::-webkit-calendar-picker-indicator {
+  margin-right: -2px;
 }
 
 .field-unit {
-  position: absolute;
-  top: 50%;
-  right: var(--ui-pad-sm, 10px);
+  display: inline-flex;
+  min-width: clamp(34px, 7.5cqw, 44px);
+  height: 100%;
+  align-items: center;
+  justify-content: center;
   color: var(--muted);
   font-size: var(--ui-font-xs, 13px);
   font-weight: 650;
   pointer-events: none;
-  transform: translateY(-50%);
   white-space: nowrap;
 }
 
-.field.is-invalid input {
+.field.is-invalid .field-input-wrap {
   border-color: rgb(245 158 11 / 0.68);
   box-shadow: 0 0 0 3px rgb(245 158 11 / 0.12);
 }
 
-.field input:disabled {
+.field-input-wrap:has(input:disabled) {
   background: var(--subtle);
+}
+
+.field input:disabled {
   color: var(--muted);
 }
 
