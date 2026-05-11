@@ -2087,8 +2087,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "pay-pulse"
-version = "0.5.4"
+name = "pay-dance"
+version = "0.5.5"
 dependencies = [
  "serde",
  "serde_json",

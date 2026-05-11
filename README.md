@@ -1,10 +1,10 @@
-# 薪跳 PayPulse
+# 薪跳 PayDance
 
 薪跳是一款 Windows 11 风格的桌面实时薪资仪表盘，也是一款属于打工人的桌面实时工资看板。输入薪资、工作日、上下班时间和午休时间后，应用会用 `requestAnimationFrame` 平滑刷新今天已经挣到的钱，让你在屏幕角落看见每一秒的收入跳动。
 
-仓库地址：https://github.com/MasterBao66/PayPulse
+仓库地址：https://github.com/MasterBao66/PayDance
 
-英文名：PayPulse
+英文名：PayDance
 
 ## 产品定位
 
@@ -56,12 +56,12 @@
 
 ## 版本记录
 
-### v0.5.4
+### v0.5.5
 
-- 产品正式更名为“薪跳”，英文名为 PayPulse。
-- 产品定位升级为“桌面实时薪资仪表盘”和“打工人的桌面实时工资看板”。
-- 清理旧产品文案，统一应用标题、托盘提示、仓库地址、发行产物和 README 表述。
-- GitHub 仓库同步更名为 `PayPulse`。
+- 英文名正式调整为 PayDance，中文名保持“薪跳”。
+- 产品定位统一为“桌面实时薪资仪表盘”和“打工人的桌面实时工资看板”。
+- 清理旧英文品牌、历史项目名和旧营销表述，统一应用标题、托盘提示、仓库地址、发行产物和 README 表述。
+- GitHub 仓库同步更名为 `PayDance`。
 
 ### v0.5.3
 
@@ -165,7 +165,7 @@ npm.cmd run build:exe
 npm.cmd run build:installer
 ```
 
-`build:exe` 和 `build:installer` 会先检查 `src-tauri\target\release\pay-pulse.exe` 是否仍在运行。如果应用还停留在系统托盘里，请先从托盘菜单退出后再构建。
+`build:exe` 和 `build:installer` 会先检查 `src-tauri\target\release\pay-dance.exe` 是否仍在运行。如果应用还停留在系统托盘里，请先从托盘菜单退出后再构建。
 
 Windows 完整安装包构建需要安装 Visual Studio Build Tools，并包含 MSVC 与 Windows SDK 组件。MSI 打包还需要 WiX 工具链，Tauri 会在构建时自动下载。
 
@@ -187,7 +187,7 @@ git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin vX.Y.Z
 ```
 
-推送 `v*` 标签后，`.github/workflows/release.yml` 会在 GitHub Actions 中自动运行测试、构建 Windows `pay-pulse.exe`、上传构建产物并创建 GitHub Release。发布后可用 GitHub CLI 核验：
+推送 `v*` 标签后，`.github/workflows/release.yml` 会在 GitHub Actions 中自动运行测试、构建 Windows `pay-dance.exe`、上传构建产物并创建 GitHub Release。发布后可用 GitHub CLI 核验：
 
 ```powershell
 gh run list --workflow Release --limit 3

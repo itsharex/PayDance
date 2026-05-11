@@ -26,7 +26,7 @@ pub fn run() {
                 .cloned()
                 .expect("window icon should be available");
 
-            TrayIconBuilder::with_id("pay-pulse-tray")
+            TrayIconBuilder::with_id("pay-dance-tray")
                 .icon(icon)
                 .tooltip("薪跳 · 桌面实时薪资仪表盘")
                 .menu(&menu)

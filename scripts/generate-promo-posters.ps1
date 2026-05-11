@@ -327,7 +327,7 @@ function Draw-PosterOne {
 
   Draw-Icon $g 96 86 132
   Draw-TextBlock $g "打工人的桌面实时工资看板" 252 96 560 44 (New-PosterFont -Size 28 -Style Bold) (New-PosterColor "FBBF24") Near Center -NoWrap
-  Draw-TextBlock $g "薪跳`nPayPulse" 92 220 690 250 (New-PosterFont -Size 92 -Style Bold) (New-PosterColor "FFFFFF") Near Near
+  Draw-TextBlock $g "薪跳`nPayDance" 92 220 690 250 (New-PosterFont -Size 92 -Style Bold) (New-PosterColor "FFFFFF") Near Near
   Draw-TextBlock $g "上班每一秒，都在入账。" 100 492 660 62 (New-PosterFont -Size 38 -Style Bold) (New-PosterColor "FDE68A") Near Center -NoWrap
   Draw-TextBlock $g "把今天已经挣到的钱放在桌面上实时滚动，让每一分钟都有清晰的薪资脉搏。" 102 572 620 116 (New-PosterFont -Size 25) (New-PosterColor "E5E7EB") Near Near
 
@@ -339,8 +339,8 @@ function Draw-PosterOne {
   Draw-AppMock $g 820 250 600 610 "dark" "128.47" 0.58
   Draw-MiniWindow $g 1010 906 320 104 "888.88" "dark"
 
-  Draw-TextBlock $g "github.com/MasterBao66/PayPulse" 100 1062 760 48 (New-PosterFont -Family "Cascadia Mono" -Size 24 -Style Bold) (New-PosterColor "F8FAFC") Near Center -NoWrap
-  Draw-TextBlock $g "v0.5.4 · Windows x64" 104 1110 360 34 (New-PosterFont -Size 22 -Style Bold) (New-PosterColor "A1A1AA") Near Center -NoWrap
+  Draw-TextBlock $g "github.com/MasterBao66/PayDance" 100 1062 760 48 (New-PosterFont -Family "Cascadia Mono" -Size 24 -Style Bold) (New-PosterColor "F8FAFC") Near Center -NoWrap
+  Draw-TextBlock $g "v0.5.5 · Windows x64" 104 1110 360 34 (New-PosterFont -Size 22 -Style Bold) (New-PosterColor "A1A1AA") Near Center -NoWrap
 
   $path = Join-Path $outDir "poster-01-income-ticker.png"
   $bitmap.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
@@ -363,7 +363,7 @@ function Draw-PosterTwo {
   }
 
   Draw-Icon $g 100 92 116
-  Draw-TextBlock $g "薪跳 PayPulse" 240 108 600 42 (New-PosterFont -Size 29 -Style Bold) (New-PosterColor "18181B") Near Center -NoWrap
+  Draw-TextBlock $g "薪跳 PayDance" 240 108 600 42 (New-PosterFont -Size 29 -Style Bold) (New-PosterColor "18181B") Near Center -NoWrap
   Draw-TextBlock $g "每一秒都有`n薪资刻度" 96 230 650 228 (New-PosterFont -Size 88 -Style Bold) (New-PosterColor "111827") Near Near
   Draw-TextBlock $g "月薪、日薪、时薪都能输入；工作日、午休、上下班时间都能算清。" 104 486 600 92 (New-PosterFont -Size 27) (New-PosterColor "52525B") Near Near
 
@@ -443,7 +443,7 @@ function Draw-PosterThree {
 
   Fill-RoundedRect $g 980 966 458 74 24 (New-PosterColor "F59E0B" 245)
   Draw-TextBlock $g "GitHub 免费下载" 1008 978 402 50 (New-PosterFont -Size 31 -Style Bold) (New-PosterColor "111827") Center Center -NoWrap
-  Draw-TextBlock $g "github.com/MasterBao66/PayPulse" 970 1058 510 34 (New-PosterFont -Family "Cascadia Mono" -Size 18 -Style Bold) (New-PosterColor "E5E7EB") Center Center -NoWrap
+  Draw-TextBlock $g "github.com/MasterBao66/PayDance" 970 1058 510 34 (New-PosterFont -Family "Cascadia Mono" -Size 18 -Style Bold) (New-PosterColor "E5E7EB") Center Center -NoWrap
 
   $path = Join-Path $outDir "poster-03-desktop-corner.png"
   $bitmap.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)

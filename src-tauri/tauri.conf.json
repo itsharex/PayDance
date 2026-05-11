@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "薪跳",
-  "version": "0.5.4",
-  "identifier": "com.masterbao.paypulse",
+  "version": "0.5.5",
+  "identifier": "com.masterbao.paydance",
   "build": {
     "beforeDevCommand": "npm.cmd run dev",
     "devUrl": "http://127.0.0.1:1420",
