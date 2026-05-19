@@ -412,6 +412,8 @@ onBeforeUnmount(() => {
                 v-model:config="config"
                 :first-issue="firstConfigIssue"
                 :has-issue="hasIssue"
+                :theme-mode="themeMode"
+                @update:theme-mode="setThemeMode"
               />
             </div>
           </section>
