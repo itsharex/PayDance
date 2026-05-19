@@ -27,9 +27,39 @@ describe("settings panel", () => {
     expect(settingsPanelSource).not.toContain("startInMiniMode");
   });
 
+  it("shows only the salary inputs required by the selected salary mode", () => {
+    expect(settingsPanelSource).toContain(
+      'v-if="config.salaryType === \'monthly\'"',
+    );
+    expect(settingsPanelSource).toContain(
+      'v-if="config.salaryType === \'daily\'"',
+    );
+    expect(settingsPanelSource).toContain(
+      'v-if="config.salaryType === \'hourly\'"',
+    );
+
+    const monthlySectionStart = settingsPanelSource.indexOf(
+      "hasIssue('monthlySalary')",
+    );
+    const workDaysSectionStart = settingsPanelSource.indexOf(
+      "hasIssue('workDaysPerMonth')",
+    );
+
+    expect(monthlySectionStart).toBeGreaterThan(-1);
+    expect(workDaysSectionStart).toBeGreaterThan(monthlySectionStart);
+  });
+
+  it("uses a lighter rest-break layout inside work schedule settings", () => {
+    expect(settingsPanelSource).not.toContain("上下班时间");
+    expect(settingsPanelSource).not.toContain("午休剔除");
+    expect(settingsPanelSource).toContain("休息扣除");
+    expect(settingsPanelSource).toContain("break-row");
+  });
+
   it("places copyright under the GitHub repository entry", () => {
     expect(settingsPanelSource).toContain("about-footer__repo-card");
     expect(settingsPanelSource).toContain("about-footer__copyright");
+    expect(settingsPanelSource).toContain("about-footer__copyright--centered");
     expect(settingsPanelSource.indexOf("repository-button")).toBeLessThan(
       settingsPanelSource.indexOf("about-footer__copyright"),
     );

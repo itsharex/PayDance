@@ -114,21 +114,39 @@ const openRepository = async () => {
           {{ option.label }}
         </button>
       </div>
-      <div class="field-grid">
-        <label class="field" :class="{ 'is-invalid': hasIssue('monthlySalary') }">
-          <span>月薪</span>
-          <span class="field-input-wrap">
-            <input
-              :value="config.monthlySalary"
-              min="0"
-              step="100"
-              type="number"
-              @input="updateNumberConfig('monthlySalary', $event)"
-            />
-            <span class="field-unit">元</span>
-          </span>
-        </label>
-        <label class="field" :class="{ 'is-invalid': hasIssue('dailySalary') }">
+      <div
+        class="field-grid field-grid--salary"
+        :class="{ 'field-grid--single': config.salaryType !== 'monthly' }"
+      >
+        <template v-if="config.salaryType === 'monthly'">
+          <label class="field" :class="{ 'is-invalid': hasIssue('monthlySalary') }">
+            <span>月薪</span>
+            <span class="field-input-wrap">
+              <input
+                :value="config.monthlySalary"
+                min="0"
+                step="100"
+                type="number"
+                @input="updateNumberConfig('monthlySalary', $event)"
+              />
+              <span class="field-unit">元</span>
+            </span>
+          </label>
+          <label class="field" :class="{ 'is-invalid': hasIssue('workDaysPerMonth') }">
+            <span>每月工作天数</span>
+            <span class="field-input-wrap">
+              <input
+                :value="config.workDaysPerMonth"
+                min="1"
+                step="0.5"
+                type="number"
+                @input="updateNumberConfig('workDaysPerMonth', $event)"
+              />
+              <span class="field-unit">天</span>
+            </span>
+          </label>
+        </template>
+        <label v-if="config.salaryType === 'daily'" class="field" :class="{ 'is-invalid': hasIssue('dailySalary') }">
           <span>日薪</span>
           <span class="field-input-wrap">
             <input
@@ -141,7 +159,7 @@ const openRepository = async () => {
             <span class="field-unit">元</span>
           </span>
         </label>
-        <label class="field" :class="{ 'is-invalid': hasIssue('hourlyRate') }">
+        <label v-if="config.salaryType === 'hourly'" class="field" :class="{ 'is-invalid': hasIssue('hourlyRate') }">
           <span>时薪</span>
           <span class="field-input-wrap">
             <input
@@ -152,19 +170,6 @@ const openRepository = async () => {
               @input="updateNumberConfig('hourlyRate', $event)"
             />
             <span class="field-unit">元</span>
-          </span>
-        </label>
-        <label class="field" :class="{ 'is-invalid': hasIssue('workDaysPerMonth') }">
-          <span>每月工作天数</span>
-          <span class="field-input-wrap">
-            <input
-              :value="config.workDaysPerMonth"
-              min="1"
-              step="0.5"
-              type="number"
-              @input="updateNumberConfig('workDaysPerMonth', $event)"
-            />
-            <span class="field-unit">天</span>
           </span>
         </label>
       </div>
@@ -188,42 +193,45 @@ const openRepository = async () => {
           </button>
         </div>
       </div>
-      <div class="control-stack">
-        <span class="control-label">上下班时间</span>
-        <div class="field-grid">
-          <label class="field" :class="{ 'is-invalid': hasIssue('startTime') || hasIssue('workTime') }">
-            <span>上班</span>
-            <span class="field-input-wrap field-input-wrap--time">
-              <input
-                :value="config.startTime"
-                type="time"
-                @input="updateConfig('startTime', readText($event))"
-              />
-            </span>
-          </label>
-          <label class="field" :class="{ 'is-invalid': hasIssue('endTime') || hasIssue('workTime') }">
-            <span>下班</span>
-            <span class="field-input-wrap field-input-wrap--time">
-              <input
-                :value="config.endTime"
-                type="time"
-                @input="updateConfig('endTime', readText($event))"
-              />
-            </span>
-          </label>
-        </div>
+      <div class="field-grid field-grid--time">
+        <label class="field" :class="{ 'is-invalid': hasIssue('startTime') || hasIssue('workTime') }">
+          <span>上班</span>
+          <span class="field-input-wrap field-input-wrap--time">
+            <input
+              :value="config.startTime"
+              type="time"
+              @input="updateConfig('startTime', readText($event))"
+            />
+          </span>
+        </label>
+        <label class="field" :class="{ 'is-invalid': hasIssue('endTime') || hasIssue('workTime') }">
+          <span>下班</span>
+          <span class="field-input-wrap field-input-wrap--time">
+            <input
+              :value="config.endTime"
+              type="time"
+              @input="updateConfig('endTime', readText($event))"
+            />
+          </span>
+        </label>
       </div>
-      <label class="switch-row switch-row--panel">
-        <input
-          :checked="config.enableLunchBreak"
-          type="checkbox"
-          @change="updateConfig('enableLunchBreak', readChecked($event))"
-        />
-        <span>午休剔除</span>
-      </label>
-      <div v-if="config.enableLunchBreak" class="field-grid">
+      <div class="break-row">
+        <div class="break-row__copy">
+          <span>休息扣除</span>
+          <small>从工作时长中扣除固定休息段</small>
+        </div>
+        <label class="switch-row">
+          <input
+            :checked="config.enableLunchBreak"
+            type="checkbox"
+            @change="updateConfig('enableLunchBreak', readChecked($event))"
+          />
+          <span>{{ config.enableLunchBreak ? "已扣除" : "不扣除" }}</span>
+        </label>
+      </div>
+      <div v-if="config.enableLunchBreak" class="field-grid field-grid--break">
         <label class="field" :class="{ 'is-invalid': hasIssue('lunchStart') || hasIssue('workTime') }">
-          <span>午休开始</span>
+          <span>休息开始</span>
           <span class="field-input-wrap field-input-wrap--time">
             <input
               :value="config.lunchStart"
@@ -233,7 +241,7 @@ const openRepository = async () => {
           </span>
         </label>
         <label class="field" :class="{ 'is-invalid': hasIssue('lunchEnd') || hasIssue('workTime') }">
-          <span>午休结束</span>
+          <span>休息结束</span>
           <span class="field-input-wrap field-input-wrap--time">
             <input
               :value="config.lunchEnd"
@@ -311,7 +319,7 @@ const openRepository = async () => {
             <Github :size="22" stroke-width="2.2" />
             <span>GitHub</span>
           </button>
-          <span class="about-footer__copyright">{{ appCopyright }}</span>
+          <span class="about-footer__copyright about-footer__copyright--centered">{{ appCopyright }}</span>
         </div>
         <p v-if="repositoryError" class="about-footer__error">
           {{ repositoryError }}
@@ -325,10 +333,10 @@ const openRepository = async () => {
 .settings-panel {
   display: grid;
   flex: 0 0 auto;
-  gap: var(--ui-gap-sm, 10px);
+  gap: var(--ui-gap-xs, 8px);
   border-top: 1px solid var(--line);
   background: var(--panel-soft);
-  padding: var(--ui-pad-md, 16px);
+  padding: clamp(12px, 2.8cqh, 15px) var(--ui-pad-md, 16px);
 }
 
 .settings-alert {
@@ -344,11 +352,15 @@ const openRepository = async () => {
 
 .settings-group {
   display: grid;
-  gap: var(--ui-gap-sm, 10px);
-  border: 1px solid var(--line);
-  border-radius: var(--ui-radius-md, 12px);
-  background: color-mix(in srgb, var(--panel) 88%, transparent);
-  padding: var(--ui-pad-sm, 12px);
+  gap: clamp(7px, 1.7cqh, 9px);
+  border-top: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+  background: transparent;
+  padding: clamp(8px, 1.9cqh, 11px) 2px 0;
+}
+
+.settings-group:first-of-type {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .settings-group--about {
@@ -357,7 +369,7 @@ const openRepository = async () => {
 
 .group-title {
   display: flex;
-  min-height: clamp(22px, 5.2cqh, 28px);
+  min-height: clamp(20px, 4.8cqh, 24px);
   align-items: center;
 }
 
@@ -370,7 +382,11 @@ const openRepository = async () => {
 .field-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--ui-gap-sm, 10px);
+  gap: var(--ui-gap-xs, 8px);
+}
+
+.field-grid--single {
+  grid-template-columns: 1fr;
 }
 
 .field {
@@ -381,13 +397,13 @@ const openRepository = async () => {
 .field > span,
 .control-label {
   color: var(--muted);
-  font-size: var(--ui-font-sm, 14px);
+  font-size: var(--ui-font-xs, 13px);
   font-weight: 560;
 }
 
 .field-input-wrap {
   display: grid;
-  height: clamp(34px, 8.2cqh, 40px);
+  height: clamp(33px, 7.5cqh, 38px);
   min-width: 0;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -462,16 +478,8 @@ const openRepository = async () => {
   align-items: center;
   gap: var(--ui-gap-xs, 7px);
   color: var(--muted);
-  font-size: var(--ui-font-sm, 14px);
+  font-size: var(--ui-font-xs, 13px);
   font-weight: 650;
-}
-
-.switch-row--panel {
-  min-height: clamp(34px, 7.8cqh, 40px);
-  border: 1px solid var(--line);
-  border-radius: var(--ui-radius-sm, 10px);
-  background: var(--panel);
-  padding: 0 var(--ui-pad-sm, 12px);
 }
 
 .switch-row input {
@@ -483,6 +491,38 @@ const openRepository = async () => {
 .control-stack {
   display: grid;
   gap: var(--ui-gap-xs, 6px);
+}
+
+.break-row {
+  display: flex;
+  min-height: clamp(32px, 7.2cqh, 38px);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-gap-sm, 10px);
+  border-top: 1px solid color-mix(in srgb, var(--line) 62%, transparent);
+  padding-top: clamp(7px, 1.7cqh, 9px);
+}
+
+.break-row__copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  text-align: left;
+}
+
+.break-row__copy span {
+  color: var(--text);
+  font-size: var(--ui-font-xs, 13px);
+  font-weight: 700;
+}
+
+.break-row__copy small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: clamp(11px, 2.6cqh, 12px);
+  font-weight: 520;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .segmented-control {
@@ -500,7 +540,7 @@ const openRepository = async () => {
 }
 
 .segmented-control button {
-  height: clamp(32px, 7.6cqh, 38px);
+  height: clamp(31px, 7.2cqh, 36px);
   border-radius: clamp(6px, 1.6cqw, 8px);
   color: var(--muted);
   font-size: var(--ui-font-sm, 14px);
@@ -524,7 +564,7 @@ const openRepository = async () => {
 }
 
 .weekday-control button {
-  height: clamp(30px, 7cqh, 36px);
+  height: clamp(29px, 6.8cqh, 34px);
   border: 1px solid var(--line);
   border-radius: var(--ui-radius-sm, 9px);
   background: var(--panel-soft);
@@ -583,6 +623,11 @@ const openRepository = async () => {
   font-weight: 560;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.about-footer__copyright--centered {
+  width: 100%;
+  text-align: center;
 }
 
 .about-footer__repo-card {
@@ -646,15 +691,11 @@ const openRepository = async () => {
 
   .about-footer {
     grid-template-columns: 1fr;
-    justify-items: stretch;
+    justify-items: center;
   }
 
   .about-footer__repo-card {
-    justify-items: stretch;
-  }
-
-  .repository-button {
-    width: 100%;
+    justify-items: center;
   }
 }
 </style>
