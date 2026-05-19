@@ -279,6 +279,22 @@ const isWithinSpanBounds = (
   return nowMs >= firstStart && nowMs <= lastEnd;
 };
 
+const didSpanEndToday = (
+  now: Date,
+  spans: readonly (readonly [Date, Date])[],
+) => {
+  if (spans.length <= 0) return false;
+
+  const lastEnd = spans[spans.length - 1][1];
+
+  return (
+    now > lastEnd &&
+    now.getFullYear() === lastEnd.getFullYear() &&
+    now.getMonth() === lastEnd.getMonth() &&
+    now.getDate() === lastEnd.getDate()
+  );
+};
+
 const resolveWorkSpans = (now: Date, config: SalaryConfig) => {
   const previousSpans = createWorkSpans(previousDate(now), config);
 
@@ -286,7 +302,16 @@ const resolveWorkSpans = (now: Date, config: SalaryConfig) => {
     return previousSpans;
   }
 
-  return createWorkSpans(now, config);
+  const currentSpans = createWorkSpans(now, config);
+  if (currentSpans.length > 0) {
+    return currentSpans;
+  }
+
+  if (didSpanEndToday(now, previousSpans)) {
+    return previousSpans;
+  }
+
+  return currentSpans;
 };
 
 function getDailySalary(config: SalaryConfig, totalWorkMs: number) {

@@ -13,31 +13,26 @@ describe("settings panel", () => {
     expect(versionLine).not.toContain(prefixedVersionTemplate);
   });
 
-  it("organizes settings into focused cards instead of dense major groups", () => {
+  it("returns settings cards to the v0.5.10 structure", () => {
     [
       "薪资模式",
       "薪资",
       "每周工作日",
       "工作时间",
-      "休息扣除",
-      "显示",
-      "关于",
+      "午休",
+      "金额变换",
     ].forEach((title) => {
-      expect(settingsPanelSource).toContain(`data-settings-card="${title}"`);
+      expect(settingsPanelSource).toContain(`<strong>${title}</strong>`);
     });
 
-    expect(settingsPanelSource).not.toContain('data-settings-group="作息"');
+    expect(settingsPanelSource).not.toContain("data-settings-card");
+    expect(settingsPanelSource).not.toContain("<strong>显示</strong>");
+    expect(settingsPanelSource).not.toContain("<strong>休息扣除</strong>");
+    expect(settingsPanelSource).not.toContain("themeMode");
+    expect(settingsPanelSource).not.toContain("update:themeMode");
   });
 
-  it("keeps display settings limited to theme and amount animation", () => {
-    expect(settingsPanelSource).toContain("themeMode");
-    expect(settingsPanelSource).toContain("update:themeMode");
-    expect(settingsPanelSource).toContain("amountMode");
-    expect(settingsPanelSource).not.toContain("miniMode");
-    expect(settingsPanelSource).not.toContain("startInMiniMode");
-  });
-
-  it("returns the salary input section to the v0.5.10 card behavior", () => {
+  it("keeps salary inputs exactly on the v0.5.10 card behavior", () => {
     expect(settingsPanelSource).toContain("const salaryAmountLabel = computed");
     expect(settingsPanelSource).toContain("<span>{{ salaryAmountLabel }}</span>");
     expect(settingsPanelSource).toContain(
@@ -51,32 +46,24 @@ describe("settings panel", () => {
     );
     expect(settingsPanelSource).not.toContain("field-grid--salary");
     expect(settingsPanelSource).not.toContain("field-grid--single");
-
-    const salaryModeCardStart = settingsPanelSource.indexOf(
-      'data-settings-card="薪资模式"',
-    );
-    const salaryCardStart = settingsPanelSource.indexOf(
-      'data-settings-card="薪资"',
-    );
-
-    expect(salaryModeCardStart).toBeGreaterThan(-1);
-    expect(salaryCardStart).toBeGreaterThan(salaryModeCardStart);
   });
 
-  it("uses a stable rest deduction card without extra explanatory copy", () => {
-    expect(settingsPanelSource).toContain('data-settings-card="休息扣除"');
-    expect(settingsPanelSource).toContain("group-title--split");
+  it("keeps the v0.5.10 lunch card interaction", () => {
+    expect(settingsPanelSource).toContain("<strong>午休</strong>");
+    expect(settingsPanelSource).toContain("<span>剔除</span>");
     expect(settingsPanelSource).toContain(
       ':disabled="!config.enableLunchBreak"',
     );
-    expect(settingsPanelSource).not.toContain("break-row");
+    expect(settingsPanelSource).not.toContain("休息扣除");
     expect(settingsPanelSource).not.toContain("从工作时长中扣除固定休息段");
   });
 
-  it("places copyright under the GitHub repository entry", () => {
+  it("keeps modified attribution footer but removes the about heading copy", () => {
     expect(settingsPanelSource).toContain("about-footer__repo-card");
     expect(settingsPanelSource).toContain("about-footer__copyright");
     expect(settingsPanelSource).toContain("about-footer__copyright--centered");
+    expect(settingsPanelSource).not.toContain("<strong>关于</strong>");
+    expect(settingsPanelSource).not.toContain('data-settings-card="关于"');
     expect(settingsPanelSource.indexOf("repository-button")).toBeLessThan(
       settingsPanelSource.indexOf("about-footer__copyright"),
     );

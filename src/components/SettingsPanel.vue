@@ -18,13 +18,11 @@ const props = defineProps<{
   config: SalaryConfig;
   firstIssue: string;
   hasIssue: (field: SalaryConfigIssue["field"]) => boolean;
-  themeMode: "light" | "dark";
 }>();
 
 const emit = defineEmits<{
   "update:amountMode": [mode: "rolling" | "plain"];
   "update:config": [config: SalaryConfig];
-  "update:themeMode": [mode: "light" | "dark"];
 }>();
 
 const salaryTypeOptions: Array<{ value: SalaryType; label: string }> = [
@@ -101,7 +99,7 @@ const openRepository = async () => {
       {{ firstIssue }}
     </div>
 
-    <section class="settings-group" data-settings-card="薪资模式">
+    <section class="settings-group">
       <div class="group-title">
         <strong>薪资模式</strong>
       </div>
@@ -122,7 +120,7 @@ const openRepository = async () => {
       </div>
     </section>
 
-    <section class="settings-group" data-settings-card="薪资">
+    <section class="settings-group">
       <div class="group-title">
         <strong>薪资</strong>
       </div>
@@ -198,7 +196,7 @@ const openRepository = async () => {
       </div>
     </section>
 
-    <section class="settings-group" data-settings-card="每周工作日">
+    <section class="settings-group">
       <div class="group-title">
         <strong>每周工作日</strong>
       </div>
@@ -215,7 +213,7 @@ const openRepository = async () => {
       </div>
     </section>
 
-    <section class="settings-group" data-settings-card="工作时间">
+    <section class="settings-group">
       <div class="group-title">
         <strong>工作时间</strong>
       </div>
@@ -243,16 +241,16 @@ const openRepository = async () => {
       </div>
     </section>
 
-    <section class="settings-group" data-settings-card="休息扣除">
+    <section class="settings-group">
       <div class="group-title group-title--split">
-        <strong>休息扣除</strong>
+        <strong>午休</strong>
         <label class="switch-row">
           <input
             :checked="config.enableLunchBreak"
             type="checkbox"
             @change="updateConfig('enableLunchBreak', readChecked($event))"
           />
-          <span>{{ config.enableLunchBreak ? "扣除" : "不扣除" }}</span>
+          <span>剔除</span>
         </label>
       </div>
       <div class="field-grid">
@@ -281,79 +279,52 @@ const openRepository = async () => {
       </div>
     </section>
 
-    <section class="settings-group" data-settings-card="显示">
+    <section class="settings-group">
       <div class="group-title">
-        <strong>显示</strong>
+        <strong>金额变换</strong>
       </div>
-      <div class="control-stack">
-        <span class="control-label">主题</span>
-        <div class="segmented-control" aria-label="主题">
-          <button
-            :class="{ 'is-active': themeMode === 'light' }"
-            type="button"
-            @click="emit('update:themeMode', 'light')"
-          >
-            浅色
-          </button>
-          <button
-            :class="{ 'is-active': themeMode === 'dark' }"
-            type="button"
-            @click="emit('update:themeMode', 'dark')"
-          >
-            深色
-          </button>
-        </div>
-      </div>
-      <div class="control-stack">
-        <span class="control-label">金额动效</span>
-        <div class="segmented-control" aria-label="金额数字变化方式">
-          <button
-            :class="{ 'is-active': amountMode === 'rolling' }"
-            type="button"
-            @click="emit('update:amountMode', 'rolling')"
-          >
-            滚动变换
-          </button>
-          <button
-            :class="{ 'is-active': amountMode === 'plain' }"
-            type="button"
-            @click="emit('update:amountMode', 'plain')"
-          >
-            直接变换
-          </button>
-        </div>
+      <div class="segmented-control" aria-label="金额数字变化方式">
+        <button
+          :class="{ 'is-active': amountMode === 'rolling' }"
+          type="button"
+          @click="emit('update:amountMode', 'rolling')"
+        >
+          滚动变换
+        </button>
+        <button
+          :class="{ 'is-active': amountMode === 'plain' }"
+          type="button"
+          @click="emit('update:amountMode', 'plain')"
+        >
+          直接变换
+        </button>
       </div>
     </section>
 
-    <section class="settings-group settings-group--about" data-settings-card="关于">
-      <div class="group-title">
-        <strong>关于</strong>
+    <footer class="about-footer" aria-label="软件归属">
+      <div class="about-footer__identity">
+        <strong>{{ appName }} {{ appEnglishName }}</strong>
+        <span>版本：{{ appVersion }}</span>
+        <span>作者：{{ appAuthor }}</span>
       </div>
-      <footer class="about-footer" aria-label="软件归属">
-        <div class="about-footer__identity">
-          <strong>{{ appName }} {{ appEnglishName }}</strong>
-          <span>版本：{{ appVersion }}</span>
-          <span>作者：{{ appAuthor }}</span>
-        </div>
-        <div class="about-footer__repo-card">
-          <button
-            class="repository-button"
-            aria-label="打开 GitHub 仓库"
-            :disabled="isOpeningRepository"
-            :title="`打开 GitHub 仓库：${repositoryUrl}`"
-            type="button"
-            @click="openRepository"
-          >
-            <Github :size="18" stroke-width="2.2" />
-            <span>GitHub</span>
-          </button>
-          <span class="about-footer__copyright about-footer__copyright--centered">{{ appCopyright }}</span>
-        </div>
-        <p v-if="repositoryError" class="about-footer__error">
-          {{ repositoryError }}
-        </p>
-      </footer>
-    </section>
+      <div class="about-footer__repo-card">
+        <button
+          class="repository-button"
+          aria-label="打开 GitHub 仓库"
+          :disabled="isOpeningRepository"
+          :title="`打开 GitHub 仓库：${repositoryUrl}`"
+          type="button"
+          @click="openRepository"
+        >
+          <Github :size="18" stroke-width="2.2" />
+          <span>GitHub</span>
+        </button>
+        <span class="about-footer__copyright about-footer__copyright--centered">{{ appCopyright }}</span>
+      </div>
+      <p v-if="repositoryError" class="about-footer__error">
+        {{ repositoryError }}
+      </p>
+    </footer>
   </section>
 </template>
 
@@ -385,10 +356,6 @@ const openRepository = async () => {
   border-radius: var(--ui-radius-md, 12px);
   background: var(--panel);
   padding: var(--ui-pad-sm, 12px);
-}
-
-.settings-group--about {
-  gap: var(--ui-gap-xs, 8px);
 }
 
 .group-title {
@@ -594,10 +561,15 @@ const openRepository = async () => {
 }
 
 .about-footer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: var(--ui-gap-sm, 12px);
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius-md, 12px);
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+  padding: var(--ui-pad-sm, 12px);
 }
 
 .about-footer__identity {
@@ -675,7 +647,7 @@ const openRepository = async () => {
 }
 
 .about-footer__error {
-  grid-column: 1 / -1;
+  flex: 1 0 100%;
   margin: 0;
   color: var(--danger);
   font-size: var(--ui-font-xs, 12px);
@@ -689,8 +661,7 @@ const openRepository = async () => {
   }
 
   .about-footer {
-    grid-template-columns: 1fr;
-    justify-items: center;
+    justify-content: center;
   }
 
   .about-footer__repo-card {
