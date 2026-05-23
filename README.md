@@ -7,18 +7,6 @@
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri%202-24C8DB)](https://tauri.app/)
 [![Privacy](https://img.shields.io/badge/privacy-local%20first-18181B)](#隐私声明作者与许可)
 
-<h3 align="center">打工人的桌面实时工资看板</h3>
-
-<p align="center">
-  <strong>让每一秒的收入跳动都看得见。</strong>
-</p>
-
-<p align="center">
-  <a href="https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance.exe"><strong>下载 Windows 便携版</strong></a>
-  ·
-  <a href="https://github.com/MasterBao66/PayDance/releases/latest">查看最新正式版</a>
-</p>
-
 ## 产品简介与核心体验
 
 薪跳 PayDance 是一款面向 Windows 11 的桌面实时薪资仪表盘。你只需要配置薪资模式、工作日、上下班时间和午休规则，它就会把“今天已经挣了多少钱”实时放在桌面上，让收入随工作时间安静、清晰地增长。
