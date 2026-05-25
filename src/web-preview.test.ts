@@ -24,11 +24,11 @@ describe("PayDance Web Preview", () => {
 
   it("presents web preview as a bounded online experience", () => {
     expect(webPreviewSource).toContain("PayDance Web Preview");
-    expect(webPreviewSource).toContain("把今天挣到的钱，放在桌面上实时跳动。");
+    expect(webPreviewSource).toContain("看见每一秒的收入跳动。");
     expect(webPreviewSource).toContain("下载 Windows 版");
-    expect(webPreviewSource).toContain("在线体验");
+    expect(webPreviewSource).toContain("开始体验");
     expect(webPreviewSource).toContain(':show-desktop-features="false"');
-    expect(webPreviewSource).toContain("用于在线体验核心交互");
+    expect(webPreviewSource).toContain("只用于预览核心体验");
     expect(webPreviewSource).not.toContain("@tauri-apps");
   });
 
@@ -43,6 +43,11 @@ describe("PayDance Web Preview", () => {
       'base: mode === "web" ? "/PayDance/" : "./"',
     );
     expect(read(".github/workflows/web-preview.yml")).toContain("npm run build:web");
-    expect(read(".github/workflows/web-preview.yml")).toContain("actions/deploy-pages");
+    expect(read(".github/workflows/web-preview.yml")).toContain(
+      "actions/upload-pages-artifact@v5",
+    );
+    expect(read(".github/workflows/web-preview.yml")).toContain(
+      "actions/deploy-pages@v5",
+    );
   });
 });

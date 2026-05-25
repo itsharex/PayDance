@@ -217,12 +217,11 @@ onBeforeUnmount(() => {
   <main class="web-preview" :class="shellClass">
     <section class="web-preview__hero" aria-label="PayDance Web Preview">
       <div class="web-preview__copy">
-        <p class="web-preview__eyebrow">PayDance Web Preview</p>
-        <h1>把今天挣到的钱，放在桌面上实时跳动。</h1>
+        <p class="web-preview__eyebrow">薪跳 PayDance · Web Preview</p>
+        <h1>看见每一秒的收入跳动。</h1>
         <p class="web-preview__lead">
-          薪跳 PayDance
-          是一款属于打工人的桌面实时工资看板。先在网页里体验核心计算、首次配置、设置中心和迷你悬浮手感，再下载
-          Windows 版常驻桌面。
+          先在网页里体验核心看板、首次配置和迷你悬浮手感。完整托盘、置顶、开机自启与原生透明窗口，请下载
+          Windows 桌面版。
         </p>
 
         <nav class="web-preview__actions" aria-label="网页体验版操作">
@@ -233,7 +232,7 @@ onBeforeUnmount(() => {
             下载 Windows 版
             <ExternalLink :size="15" />
           </a>
-          <a class="web-preview__action" href="#paydance-preview">在线体验</a>
+          <a class="web-preview__action" href="#paydance-preview">开始体验</a>
           <a class="web-preview__action web-preview__action--quiet" :href="repositoryUrl">
             GitHub
             <ExternalLink :size="15" />
@@ -242,16 +241,16 @@ onBeforeUnmount(() => {
 
         <dl class="web-preview__proofs" aria-label="产品核心优势">
           <div>
+            <dt>实时入账</dt>
+            <dd>每一秒收入都能看见</dd>
+          </div>
+          <div>
             <dt>本地优先</dt>
-            <dd>无账号，无遥测，薪资数据不上传</dd>
+            <dd>无账号，无遥测，不上传薪资</dd>
           </div>
           <div>
-            <dt>桌面常驻</dt>
-            <dd>主窗口完整看板，迷你窗口角落显示</dd>
-          </div>
-          <div>
-            <dt>真实作息</dt>
-            <dd>支持午休剔除、工作日和跨零点夜班</dd>
+            <dt>常驻不扰</dt>
+            <dd>主窗口完整，迷你窗口克制</dd>
           </div>
         </dl>
       </div>
@@ -357,9 +356,8 @@ onBeforeUnmount(() => {
         </div>
 
         <p class="web-preview__notice">
-          Web Preview
-          用于在线体验核心交互；系统托盘、窗口置顶、开机自启动和原生透明窗口请使用 Windows
-          桌面版。
+          Web Preview 只用于预览核心体验；系统托盘、窗口置顶、开机自启和原生透明窗口请使用
+          Windows 桌面版。
         </p>
       </div>
     </section>
@@ -372,15 +370,21 @@ onBeforeUnmount(() => {
   --web-surface: color-mix(in srgb, var(--panel) 88%, transparent);
   --web-surface-strong: color-mix(in srgb, var(--panel) 96%, var(--text) 4%);
   --web-border: color-mix(in srgb, var(--line) 82%, transparent);
-  --web-shadow: 0 26px 80px rgb(15 23 42 / 0.14);
+  --web-shadow: 0 28px 86px rgb(15 23 42 / 0.14);
   min-height: 100%;
   overflow: auto;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--web-page-bg) 90%, white 10%) 0%,
-    var(--web-page-bg) 46%,
-    color-mix(in srgb, var(--panel) 86%, var(--income-accent) 14%) 100%
-  );
+  background:
+    radial-gradient(
+      circle at 82% 18%,
+      color-mix(in srgb, var(--income-accent) 12%, transparent) 0,
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--web-page-bg) 92%, white 8%) 0%,
+      var(--web-page-bg) 48%,
+      color-mix(in srgb, var(--panel) 88%, var(--income-accent) 12%) 100%
+    );
   color: var(--text);
   padding: clamp(20px, 4vw, 48px);
 }
@@ -396,17 +400,17 @@ onBeforeUnmount(() => {
 .web-preview__hero {
   display: grid;
   min-height: calc(100vh - clamp(40px, 8vw, 96px));
-  max-width: 1120px;
+  max-width: 1160px;
   align-items: center;
-  grid-template-columns: minmax(320px, 0.92fr) minmax(480px, 1fr);
-  gap: clamp(34px, 6vw, 76px);
+  grid-template-columns: minmax(310px, 0.86fr) minmax(480px, 1fr);
+  gap: clamp(40px, 7vw, 88px);
   margin: 0 auto;
 }
 
 .web-preview__copy {
   display: grid;
   align-content: center;
-  gap: clamp(18px, 3vw, 28px);
+  gap: clamp(16px, 2.8vw, 26px);
 }
 
 .web-preview__eyebrow {
@@ -419,10 +423,10 @@ onBeforeUnmount(() => {
 }
 
 .web-preview h1 {
-  max-width: 9.6em;
+  max-width: 8.3em;
   margin: 0;
   color: var(--text);
-  font-size: clamp(42px, 6vw, 68px);
+  font-size: clamp(44px, 6.2vw, 72px);
   font-weight: 840;
   line-height: 1.02;
   letter-spacing: 0;
@@ -438,7 +442,7 @@ onBeforeUnmount(() => {
 }
 
 .web-preview__lead {
-  max-width: 560px;
+  max-width: 530px;
   margin: 0;
 }
 
@@ -489,10 +493,10 @@ onBeforeUnmount(() => {
 
 .web-preview__proofs {
   display: grid;
-  max-width: 560px;
+  max-width: 530px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin: 4px 0 0;
+  gap: 12px;
+  margin: 2px 0 0;
 }
 
 .web-preview__proofs div {
@@ -524,13 +528,13 @@ onBeforeUnmount(() => {
 
 .web-preview__showcase::before {
   position: absolute;
-  inset: 10% 0 auto;
-  width: min(440px, 70%);
-  height: 180px;
+  inset: 12% 0 auto;
+  width: min(420px, 66%);
+  height: 160px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--income-accent) 12%, transparent);
+  background: color-mix(in srgb, var(--income-accent) 9%, transparent);
   content: "";
-  filter: blur(38px);
+  filter: blur(42px);
   pointer-events: none;
 }
 
@@ -557,6 +561,7 @@ onBeforeUnmount(() => {
   z-index: 1;
   width: min(100%, 480px);
   height: 460px;
+  border-radius: 28px;
   box-shadow: var(--web-shadow);
 }
 
