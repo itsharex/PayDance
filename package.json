@@ -1,7 +1,7 @@
 {
   "name": "pay-dance",
   "private": true,
-  "version": "0.8.5",
+  "version": "0.8.6",
   "author": "Mr.Baober",
   "repository": "github:MasterBao66/PayDance",
   "type": "module",
@@ -39,8 +39,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@fontsource/noto-sans-sc": "^5.2.9",
-    "@fontsource/noto-serif-sc": "^5.2.9",
     "@tailwindcss/vite": "^4.3.0",
     "@tauri-apps/cli": "^2.11.2",
     "@types/node": "^25.9.1",
