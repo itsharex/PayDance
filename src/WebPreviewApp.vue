@@ -131,7 +131,6 @@ const miniStyle = computed(() => ({
   width: `${miniSize.value.width}px`,
 }));
 const miniLayerStyle = computed(() => ({
-  "--mini-opacity-percent": `${miniOpacityPercent.value}%`,
   "--mini-stage-height": `${miniStageHeight}px`,
   "--mini-stage-width": `${getMiniStageWidth()}px`,
 }));
@@ -392,18 +391,19 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;600;700;800;900&family=Noto+Serif+SC:wght@700;900&display=swap");
-
 .web-preview {
-  --brand-logo-size: 58px;
-  --brand-name-size: 26px;
+  --brand-logo-size: 62px;
+  --brand-name-size: 28px;
   --web-font-action:
-    "Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+    "MiSans", "HarmonyOS Sans SC", "Microsoft YaHei UI", "PingFang SC", system-ui,
+    sans-serif;
   --web-font-display:
-    "Noto Serif SC", "Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", serif;
+    "MiSans Demibold", "HarmonyOS Sans SC", "Microsoft YaHei UI", "PingFang SC",
+    system-ui, sans-serif;
   --web-font-ui:
-    "Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
-  --web-max-width: 1160px;
+    "MiSans", "HarmonyOS Sans SC", "Microsoft YaHei UI", "PingFang SC", system-ui,
+    sans-serif;
+  --web-max-width: 1120px;
   --web-page-bg: rgb(247 247 245);
   --web-stage-glow: rgb(217 119 6 / 0.1);
   --web-stage-panel: rgb(255 255 255);
@@ -479,31 +479,28 @@ onBeforeUnmount(() => {
   height: var(--brand-logo-size);
   overflow: hidden;
   place-items: center;
-  border-radius: 15px;
-  box-shadow: 0 18px 42px rgb(24 24 27 / 0.12);
+  border-radius: 16px;
+  clip-path: inset(7% round 15px);
+  box-shadow: 0 18px 42px rgb(24 24 27 / 0.1);
 }
 
 .web-preview__brand img {
   width: var(--brand-logo-size);
   height: var(--brand-logo-size);
-  transform: scale(1.16);
+  transform: scale(1.24);
 }
 
 .web-preview__version {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--muted);
-  font-family: var(--web-font-ui);
-}
-
-.web-preview__version::before {
-  width: 7px;
-  height: 7px;
+  gap: 9px;
+  border: 1px solid var(--web-border);
   border-radius: 999px;
-  background: var(--income-accent);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--income-accent) 42%, transparent);
-  content: "";
+  background: color-mix(in srgb, var(--web-surface) 86%, transparent);
+  color: var(--text);
+  font-family: var(--web-font-ui);
+  padding: 9px 14px;
+  box-shadow: 0 16px 38px rgb(24 24 27 / 0.08);
 }
 
 .web-preview__version span {
@@ -516,7 +513,7 @@ onBeforeUnmount(() => {
 
 .web-preview__version strong {
   color: var(--text);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 820;
 }
 
@@ -525,8 +522,9 @@ onBeforeUnmount(() => {
   width: min(100%, var(--web-max-width));
   flex: 1;
   align-items: center;
-  grid-template-columns: minmax(390px, 0.92fr) minmax(480px, 520px);
-  gap: clamp(22px, 3vw, 42px);
+  grid-template-columns: minmax(410px, 500px) minmax(470px, 500px);
+  justify-content: center;
+  gap: clamp(16px, 2vw, 28px);
   margin: 0 auto;
   padding: clamp(34px, 6vh, 70px) 0 clamp(28px, 5vh, 56px);
 }
@@ -540,8 +538,8 @@ onBeforeUnmount(() => {
 
 .web-preview h1 {
   display: grid;
-  width: min(100%, 640px);
-  gap: clamp(14px, 1.3vw, 21px);
+  width: min(100%, 590px);
+  gap: clamp(12px, 1.1vw, 18px);
   margin: 0;
   color: var(--text);
   font-family: var(--web-font-display);
@@ -551,15 +549,15 @@ onBeforeUnmount(() => {
 }
 
 .web-preview__headline-main {
-  font-size: clamp(38px, 4vw, 62px);
-  font-weight: 760;
+  font-size: clamp(42px, 4.1vw, 64px);
+  font-weight: 800;
   white-space: nowrap;
 }
 
 .web-preview__headline-accent {
   color: var(--income-accent);
-  font-size: clamp(58px, 6vw, 92px);
-  font-weight: 880;
+  font-size: clamp(62px, 6.1vw, 94px);
+  font-weight: 900;
   white-space: nowrap;
 }
 
@@ -617,7 +615,7 @@ onBeforeUnmount(() => {
 }
 
 .web-preview__action--quiet {
-  gap: 7px;
+  gap: 5px;
   background: color-mix(in srgb, var(--web-surface) 84%, transparent);
   color: var(--muted);
 }
@@ -713,8 +711,6 @@ onBeforeUnmount(() => {
 
 .web-preview__mini-layer {
   --mini-preview-corner: 14px;
-  --mini-stage-contrast: rgb(226 227 230);
-  --mini-stage-merge: rgb(255 255 255);
   position: relative;
   z-index: 1;
   width: min(100%, var(--mini-stage-width));
@@ -722,18 +718,17 @@ onBeforeUnmount(() => {
   overflow: visible;
   border: 1px solid var(--web-border);
   border-radius: 28px;
-  background: color-mix(
-    in srgb,
-    var(--mini-stage-contrast) var(--mini-opacity-percent),
-    var(--mini-stage-merge)
-  );
+  background:
+    radial-gradient(circle at 50% 40%, rgb(255 255 255 / 0.62), transparent 58%),
+    linear-gradient(145deg, rgb(229 230 233), rgb(214 216 221));
   box-shadow: 0 24px 64px rgb(24 24 27 / 0.14);
   backdrop-filter: blur(18px);
 }
 
 .theme-dark.web-preview .web-preview__mini-layer {
-  --mini-stage-contrast: rgb(42 43 48);
-  --mini-stage-merge: rgb(0 0 0);
+  background:
+    radial-gradient(circle at 50% 42%, rgb(255 255 255 / 0.09), transparent 58%),
+    linear-gradient(145deg, rgb(41 42 48), rgb(29 30 35));
   box-shadow: 0 26px 72px rgb(0 0 0 / 0.44);
 }
 

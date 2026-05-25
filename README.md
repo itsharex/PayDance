@@ -1,22 +1,24 @@
 # 薪跳 PayDance
 
 <p align="center">
-  <font size="6"><strong>打工人的桌面实时工资看板</strong></font><br>
-  <font size="4">把今天已经挣到的钱，实时放在桌面上</font>
+  <img src="src-tauri/icons/icon.png" alt="薪跳 PayDance" width="84">
 </p>
 
 <p align="center">
-  <a href="https://masterbao66.github.io/PayDance/"><strong>在线体验</strong></a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance.exe"><strong>下载 Windows 便携版</strong></a>
+  <strong><font size="7">打工人的桌面实时工资看板</font></strong><br>
+  <font size="5">看见每一秒的收入跳动</font>
 </p>
 
 <p align="center">
-  <sub>在线体验用于快速了解核心界面与配置流程；完整桌面体验请下载 Windows 版。</sub>
+  <a href="https://masterbao66.github.io/PayDance/"><img src="https://img.shields.io/badge/在线体验-打开网页端-18181B?style=for-the-badge" alt="在线体验"></a>
+  <a href="https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance.exe"><img src="https://img.shields.io/badge/下载-Windows%20便携版-EA8A00?style=for-the-badge" alt="下载 Windows 便携版"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/MasterBao66/PayDance/releases/latest"><img src="https://img.shields.io/github/v/release/MasterBao66/PayDance?label=latest" alt="Latest Release"></a>
+  <sub>网页端用于快速了解界面与配置流程；完整桌面能力请使用 Windows 版。</sub>
+</p>
+
+<p align="center">
   <a href="https://github.com/MasterBao66/PayDance/actions/workflows/ci.yml"><img src="https://github.com/MasterBao66/PayDance/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/platform-Windows%2011-0078D4" alt="Windows 11">
   <img src="https://img.shields.io/badge/built%20with-Tauri%202-24C8DB" alt="Built with Tauri 2">
