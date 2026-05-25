@@ -24,8 +24,11 @@ describe("PayDance Web Preview", () => {
 
   it("presents web preview as a bounded online experience", () => {
     expect(webPreviewSource).toContain("PayDance Web Preview");
-    expect(webPreviewSource).toContain("每一秒，");
-    expect(webPreviewSource).toContain("都在入账。");
+    expect(webPreviewSource).toContain("看见每一秒的");
+    expect(webPreviewSource).toContain('class="web-preview__headline-accent"');
+    expect(webPreviewSource).toContain("收入跳动");
+    expect(webPreviewSource).toContain("把今天已经挣到的钱");
+    expect(webPreviewSource).toContain("实时放在桌面上");
     expect(webPreviewSource).toContain("下载 Windows 版");
     expect(webPreviewSource).not.toContain("开始体验");
     expect(webPreviewSource).toContain(':show-desktop-features="false"');
@@ -38,8 +41,25 @@ describe("PayDance Web Preview", () => {
     expect(webPreviewSource).toContain("appVersion");
     expect(webPreviewSource).toContain('class="web-preview__brand"');
     expect(webPreviewSource).toContain('class="web-preview__version"');
-    expect(webPreviewSource).toContain("--brand-logo-size: 48px");
-    expect(webPreviewSource).toContain("--brand-name-size: 22px");
+    expect(webPreviewSource).toContain("--brand-logo-size: 58px");
+    expect(webPreviewSource).toContain("--brand-name-size: 26px");
+  });
+
+  it("keeps storefront actions stable and recognizable on hover", () => {
+    expect(webPreviewSource).not.toContain("ExternalLink");
+    expect(webPreviewSource).toContain("github-mark");
+    expect(webPreviewSource).toContain("Download");
+    expect(webPreviewSource).not.toContain("translateY(-1px)");
+    expect(webPreviewSource).toContain(".web-preview__action--primary:hover");
+    expect(webPreviewSource).toContain(".web-preview__action--quiet:hover");
+  });
+
+  it("uses compact feature tags with short descriptions", () => {
+    expect(webPreviewSource).toContain('class="web-preview__chips"');
+    expect(webPreviewSource).toContain('class="web-preview__chip"');
+    expect(webPreviewSource).toContain("金额随工作时间增长");
+    expect(webPreviewSource).toContain("角落常驻，少打扰");
+    expect(webPreviewSource).toContain("无账号，无遥测");
   });
 
   it("removes auxiliary text around the software preview", () => {
@@ -51,9 +71,7 @@ describe("PayDance Web Preview", () => {
   it("adds a centered author attribution footer", () => {
     expect(webPreviewSource).toContain("appCopyright");
     expect(webPreviewSource).toContain('class="web-preview__footer"');
-    expect(webPreviewSource).toContain(
-      "{{ appCopyright }} · {{ appName }} {{ appEnglishName }}",
-    );
+    expect(webPreviewSource).toContain('class="web-preview__footer-mark"');
   });
 
   it("uses a compact preview stage for mini floating mode", () => {

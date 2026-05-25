@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { ExternalLink } from "@lucide/vue";
+import { Download } from "@lucide/vue";
 import productLogoUrl from "../src-tauri/icons/icon.png";
 import {
   appCopyright,
@@ -239,11 +239,12 @@ onBeforeUnmount(() => {
     <section class="web-preview__hero" aria-label="PayDance Web Preview">
       <div class="web-preview__copy">
         <h1>
-          每一秒，<br />
-          都在入账。
+          看见每一秒的<br />
+          <span class="web-preview__headline-accent">收入跳动</span>
         </h1>
         <p class="web-preview__lead">
-          把今天挣到的钱放在桌面上实时跳动。配置一次，打开就能看。
+          把今天已经挣到的钱<br />
+          实时放在桌面上
         </p>
 
         <nav class="web-preview__actions" aria-label="网页端操作">
@@ -252,19 +253,34 @@ onBeforeUnmount(() => {
             href="https://github.com/MasterBao66/PayDance/releases/latest"
           >
             下载 Windows 版
-            <ExternalLink :size="15" />
+            <Download :size="16" />
           </a>
           <a class="web-preview__action web-preview__action--quiet" :href="repositoryUrl">
+            <svg class="github-mark" aria-hidden="true" viewBox="0 0 24 24">
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M12 2C6.48 2 2 6.59 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49 0-.24-.01-.89-.01-1.75-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.38 9.38 0 0 1 12 6.98c.85 0 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.24 10.24 0 0 0 22 12.25C22 6.59 17.52 2 12 2Z"
+              />
+            </svg>
             GitHub
-            <ExternalLink :size="15" />
           </a>
         </nav>
 
-        <ul class="web-preview__pills" aria-label="产品核心优势">
-          <li>实时入账</li>
-          <li>迷你悬浮</li>
-          <li>本地保存</li>
-        </ul>
+        <dl class="web-preview__chips" aria-label="产品核心优势">
+          <div class="web-preview__chip">
+            <dt>实时入账</dt>
+            <dd>金额随工作时间增长</dd>
+          </div>
+          <div class="web-preview__chip">
+            <dt>迷你悬浮</dt>
+            <dd>角落常驻，少打扰</dd>
+          </div>
+          <div class="web-preview__chip">
+            <dt>本地保存</dt>
+            <dd>无账号，无遥测</dd>
+          </div>
+        </dl>
       </div>
 
       <div id="paydance-preview" class="web-preview__showcase">
@@ -365,16 +381,18 @@ onBeforeUnmount(() => {
     </section>
 
     <footer class="web-preview__footer" aria-label="作者归属">
-      {{ appCopyright }} · {{ appName }} {{ appEnglishName }}
+      <span>{{ appCopyright }}</span>
+      <span class="web-preview__footer-mark" aria-hidden="true"></span>
+      <span>{{ appName }} {{ appEnglishName }}</span>
     </footer>
   </main>
 </template>
 
 <style scoped>
 .web-preview {
-  --brand-logo-size: 48px;
-  --brand-name-size: 22px;
-  --web-max-width: 1280px;
+  --brand-logo-size: 58px;
+  --brand-name-size: 26px;
+  --web-max-width: 1210px;
   --web-page-bg: rgb(247 247 245);
   --web-surface: rgb(255 255 255 / 0.8);
   --web-surface-strong: rgb(255 255 255 / 0.96);
@@ -429,7 +447,7 @@ onBeforeUnmount(() => {
 .web-preview__brand {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   color: var(--text);
   font-size: var(--brand-name-size);
   font-weight: 820;
@@ -439,17 +457,17 @@ onBeforeUnmount(() => {
 .web-preview__brand img {
   width: var(--brand-logo-size);
   height: var(--brand-logo-size);
-  border-radius: 13px;
-  box-shadow: 0 16px 36px rgb(24 24 27 / 0.13);
+  border-radius: 15px;
+  box-shadow: 0 18px 42px rgb(24 24 27 / 0.14);
 }
 
 .web-preview__version {
   border: 1px solid var(--web-border);
   border-radius: 999px;
   background: var(--web-surface);
-  padding: 10px 16px;
+  padding: 12px 18px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 760;
 }
 
@@ -458,8 +476,8 @@ onBeforeUnmount(() => {
   width: min(100%, var(--web-max-width));
   flex: 1;
   align-items: center;
-  grid-template-columns: minmax(360px, 0.9fr) minmax(480px, 520px);
-  gap: clamp(58px, 8vw, 116px);
+  grid-template-columns: minmax(390px, 0.92fr) minmax(480px, 520px);
+  gap: clamp(30px, 4.8vw, 68px);
   margin: 0 auto;
   padding: clamp(34px, 6vh, 70px) 0 clamp(28px, 5vh, 56px);
 }
@@ -471,22 +489,26 @@ onBeforeUnmount(() => {
 }
 
 .web-preview h1 {
-  max-width: 6.4em;
+  max-width: 7.6em;
   margin: 0;
   color: var(--text);
-  font-size: clamp(54px, 6.2vw, 96px);
+  font-size: clamp(56px, 6vw, 92px);
   font-weight: 850;
   line-height: 0.98;
   letter-spacing: 0;
+}
+
+.web-preview__headline-accent {
+  color: var(--income-accent);
 }
 
 .web-preview__lead {
   max-width: 430px;
   margin: 0;
   color: var(--muted);
-  font-size: clamp(16px, 1.35vw, 20px);
+  font-size: clamp(18px, 1.38vw, 21px);
   font-weight: 520;
-  line-height: 1.7;
+  line-height: 1.62;
 }
 
 .web-preview__actions {
@@ -498,29 +520,27 @@ onBeforeUnmount(() => {
 
 .web-preview__action {
   display: inline-flex;
-  height: 44px;
+  height: 50px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   border: 1px solid var(--web-border);
   border-radius: 999px;
   background: var(--web-surface);
-  padding: 0 18px;
+  padding: 0 22px;
   color: var(--text);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 760;
   text-decoration: none;
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
+    box-shadow 180ms ease,
+    color 180ms ease;
 }
 
 .web-preview__action:hover {
-  border-color: color-mix(in srgb, var(--income-accent) 46%, var(--web-border));
-  background: var(--web-surface-strong);
-  transform: translateY(-1px);
+  text-decoration: none;
 }
 
 .web-preview__action--primary {
@@ -530,28 +550,61 @@ onBeforeUnmount(() => {
   box-shadow: 0 14px 32px color-mix(in srgb, var(--income-accent) 28%, transparent);
 }
 
+.web-preview__action--primary:hover {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--income-accent) 90%, rgb(255 255 255) 10%);
+  color: rgb(24 24 27);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--income-accent) 30%, transparent);
+}
+
 .web-preview__action--quiet {
+  background: color-mix(in srgb, var(--web-surface) 84%, transparent);
   color: var(--muted);
 }
 
-.web-preview__pills {
-  display: flex;
-  max-width: 520px;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: -2px 0 0;
-  padding: 0;
-  list-style: none;
+.web-preview__action--quiet:hover {
+  border-color: color-mix(in srgb, var(--text) 18%, var(--web-border));
+  background: var(--web-surface-strong);
+  color: var(--text);
+  box-shadow: 0 12px 28px rgb(24 24 27 / 0.08);
 }
 
-.web-preview__pills li {
+.github-mark {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.web-preview__chips {
+  display: flex;
+  max-width: 600px;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 2px 0 0;
+}
+
+.web-preview__chip {
+  display: grid;
+  min-width: 146px;
+  gap: 4px;
   border: 1px solid var(--web-border);
-  border-radius: 999px;
+  border-radius: 16px;
   background: color-mix(in srgb, var(--web-surface) 86%, transparent);
+  padding: 13px 15px;
+}
+
+.web-preview__chips dt {
   color: var(--text);
+  font-size: 15px;
+  font-weight: 820;
+}
+
+.web-preview__chips dd {
+  margin: 0;
+  color: var(--muted);
   font-size: 13px;
-  font-weight: 760;
-  padding: 7px 12px;
+  font-weight: 520;
+  line-height: 1.45;
 }
 
 .web-preview__showcase {
@@ -645,14 +698,25 @@ onBeforeUnmount(() => {
 }
 
 .web-preview__footer {
+  display: flex;
   width: min(100%, var(--web-max-width));
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
   margin: 0 auto;
   border-top: 1px solid color-mix(in srgb, var(--web-border) 72%, transparent);
-  padding-top: clamp(14px, 2vw, 18px);
+  padding-top: clamp(18px, 2.2vw, 24px);
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 660;
+  font-size: 14px;
+  font-weight: 680;
   text-align: center;
+}
+
+.web-preview__footer-mark {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--income-accent) 74%, var(--muted));
 }
 
 @media (max-width: 980px) {
@@ -673,8 +737,8 @@ onBeforeUnmount(() => {
 
 @media (max-width: 560px) {
   .web-preview {
-    --brand-logo-size: 42px;
-    --brand-name-size: 19px;
+    --brand-logo-size: 46px;
+    --brand-name-size: 20px;
     padding: 18px;
   }
 
@@ -688,7 +752,7 @@ onBeforeUnmount(() => {
 
   .web-preview__version {
     padding: 9px 13px;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .web-preview__actions {
