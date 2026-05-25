@@ -239,13 +239,10 @@ onBeforeUnmount(() => {
     <section class="web-preview__hero" aria-label="PayDance Web Preview">
       <div class="web-preview__copy">
         <h1>
-          看见每一秒的<br />
+          <span class="web-preview__headline-main">看见每一秒的</span>
           <span class="web-preview__headline-accent">收入跳动</span>
         </h1>
-        <p class="web-preview__lead">
-          把今天已经挣到的钱<br />
-          实时放在桌面上
-        </p>
+        <p class="web-preview__lead">把今天已经挣到的钱实时放在桌面上</p>
 
         <nav class="web-preview__actions" aria-label="网页端操作">
           <a
@@ -269,15 +266,15 @@ onBeforeUnmount(() => {
 
         <dl class="web-preview__chips" aria-label="产品核心优势">
           <div class="web-preview__chip">
-            <dt>实时入账</dt>
-            <dd>金额随工作时间增长</dd>
+            <dt>秒秒入账</dt>
+            <dd>今日收入实时跳动</dd>
           </div>
           <div class="web-preview__chip">
-            <dt>迷你悬浮</dt>
-            <dd>角落常驻，少打扰</dd>
+            <dt>角落常驻</dt>
+            <dd>只看金额少打扰</dd>
           </div>
           <div class="web-preview__chip">
-            <dt>本地保存</dt>
+            <dt>隐私安心</dt>
             <dd>无账号，无遥测</dd>
           </div>
         </dl>
@@ -392,8 +389,20 @@ onBeforeUnmount(() => {
 .web-preview {
   --brand-logo-size: 58px;
   --brand-name-size: 26px;
+  --web-font-action:
+    "MiSans", "HarmonyOS Sans SC", "Microsoft YaHei UI", "PingFang SC", system-ui,
+    sans-serif;
+  --web-font-display:
+    "Alibaba PuHuiTi 3.0", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei UI", system-ui,
+    sans-serif;
+  --web-font-ui:
+    "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei UI", "PingFang SC", system-ui,
+    sans-serif;
   --web-max-width: 1210px;
   --web-page-bg: rgb(247 247 245);
+  --web-stage-glow: rgb(217 119 6 / 0.1);
+  --web-stage-panel: rgb(255 255 255);
+  --web-stage-ring: rgb(24 24 27 / 0.08);
   --web-surface: rgb(255 255 255 / 0.8);
   --web-surface-strong: rgb(255 255 255 / 0.96);
   --web-border: rgb(24 24 27 / 0.11);
@@ -415,22 +424,27 @@ onBeforeUnmount(() => {
       rgb(242 240 236) 100%
     );
   color: var(--text);
+  font-family: var(--web-font-ui);
   padding: clamp(24px, 3.6vw, 54px) clamp(24px, 5vw, 74px) clamp(18px, 3vw, 34px);
 }
 
 .theme-dark.web-preview {
   --web-page-bg: rgb(12 12 14);
+  --web-stage-glow: rgb(245 158 11 / 0.18);
+  --web-stage-panel: rgb(18 18 20);
+  --web-stage-ring: rgb(255 255 255 / 0.13);
   --web-surface: rgb(24 24 27 / 0.78);
   --web-surface-strong: rgb(34 34 38 / 0.94);
   --web-border: rgb(255 255 255 / 0.11);
   --web-shadow: 0 30px 88px rgb(0 0 0 / 0.38);
   background:
     radial-gradient(
-      circle at 78% 33%,
-      color-mix(in srgb, var(--income-accent) 8%, transparent) 0,
-      transparent 30%
+      circle at 78% 34%,
+      color-mix(in srgb, var(--income-accent) 13%, transparent) 0,
+      transparent 26%
     ),
-    linear-gradient(145deg, rgb(10 10 12) 0%, var(--web-page-bg) 62%, rgb(17 16 15) 100%);
+    radial-gradient(circle at 56% 46%, rgb(255 255 255 / 0.045) 0, transparent 34%),
+    linear-gradient(145deg, rgb(6 6 8) 0%, var(--web-page-bg) 58%, rgb(23 18 12) 100%);
 }
 
 .web-preview__topbar {
@@ -489,26 +503,36 @@ onBeforeUnmount(() => {
 }
 
 .web-preview h1 {
+  display: grid;
   max-width: 7.6em;
+  gap: clamp(11px, 1.15vw, 18px);
   margin: 0;
   color: var(--text);
-  font-size: clamp(56px, 6vw, 92px);
+  font-family: var(--web-font-display);
   font-weight: 850;
-  line-height: 0.98;
+  line-height: 0.94;
   letter-spacing: 0;
+}
+
+.web-preview__headline-main {
+  font-size: clamp(38px, 4vw, 62px);
+  font-weight: 760;
 }
 
 .web-preview__headline-accent {
   color: var(--income-accent);
+  font-size: clamp(58px, 6vw, 92px);
+  font-weight: 880;
 }
 
 .web-preview__lead {
-  max-width: 430px;
+  max-width: 560px;
   margin: 0;
   color: var(--muted);
   font-size: clamp(18px, 1.38vw, 21px);
   font-weight: 520;
-  line-height: 1.62;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 
 .web-preview__actions {
@@ -529,6 +553,7 @@ onBeforeUnmount(() => {
   background: var(--web-surface);
   padding: 0 22px;
   color: var(--text);
+  font-family: var(--web-font-action);
   font-size: 15px;
   font-weight: 760;
   text-decoration: none;
@@ -591,10 +616,12 @@ onBeforeUnmount(() => {
   border-radius: 16px;
   background: color-mix(in srgb, var(--web-surface) 86%, transparent);
   padding: 13px 15px;
+  text-align: center;
 }
 
 .web-preview__chips dt {
   color: var(--text);
+  font-family: var(--web-font-action);
   font-size: 15px;
   font-weight: 820;
 }
@@ -620,7 +647,7 @@ onBeforeUnmount(() => {
   width: min(410px, 70%);
   height: 150px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--income-accent) 8%, transparent);
+  background: var(--web-stage-glow);
   content: "";
   filter: blur(44px);
   pointer-events: none;
@@ -632,8 +659,16 @@ onBeforeUnmount(() => {
   width: min(100%, 480px);
   height: 460px;
   border-radius: 28px;
-  background: var(--panel);
+  border: 1px solid var(--web-stage-ring);
+  background: var(--web-stage-panel);
   box-shadow: var(--web-shadow);
+}
+
+.theme-dark.web-preview .web-preview__frame {
+  box-shadow:
+    0 36px 96px rgb(0 0 0 / 0.5),
+    0 0 0 1px rgb(255 255 255 / 0.02),
+    0 0 68px rgb(245 158 11 / 0.09);
 }
 
 .web-preview__frame :deep(.app-window) {
@@ -642,6 +677,7 @@ onBeforeUnmount(() => {
 }
 
 .web-preview__mini-layer {
+  --mini-preview-corner: 14px;
   position: relative;
   z-index: 1;
   width: min(100%, var(--mini-stage-width));
@@ -649,13 +685,7 @@ onBeforeUnmount(() => {
   overflow: visible;
   border: 1px solid var(--web-border);
   border-radius: 28px;
-  background:
-    radial-gradient(
-      circle at 50% 38%,
-      color-mix(in srgb, var(--income-accent) 8%, transparent),
-      transparent 58%
-    ),
-    color-mix(in srgb, var(--panel) 92%, transparent);
+  background: color-mix(in srgb, var(--web-stage-panel) 96%, transparent);
   box-shadow: 0 24px 64px rgb(24 24 27 / 0.14);
   backdrop-filter: blur(18px);
 }
@@ -663,6 +693,36 @@ onBeforeUnmount(() => {
 .web-preview__mini-window {
   position: absolute;
   z-index: 3;
+  overflow: hidden;
+  border-radius: var(--mini-preview-corner);
+  clip-path: inset(0 round var(--mini-preview-corner));
+}
+
+.web-preview__mini-window.theme-light {
+  --border: rgb(255 255 255 / 0.14);
+  --mini-panel-rgb: 18 18 20;
+  --text: rgb(250 250 250);
+}
+
+.web-preview__mini-window.theme-dark {
+  --border: rgb(24 24 27 / 0.12);
+  --mini-panel-rgb: 250 250 251;
+  --text: rgb(24 24 27);
+}
+
+.web-preview__mini-window :deep(.mini-window) {
+  overflow: hidden;
+  border-radius: var(--mini-preview-corner);
+  backdrop-filter: none;
+  clip-path: inset(0 round var(--mini-preview-corner));
+}
+
+.web-preview__mini-window :deep(.rolling-amount) {
+  color: var(--text);
+}
+
+.web-preview__mini-window :deep(.rolling-amount__currency) {
+  color: var(--text);
 }
 
 .web-mini-opacity {
@@ -707,6 +767,7 @@ onBeforeUnmount(() => {
   border-top: 1px solid color-mix(in srgb, var(--web-border) 72%, transparent);
   padding-top: clamp(18px, 2.2vw, 24px);
   color: var(--muted);
+  font-family: var(--web-font-ui);
   font-size: 14px;
   font-weight: 680;
   text-align: center;
@@ -757,6 +818,10 @@ onBeforeUnmount(() => {
 
   .web-preview__actions {
     justify-content: flex-start;
+  }
+
+  .web-preview__lead {
+    white-space: normal;
   }
 
   .web-preview__frame {
