@@ -105,6 +105,9 @@ jobs:
 
       - name: Prepare versioned release assets
         shell: pwsh
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_UPDATER_PRIVKEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_UPDATER_PRIVKEY_PASSWORD }}
         run: |
           $ErrorActionPreference = "Stop"
           $version = "${{ env.RELEASE_TAG }}".TrimStart("v")
@@ -117,13 +120,27 @@ jobs:
           $portableHash = (Get-FileHash $portablePath -Algorithm SHA256).Hash.ToLowerInvariant()
           "$portableHash  $portableName" | Out-File -Encoding ascii "$portablePath.sha256"
 
-          # Updater signature — must exist; fail if missing
+          # The updater signs the exact portable EXE advertised in latest.json.
+          if (-not $env:TAURI_SIGNING_PRIVATE_KEY) {
+            Write-Error "TAURI_UPDATER_PRIVKEY secret is missing."
+            exit 1
+          }
+
+          npx tauri signer sign "$portablePath"
+
           New-Item -ItemType Directory -Force -Path release-assets
-          $sigPath = "src-tauri/target/release/pay-dance.exe.sig"
+          $sigPath = "$portablePath.sig"
           if (-not (Test-Path $sigPath)) {
             Write-Error "Updater signature is missing: $sigPath"
             exit 1
           }
+
+          $sigContent = (Get-Content -LiteralPath $sigPath -Raw).Trim()
+          if (-not $sigContent) {
+            Write-Error "Updater signature is empty: $sigPath"
+            exit 1
+          }
+
           $sigDest = "release-assets/$portableName.sig"
           Copy-Item $sigPath $sigDest -Force
 
@@ -143,13 +160,13 @@ jobs:
             exit 1
           }
 
-          $notesArg = if (Test-Path release-notes.md) { "--notes-file release-notes.md" } else { "" }
+          $latestArgs = @("--version", $version, "--sig-file", $sigFile)
+          if (Test-Path release-notes.md) {
+            $latestArgs += @("--notes-file", "release-notes.md")
+          }
 
-          node scripts/release/build-latest-json.mjs `
-            --version $version `
-            --sig-file $sigFile `
-            $notesArg `
-          | Out-File -Encoding utf8 release-assets/latest.json
+          node scripts/release/build-latest-json.mjs @latestArgs |
+            Out-File -Encoding utf8 release-assets/latest.json
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
@@ -169,6 +186,7 @@ jobs:
           name: 薪跳 PayDance ${{ env.RELEASE_TAG }}
           tag_name: ${{ env.RELEASE_TAG }}
           body_path: release-notes.md
+          fail_on_unmatched_files: true
           files: |
             src-tauri/target/release/pay-dance-v*-windows-x64.exe
             src-tauri/target/release/pay-dance-v*-windows-x64.exe.sha256

@@ -98,8 +98,8 @@ jobs:
             echo "ERROR: latest.json missing platform download URL"
             exit 1
           fi
-          if ! jq -e '.platforms["windows-x86_64"].signature' latest.json > /dev/null; then
-            echo "ERROR: latest.json missing platform signature"
+          if ! jq -e '.platforms["windows-x86_64"].signature | type == "string" and length > 0' latest.json > /dev/null; then
+            echo "ERROR: latest.json missing non-empty platform signature"
             exit 1
           fi
           echo "latest.json structure valid."

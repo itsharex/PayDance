@@ -105,14 +105,25 @@ describe("repository metadata", () => {
 
   it("publishes versioned Windows release assets from the release workflow", () => {
     const releaseWorkflow = read(".github/workflows/release.yml");
+    const postReleaseSmoke = read(".github/workflows/post-release-smoke.yml");
 
     expect(releaseWorkflow).toContain("pay-dance-v$version-windows-x64.exe");
     expect(releaseWorkflow).toContain("portableName");
+    expect(releaseWorkflow).toContain("npx tauri signer sign");
     expect(releaseWorkflow).toContain("windows-x64.exe.sig");
+    expect(releaseWorkflow).toContain("TAURI_SIGNING_PRIVATE_KEY");
     expect(releaseWorkflow).toContain("pay-dance-v");
     expect(releaseWorkflow).toContain("windows-x64");
     expect(releaseWorkflow).not.toContain("pay-dance.exe.sha256");
     expect(releaseWorkflow).toContain("latest.json");
+    expect(releaseWorkflow).toContain("fail_on_unmatched_files: true");
+    expect(releaseWorkflow).not.toContain(
+      '$sigArg = if (Test-Path $sigFile) { "--sig-file $sigFile" } else { "" }',
+    );
+
+    expect(postReleaseSmoke).toContain(
+      'jq -e \'.platforms["windows-x86_64"].signature | type == "string" and length > 0\' latest.json',
+    );
   });
 
   it("keeps issue template version hints aligned with the current release line", () => {
