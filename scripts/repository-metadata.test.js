@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Mr.Baoboer
 // SPDX-License-Identifier: AGPL-3.0-only
 //
-// Additional terms: see /ADDITIONAL_TERMS.md
+// Additional terms: see /legal/ADDITIONAL_TERMS.md
 
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -20,6 +20,7 @@ const blockedAudienceTerms = [
 ];
 const macOsName = ["mac", "OS"].join("");
 const blockedDashboardTerm = String.fromCodePoint(0x4eea, 0x8868, 0x76d8);
+const legacyAdditionalTermsReference = `see /${["ADDITIONAL_TERMS", "md"].join(".")}`;
 const binaryExtensions = new Set([".ico", ".png", ".woff2"]);
 const textFiles = [
   ".github/ISSUE_TEMPLATE.md",
@@ -83,6 +84,23 @@ describe("repository metadata", () => {
       "The GNU Affero General Public License does not permit incorporating your program into proprietary programs",
     );
     expect(read(".gitattributes")).toContain("LICENSE text eol=lf");
+  });
+
+  it("keeps additional terms scoped to AGPL code materials under legal/", () => {
+    expect(read("legal/ADDITIONAL_TERMS.md")).toContain(
+      "适用于 Mr.Baoboer 拥有版权并以 AGPL-3.0-only 发布的 PayDance 软件代码材料。",
+    );
+    expect(read("legal/ADDITIONAL_TERMS.md")).not.toContain("代码与相关材料");
+    expect(read("legal/ADDITIONAL_TERMS_EN.md")).toContain(
+      "They apply to PayDance software code materials copyrighted by Mr.Baoboer and released under AGPL-3.0-only.",
+    );
+    expect(read("legal/ADDITIONAL_TERMS_EN.md")).not.toContain(
+      "code and related materials",
+    );
+
+    for (const file of trackedTextFiles()) {
+      expect(read(file), file).not.toContain(legacyAdditionalTermsReference);
+    }
   });
 
   it("publishes versioned Windows release assets from the release workflow", () => {

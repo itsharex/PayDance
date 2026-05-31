@@ -2,7 +2,7 @@
 
 > [中文版 →](ADDITIONAL_TERMS.md)
 
-These are additional terms permitted under Section 7 of the GNU Affero General Public License version 3. They apply to PayDance code and related materials copyrighted by Mr.Baoboer and released under AGPL-3.0-only.
+These are additional terms permitted under Section 7 of the GNU Affero General Public License version 3. They apply to PayDance software code materials copyrighted by Mr.Baoboer and released under AGPL-3.0-only.
 
 These terms do not prohibit use, study, modification, redistribution, or commercial use in compliance with AGPL-3.0-only. They preserve reasonable legal notices, require modification notices, prevent misrepresentation of origin, limit publicity use of the author's name, and reserve trademark rights.
 
@@ -12,7 +12,7 @@ Copyright (C) 2026 Mr.Baoboer.
 
 ## 1. Preservation of attribution and legal notices
 
-Redistributions of PayDance source code, object code, or modified versions containing PayDance material must preserve existing copyright notices, license notices, SPDX identifiers, and references to these additional terms.
+Redistributions of PayDance source code, object code, or modified versions containing PayDance software code materials must preserve existing copyright notices, license notices, SPDX identifiers, and references to these additional terms.
 
 If the version provides an About view, Legal Notices view, settings footer, help page, or similar reasonably accessible interface, that interface must preserve the following notice or an equivalent notice with the same clear meaning:
 

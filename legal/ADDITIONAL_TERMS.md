@@ -2,7 +2,7 @@
 
 > [English version →](ADDITIONAL_TERMS_EN.md)
 
-以下条款是 GNU Affero General Public License 第 3 版第 7 条允许的附加条款，适用于 Mr.Baoboer 拥有版权并以 AGPL-3.0-only 发布的 PayDance 代码与相关材料。
+以下条款是 GNU Affero General Public License 第 3 版第 7 条允许的附加条款，适用于 Mr.Baoboer 拥有版权并以 AGPL-3.0-only 发布的 PayDance 软件代码材料。
 
 这些条款不禁止使用、学习、修改、再分发或在遵守 AGPL-3.0-only 前提下进行商业使用；它们只用于保留合理法律声明、要求修改标注、防止来源误导、限制作者姓名宣传使用，并明确不授予商标权。
 
@@ -12,7 +12,7 @@
 
 ## 1. 署名与法律声明保留
 
-再分发 PayDance 源代码、目标代码或包含 PayDance 材料的修改版本时，必须保留项目中已有的版权声明、许可证声明、SPDX 标识和本附加条款引用。
+再分发 PayDance 源代码、目标代码或包含 PayDance 软件代码材料的修改版本时，必须保留项目中已有的版权声明、许可证声明、SPDX 标识和本附加条款引用。
 
 如果该版本提供"关于"、"法律声明"、设置页页脚、帮助页或类似的合理可访问界面，则该界面中必须保留以下声明，或含义等同且同样清晰的声明：
 
