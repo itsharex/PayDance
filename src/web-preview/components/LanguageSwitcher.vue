@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Mr.Baoboer // SPDX-License-Identifier: AGPL-3.0-only // //
-Additional terms: see /ADDITIONAL_TERMS.md
+Additional terms: see /legal/ADDITIONAL_TERMS.md
 
 <script setup lang="ts">
 import { useI18n } from "../../composables/useI18n";
@@ -25,19 +25,15 @@ const toggle = () => {
 
 <style scoped>
 .lang-switcher {
-  position: fixed;
-  top: 14px;
-  right: 148px;
-  z-index: 100;
-  width: 32px;
-  height: 28px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--line, #e2e8f0);
+  width: 32px;
+  height: 28px;
+  border: 1px solid var(--line, rgba(255 255 255 / 12%));
   border-radius: 6px;
-  background: var(--panel-soft, #f8fafc);
-  color: var(--muted, #64748b);
+  background: transparent;
+  color: var(--text-muted, #94a3b8);
   font-family: var(--font-dashboard, inherit);
   font-size: 11px;
   font-weight: 700;
@@ -46,24 +42,11 @@ const toggle = () => {
     border-color 160ms ease,
     color 160ms ease,
     background-color 160ms ease;
+  flex-shrink: 0;
 }
 
 .lang-switcher:hover {
   border-color: var(--income-accent-ring, #f59e0b);
-  color: var(--text, #1e293b);
-  background: var(--panel, #fff);
-}
-
-/* Dark mode: ensure visibility against dark topbar */
-:global(.theme-dark) .lang-switcher {
-  border-color: var(--line, #334155);
-  background: var(--panel-soft, #1e293b);
-  color: var(--muted, #94a3b8);
-}
-
-:global(.theme-dark) .lang-switcher:hover {
-  border-color: var(--income-accent-ring, #f59e0b);
-  color: var(--text, #f1f5f9);
-  background: var(--panel, #0f172a);
+  color: #f1f5f9;
 }
 </style>

@@ -1,5 +1,7 @@
 # Security Policy
 
+> [中文版 →](SECURITY.md)
+
 ## Supported Versions
 
 Only the latest release receives security fixes. Older versions are not supported.
@@ -52,4 +54,3 @@ If the Tauri updater signing key is compromised:
 
 PayDance is a local-first application. Salary data, work schedules, and preferences are stored only on your device. No data is sent to remote servers. If you discover a vulnerability that could expose local configuration to unauthorized access, please report it immediately.
 
-> [中文版安全策略 →](SECURITY.md)

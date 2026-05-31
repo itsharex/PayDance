@@ -1,5 +1,7 @@
 # Trademark Policy
 
+> [中文版 →](TRADEMARK.md)
+
 ## Protected Marks
 
 The following are trademarks or source-identifying marks of the project author
@@ -63,6 +65,5 @@ share the code. Trademark protection ensures that the names "PayDance" and
 "薪跳" always refer to the authentic release from the original author. This
 prevents confusion and protects users who rely on official builds.
 
-See also: `LICENSE` (AGPL-3.0-only), `ADDITIONAL_TERMS.md`, `ASSET-LICENSE.md`.
+See also: `LICENSE` (AGPL-3.0-only), `ADDITIONAL_TERMS.md`, `BRAND-ASSETS.md`.
 
-> [中文版商标政策 →](TRADEMARK.md)

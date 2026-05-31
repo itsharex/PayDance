@@ -170,6 +170,12 @@
   font-weight: 820;
 }
 
+.web-preview__topbar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .web-preview__hero {
   position: relative;
   z-index: 1;

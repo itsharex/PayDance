@@ -1,5 +1,7 @@
 # 商标政策
 
+> [English version →](TRADEMARK_EN.md)
+
 ## 受保护的标识
 
 以下标识为项目作者（Mr.Baoboer）的商标或来源标识：
@@ -52,6 +54,5 @@
 
 AGPL-3.0-only 保障软件自由：任何人都可以使用、学习、修改和分享代码。商标保护确保"薪跳"和"PayDance"始终指向来自原始作者的正式版本，防止混淆，保护依赖官方构建的用户。
 
-另见：`LICENSE`（AGPL-3.0-only）、`ADDITIONAL_TERMS.md`、`ASSET-LICENSE.md`。
+另见：`LICENSE`（AGPL-3.0-only）、`ADDITIONAL_TERMS.md`、`BRAND-ASSETS.md`。
 
-> [English version of this Trademark Policy →](TRADEMARK_EN.md)

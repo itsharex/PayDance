@@ -10,12 +10,18 @@ on:
         description: "Release tag to publish, for example v0.5.14"
         required: true
         type: string
+      dry_run:
+        description: "Build and upload artifacts but skip creating the GitHub Release"
+        required: false
+        default: true
+        type: boolean
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
-  group: release-${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref }}
+  group: release-${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -24,10 +30,46 @@ jobs:
     runs-on: windows-2022
     env:
       RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
 
     steps:
+      - name: Validate tag format
+        shell: pwsh
+        run: |
+          $tag = "${{ env.RELEASE_TAG }}"
+          if ($tag -notmatch '^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') {
+            Write-Error "Invalid release tag: $tag"
+            exit 1
+          }
+
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+
+      - name: Verify CI passed on the target commit
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $commitSha = (git rev-parse HEAD).Trim()
+          Write-Host "Target commit: $commitSha"
+
+          $response = gh api --method GET `
+            "repos/${{ github.repository }}/actions/workflows/ci.yml/runs?head_sha=$commitSha&event=push&status=completed&per_page=20" |
+            ConvertFrom-Json
+
+          $passed = $response.workflow_runs | Where-Object {
+            $_.head_sha -eq $commitSha -and
+            $_.conclusion -eq "success"
+          }
+
+          if (-not $passed) {
+            Write-Error "No successful CI push run found for $commitSha. Refusing to release."
+            exit 1
+          }
+
+          Write-Host "CI passed for $commitSha."
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -52,29 +94,6 @@ jobs:
         env:
           GITHUB_REF_NAME: ${{ env.RELEASE_TAG }}
 
-      - name: Check repository hygiene
-        run: npm run check:hygiene
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Check formatting
-        run: npm run format:check
-
-      - name: Run unit tests
-        run: npm test
-
-      - name: Audit production dependencies
-        run: npm audit --omit=dev
-
-      - name: Check Rust formatting
-        run: cargo fmt --all -- --check
-        working-directory: src-tauri
-
-      - name: Run Clippy
-        run: cargo clippy --all-targets -- -D warnings
-        working-directory: src-tauri
-
       - name: Build portable EXE (with updater signature)
         run: npm run build:exe
         env:
@@ -87,6 +106,7 @@ jobs:
       - name: Prepare versioned release assets
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           $version = "${{ env.RELEASE_TAG }}".TrimStart("v")
 
           # Portable EXE
@@ -97,25 +117,37 @@ jobs:
           $portableHash = (Get-FileHash $portablePath -Algorithm SHA256).Hash.ToLowerInvariant()
           "$portableHash  $portableName" | Out-File -Encoding ascii "$portablePath.sha256"
 
-          # Updater signature (generated alongside the binary by createUpdaterArtifacts)
+          # Updater signature — must exist; fail if missing
           New-Item -ItemType Directory -Force -Path release-assets
           $sigPath = "src-tauri/target/release/pay-dance.exe.sig"
-          if (Test-Path $sigPath) {
-            $sigDest = "release-assets/$portableName.sig"
-            Copy-Item $sigPath $sigDest -Force
+          if (-not (Test-Path $sigPath)) {
+            Write-Error "Updater signature is missing: $sigPath"
+            exit 1
           }
+          $sigDest = "release-assets/$portableName.sig"
+          Copy-Item $sigPath $sigDest -Force
+
+      - name: Generate release notes
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        run: node scripts/extract-release-notes.mjs --version "${{ env.RELEASE_TAG }}" --output release-notes.md
 
       - name: Generate latest.json for updater
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           $version = "${{ env.RELEASE_TAG }}".TrimStart("v")
           $sigFile = "release-assets/pay-dance-v$version-windows-x64.exe.sig"
-          $sigArg = if (Test-Path $sigFile) { "--sig-file $sigFile" } else { "" }
+
+          if (-not (Test-Path $sigFile)) {
+            Write-Error "Updater signature is missing: $sigFile"
+            exit 1
+          }
+
           $notesArg = if (Test-Path release-notes.md) { "--notes-file release-notes.md" } else { "" }
 
           node scripts/release/build-latest-json.mjs `
             --version $version `
-            $sigArg `
+            --sig-file $sigFile `
             $notesArg `
           | Out-File -Encoding utf8 release-assets/latest.json
 
@@ -130,12 +162,8 @@ jobs:
             release-assets/latest.json
           if-no-files-found: error
 
-      - name: Generate release notes
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
-        run: node scripts/extract-release-notes.mjs --version "${{ env.RELEASE_TAG }}" --output release-notes.md
-
       - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        if: (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && env.DRY_RUN != 'true'
         uses: softprops/action-gh-release@v3
         with:
           name: 薪跳 PayDance ${{ env.RELEASE_TAG }}
@@ -146,3 +174,10 @@ jobs:
             src-tauri/target/release/pay-dance-v*-windows-x64.exe.sha256
             release-assets/pay-dance-v*-windows-x64.exe.sig
             release-assets/latest.json
+
+      - name: Dry run summary
+        if: env.DRY_RUN == 'true'
+        shell: pwsh
+        run: |
+          Write-Host "=== DRY RUN — no GitHub Release was created ==="
+          Write-Host "Artifacts were uploaded. Download them from the Actions run summary to verify."

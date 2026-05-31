@@ -1,11 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Mr.Baoboer // SPDX-License-Identifier: AGPL-3.0-only // //
-Additional terms: see /ADDITIONAL_TERMS.md
+Additional terms: see /legal/ADDITIONAL_TERMS.md
 
 <script setup lang="ts">
 import { watch } from "vue";
 import { appName } from "../../lib/app-meta";
 import AppWindow from "../../components/AppWindow.vue";
-import LanguageSwitcher from "./LanguageSwitcher.vue";
 import WebPreviewMiniLayer from "./WebPreviewMiniLayer.vue";
 import { useWebPreviewState } from "../useWebPreviewState";
 
@@ -126,6 +125,4 @@ watch(shellClass, (value) => emit("shellClassChange", value), { immediate: true 
       @update-opacity="updateMiniOpacityPercent"
     />
   </div>
-
-  <LanguageSwitcher />
 </template>

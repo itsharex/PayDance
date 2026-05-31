@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2026 Mr.Baoboer // SPDX-License-Identifier: AGPL-3.0-only // //
-Additional terms: see /ADDITIONAL_TERMS.md
+Additional terms: see /legal/ADDITIONAL_TERMS.md
 
 <script setup lang="ts">
 import { useI18n } from "../../composables/useI18n";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
 
 const { t } = useI18n();
 defineProps<{
@@ -25,13 +26,16 @@ defineProps<{
       />
       <span>{{ appName }} {{ appEnglishName }}</span>
     </a>
-    <span
-      class="web-preview__version"
-      :aria-label="t('web.versionLabel') + ' ' + appVersion"
-    >
-      <span>Web Preview</span>
-      <span class="web-preview__version-dot" aria-hidden="true">·</span>
-      <strong>{{ appVersion }}</strong>
-    </span>
+    <div class="web-preview__topbar-right">
+      <LanguageSwitcher />
+      <span
+        class="web-preview__version"
+        :aria-label="t('web.versionLabel') + ' ' + appVersion"
+      >
+        <span>Web Preview</span>
+        <span class="web-preview__version-dot" aria-hidden="true">·</span>
+        <strong>{{ appVersion }}</strong>
+      </span>
+    </div>
   </header>
 </template>

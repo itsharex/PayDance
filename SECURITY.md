@@ -1,5 +1,7 @@
 # 安全策略
 
+> [English version →](SECURITY_EN.md)
+
 ## 受支持的版本
 
 仅最新正式版接受安全修复。旧版本不受支持。
@@ -52,4 +54,3 @@
 
 薪跳 PayDance 是一款本地优先应用。薪资数据、工作时间和偏好设置仅保存在你的设备上，不会发送到任何远程服务器。如果你发现可能导致本地配置遭到未授权访问的漏洞，请立即报告。
 
-> [English version of this Security Policy →](SECURITY_EN.md)
