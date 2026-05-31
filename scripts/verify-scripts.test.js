@@ -35,6 +35,10 @@ describe("verification scripts", () => {
     expect(packageJson.scripts["verify:fast"]).toContain("npm run lint");
     expect(packageJson.scripts["verify:fast"]).toContain("npm run build:desktop");
     expect(packageJson.scripts.verify).toBe("npm run verify:fast");
+    expect(packageJson.scripts["verify:push"]).toBe(
+      "node scripts/push-workflow.mjs --verify-only",
+    );
+    expect(packageJson.scripts["push:main"]).toBe("node scripts/push-workflow.mjs");
 
     expect(readRoot("src-tauri/tauri.conf.json")).toContain(
       '"beforeBuildCommand": "npm run build:desktop"',
@@ -52,6 +56,33 @@ describe("verification scripts", () => {
     expect(packageJson.scripts["verify:release"]).toContain(
       "cargo clippy --all-targets -- -D warnings",
     );
+  });
+
+  it("keeps the maintainer push workflow guarded end to end", () => {
+    const pushWorkflow = readRoot("scripts/push-workflow.mjs");
+
+    expect(pushWorkflow).toContain("npm run verify:push");
+    expect(pushWorkflow).toContain("npm run push:main");
+    expect(pushWorkflow).toContain("npm_execpath");
+    expect(pushWorkflow).toContain("npm-cli.js");
+    expect(pushWorkflow).not.toContain("npm.cmd");
+    expect(pushWorkflow).toContain("cargo install cargo-audit --locked");
+    expect(pushWorkflow).toContain("cargo install cargo-deny --version 0.19.8 --locked");
+    expect(pushWorkflow).toContain('"build:desktop"');
+    expect(pushWorkflow).toContain('"build:web"');
+    expect(pushWorkflow).toContain('"audit", "--omit=dev"');
+    expect(pushWorkflow).toContain('"audit"');
+    expect(pushWorkflow).toContain('"deny", "check"');
+    expect(pushWorkflow).toContain('"diff", "--check"');
+    expect(pushWorkflow).toContain("Working tree is not clean");
+    expect(pushWorkflow).toContain("Refusing to push from");
+    expect(pushWorkflow).toContain("dependabot/alerts");
+    expect(pushWorkflow).toContain("Open Dependabot alerts found");
+    expect(pushWorkflow).toContain('watchWorkflow("CI"');
+    expect(pushWorkflow).toContain('watchWorkflow("Web Preview"');
+
+    expect(readRoot("CONTRIBUTING.md")).toContain("npm run push:main");
+    expect(readRoot("CONTRIBUTING_EN.md")).toContain("npm run push:main");
   });
 
   it("codifies Web Preview QA through the Codex Playwright workflow", () => {

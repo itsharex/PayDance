@@ -33,6 +33,32 @@ cargo fmt --all -- --check        # (in src-tauri/)
 cargo clippy --all-targets -- -D warnings
 ```
 
+## Maintainer Push Workflow
+
+Maintainers should use one command to run local verification, push, and confirm remote results before updating `main`:
+
+```powershell
+npm run push:main
+```
+
+This command runs version consistency, brand and secret hygiene, linting, formatting, tests, desktop build, Web Preview build, `npm audit --omit=dev`, `cargo fmt`, `cargo check`, `cargo clippy`, `cargo audit`, `cargo deny check`, and `git diff --check` in sequence. After the local checks pass, it refuses dirty working trees or non-`main` branches, checks that the default branch has no open Dependabot alerts, pushes `origin/main`, and waits for the GitHub Actions CI and Web Preview workflows to finish.
+
+To run push-readiness checks before committing without running `git push`:
+
+```powershell
+npm run verify:push
+```
+
+The security audit steps require these local tools:
+
+```powershell
+cargo install cargo-audit --locked
+cargo install cargo-deny --version 0.19.8 --locked
+gh auth login
+```
+
+Do not run `npm run build:desktop` and `npm run build:web` in parallel because both write to the same `dist/` directory. The push workflow runs them serially in the same order as CI.
+
 ## What We Accept
 
 PayDance is a **desktop real-time salary dashboard**. Contributions should align with the product boundaries documented in `PRODUCT.md`.

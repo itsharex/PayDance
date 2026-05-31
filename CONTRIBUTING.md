@@ -33,6 +33,32 @@ cargo fmt --all -- --check        # （在 src-tauri/ 中执行）
 cargo clippy --all-targets -- -D warnings
 ```
 
+## 维护者推送工作流
+
+维护者向 `main` 推送前使用一条命令完成本地验证、推送和远端结果确认：
+
+```powershell
+npm run push:main
+```
+
+该命令会串行执行版本一致性、品牌与密钥卫生、lint、格式检查、测试、桌面构建、Web Preview 构建、`npm audit --omit=dev`、`cargo fmt`、`cargo check`、`cargo clippy`、`cargo audit`、`cargo deny check` 和 `git diff --check`。通过后，它会拒绝脏工作区或非 `main` 分支，检查默认分支是否仍有 open Dependabot alert，推送 `origin/main`，并等待 GitHub Actions 中的 CI 与 Web Preview 工作流完成。
+
+如果只想在提交前跑推送前验证，不执行 `git push`：
+
+```powershell
+npm run verify:push
+```
+
+安全审计步骤需要本地安装：
+
+```powershell
+cargo install cargo-audit --locked
+cargo install cargo-deny --version 0.19.8 --locked
+gh auth login
+```
+
+不要并行运行 `npm run build:desktop` 与 `npm run build:web`，两者会写入同一个 `dist/` 目录；推送工作流已按 CI 顺序串行执行。
+
 ## 我们接受
 
 薪跳 PayDance 是一款**桌面实时工资看板**。所有贡献必须符合 `PRODUCT.md` 中记载的产品边界。
