@@ -1,21 +1,20 @@
-# Third-Party Notices
+# 第三方声明
 
-PayDance depends on the following third-party software and assets. Each is
-governed by its own license terms.
+PayDance 依赖以下第三方软件和素材。各项均受其各自的许可条款约束。
 
-## Runtime dependencies
+## 运行时依赖
 
-| Package | License | Usage |
+| 软件包 | 许可证 | 用途 |
 |---------|---------|-------|
-| [Tauri 2](https://github.com/tauri-apps/tauri) | Apache-2.0 OR MIT | Desktop shell |
-| [Vue 3](https://github.com/vuejs/core) | MIT | Frontend framework |
-| [@lucide/vue](https://github.com/lucide-icons/lucide) | ISC | Icons |
-| [Vite](https://github.com/vitejs/vite) | MIT | Build tool |
-| [TypeScript](https://github.com/microsoft/TypeScript) | Apache-2.0 | Type system |
+| [Tauri 2](https://github.com/tauri-apps/tauri) | Apache-2.0 OR MIT | 桌面壳 |
+| [Vue 3](https://github.com/vuejs/core) | MIT | 前端框架 |
+| [@lucide/vue](https://github.com/lucide-icons/lucide) | ISC | 图标 |
+| [Vite](https://github.com/vitejs/vite) | MIT | 构建工具 |
+| [TypeScript](https://github.com/microsoft/TypeScript) | Apache-2.0 | 类型系统 |
 
-## Tauri plugins
+## Tauri 插件
 
-| Plugin | License |
+| 插件 | 许可证 |
 |--------|---------|
 | `tauri-plugin-autostart` | Apache-2.0 OR MIT |
 | `tauri-plugin-opener` | Apache-2.0 OR MIT |
@@ -24,9 +23,9 @@ governed by its own license terms.
 | `tauri-plugin-updater` | Apache-2.0 OR MIT |
 | `tauri-plugin-single-instance` | Apache-2.0 OR MIT |
 
-## Development dependencies
+## 开发依赖
 
-| Package | License |
+| 软件包 | 许可证 |
 |---------|---------|
 | Vitest | MIT |
 | @vue/test-utils | MIT |
@@ -36,23 +35,22 @@ governed by its own license terms.
 | Tailwind CSS | MIT |
 | vue-tsc | MIT |
 
-## Rust dependencies
+## Rust 依赖
 
-See `src-tauri/Cargo.lock` for the full Rust dependency tree and their
-respective licenses. Key direct dependencies:
+完整 Rust 依赖树及其许可证见 `src-tauri/Cargo.lock`。主要直接依赖：
 
-| Crate | License |
+| Crate | 许可证 |
 |-------|---------|
 | tauri | Apache-2.0 OR MIT |
 | serde | Apache-2.0 OR MIT |
 | serde_json | Apache-2.0 OR MIT |
 
-## Fonts
+## 字体
 
-PayDance uses the system UI font stack (`Segoe UI`, `San Francisco`, etc.).
-No custom fonts are bundled.
+PayDance 使用系统 UI 字体栈（`Segoe UI`、`San Francisco` 等），不捆绑自定义字体。
 
 ---
 
-This file is maintained on a best-effort basis. If you notice an omission or
-error, please open an Issue.
+本文档基于尽力维护原则。如发现遗漏或错误，请提交 Issue。
+
+> [English version →](THIRD_PARTY_NOTICES_EN.md)

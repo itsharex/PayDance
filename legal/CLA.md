@@ -1,54 +1,39 @@
-# Contributor License Agreement
+# 贡献者许可协议
 
-This Contributor License Agreement ("CLA") applies to code contributions
-submitted to the PayDance project (the "Project"), maintained by Mr.Baoboer.
+本贡献者许可协议（"CLA"）适用于向 Mr.Baoboer 维护的 PayDance 项目（"本项目"）提交的代码贡献。
 
-By submitting a contribution (including but not limited to source code,
-documentation, translations, tests, graphics, or other materials) to the
-Project, you confirm and agree that:
+提交贡献（包括但不限于源代码、文档、翻译、测试、图形或其他材料）即表示你确认并同意：
 
-## 1. Grant of license
+## 1. 许可授予
 
-You grant Mr.Baoboer a perpetual, worldwide, non-exclusive, royalty-free,
-irrevocable license to:
+你授予 Mr.Baoboer 一项永久、全球、非排他、免版税、不可撤销的许可，以：
 
-- Use, reproduce, modify, adapt, publish, translate, and distribute your
-  contribution as part of the Project under the GNU Affero General Public
-  License v3.0 only (AGPL-3.0-only);
-- Make your contribution available under other license terms as part of
-  a paid commercial license, OEM license, or other non-AGPL license that
-  the Project maintainer may offer to third parties;
-- Enforce license compliance and protect the Project against unauthorized use.
+- 将你的贡献作为本项目的一部分，在 GNU Affero General Public License v3.0 only（AGPL-3.0-only）下使用、复制、修改、改编、发布、翻译和分发；
+- 将你的贡献作为项目维护者可能向第三方提供的付费商业许可、OEM 许可或其他非 AGPL 许可的一部分进行授权；
+- 强制执行许可合规并保护本项目免受未经授权的使用。
 
-## 2. Your ownership
+## 2. 你的所有权
 
-You retain copyright in your contribution. This CLA does not transfer ownership
-of your copyright to the Project maintainer.
+你保留贡献的版权。本 CLA 不将你的版权转让给项目维护者。
 
-## 3. Your authority
+## 3. 你的授权保证
 
-You confirm that:
+你确认：
 
-- You are legally entitled to make the contribution and grant the licenses
-  described above;
-- Your contribution is your original work, or you have obtained the necessary
-  permissions from any third-party rights holders;
-- Your contribution does not include any code, data, or materials that are
-  subject to a license incompatible with AGPL-3.0-only unless you have clearly
-  identified them as such.
+- 你在法律上有权作出该贡献并授予上述许可；
+- 你的贡献是你的原创作品，或你已获得任何第三方权利人的必要授权；
+- 你的贡献不包含受 AGPL-3.0-only 不兼容许可约束的代码、数据或材料，除非你已明确标注。
 
-## 4. No employment relationship
+## 4. 不构成劳动关系
 
-This CLA does not create an employment, agency, or partnership relationship
-between you and the Project maintainer.
+本 CLA 不在你与项目维护者之间建立雇佣、代理或合伙关系。
 
-## 5. Moral rights
+## 5. 人身权利
 
-To the extent permitted by applicable law, you waive any moral rights you may
-have in your contribution for the purposes described in this CLA.
+在适用法律允许的范围内，你放弃就本 CLA 所述目的对贡献可能享有的人身权利。
 
 ---
 
-> **Note:** This CLA is currently in effect but signing is not yet automated.
-> For now, by opening a Pull Request with a `Signed-off-by:` line (DCO), you
-> confirm your acceptance of these terms.
+> **说明：** 本 CLA 当前已生效，但签署流程尚未自动化。目前通过发起包含 `Signed-off-by:` 行的 Pull Request（DCO），即表示你接受这些条款。
+
+> [English version →](CLA_EN.md)

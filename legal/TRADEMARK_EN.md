@@ -65,5 +65,5 @@ share the code. Trademark protection ensures that the names "PayDance" and
 "薪跳" always refer to the authentic release from the original author. This
 prevents confusion and protects users who rely on official builds.
 
-See also: `LICENSE` (AGPL-3.0-only), `ADDITIONAL_TERMS.md`, `BRAND-ASSETS.md`.
+See also: `LICENSE` (AGPL-3.0-only), `ADDITIONAL_TERMS_EN.md`, `BRAND-ASSETS_EN.md`.
 

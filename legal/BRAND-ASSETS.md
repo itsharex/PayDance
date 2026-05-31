@@ -1,40 +1,38 @@
-# Brand and Asset Licensing
+# 品牌与素材许可
 
-Unless explicitly stated otherwise, the following assets are **not** licensed
-under AGPL-3.0-only or Creative Commons licenses:
+除非另有明确说明，以下素材**不**在 AGPL-3.0-only 或 Creative Commons 许可范围内：
 
-- Official PayDance logos
-- Application icons
-- Tray icons
-- Marketing posters
-- Social preview images (`og-image.png`)
-- Official screenshots
-- Brand-specific artwork
-- Product visual identity materials
+- PayDance 官方 Logo
+- 应用图标
+- 托盘图标
+- 营销海报
+- 社交预览图片（`og-image.png`）
+- 官方截图
+- 品牌专属美术作品
+- 产品视觉识别素材
 
-All rights in these assets are reserved by Mr.Baoboer.
-
----
-
-## Permitted use
-
-These assets may be viewed and redistributed only where necessary to share an
-unaltered official PayDance release or to make accurate factual references to
-the PayDance project.
-
-## Fork and modified distribution requirements
-
-Modified distributions **must** replace official branding assets with their own
-distinct branding. This includes:
-
-- Product name and application identifier
-- Application icon and tray icon
-- Marketing artwork and screenshots
-- Social preview images
-- Update endpoint URL
-
-Official branding assets must not be used as the identity of a modified product.
+以上素材的所有权利均由 Mr.Baoboer 保留。
 
 ---
 
-See also: `TRADEMARKS.md` for brand name policy.
+## 允许的使用
+
+仅在分享未经修改的 PayDance 官方版本或对 PayDance 项目进行事实性引用所必需的范围内，可以查看和再分发这些素材。
+
+## Fork 与修改版要求
+
+修改发行版**必须**将官方品牌素材替换为自己的独立品牌。包括：
+
+- 产品名称和应用标识符
+- 应用图标和托盘图标
+- 营销美术作品和截图
+- 社交预览图片
+- 更新端点 URL
+
+官方品牌素材不得作为修改产品的视觉标识使用。
+
+---
+
+另见：`TRADEMARK.md` 了解品牌名称政策。
+
+> [English version →](BRAND-ASSETS_EN.md)
