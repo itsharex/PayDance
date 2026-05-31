@@ -109,6 +109,9 @@ describe("repository metadata", () => {
 
     expect(releaseWorkflow).toContain("pay-dance-v$version-windows-x64.exe");
     expect(releaseWorkflow).toContain("portableName");
+    expect(releaseWorkflow).toContain("allow_missing_ci_for_repair");
+    expect(releaseWorkflow).toContain("ALLOW_MISSING_CI_FOR_REPAIR");
+    expect(releaseWorkflow).toContain("Skipping CI gate for existing release repair");
     expect(releaseWorkflow).toContain("npx tauri signer sign");
     expect(releaseWorkflow).toContain("windows-x64.exe.sig");
     expect(releaseWorkflow).toContain("TAURI_SIGNING_PRIVATE_KEY");

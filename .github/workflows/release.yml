@@ -15,6 +15,11 @@ on:
         required: false
         default: true
         type: boolean
+      allow_missing_ci_for_repair:
+        description: "Allow repairing an existing release whose old target commit has no CI run"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   actions: read
@@ -31,6 +36,7 @@ jobs:
     env:
       RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
+      ALLOW_MISSING_CI_FOR_REPAIR: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.allow_missing_ci_for_repair || 'false' }}
 
     steps:
       - name: Validate tag format
@@ -54,6 +60,11 @@ jobs:
         run: |
           $commitSha = (git rev-parse HEAD).Trim()
           Write-Host "Target commit: $commitSha"
+
+          if ($env:ALLOW_MISSING_CI_FOR_REPAIR -eq "true") {
+            Write-Host "Skipping CI gate for existing release repair."
+            exit 0
+          }
 
           $response = gh api --method GET `
             "repos/${{ github.repository }}/actions/workflows/ci.yml/runs?head_sha=$commitSha&event=push&status=completed&per_page=20" |
