@@ -55,7 +55,7 @@ const localeExpectations = {
   },
   en: {
     downloadName: /Download for Windows/,
-    headline: "See your pay",
+    headline: "See Your Pay",
     themeToggleLabels: ["Switch to dark mode", "Switch to light mode"],
   },
 };
@@ -253,7 +253,9 @@ const assertDom = async (page, viewportName, locale) => {
     .getByText(expectedText.headline, { exact: true })
     .isVisible();
   const downloadName = viewportName.includes("mobile")
-    ? /^Download$/
+    ? locale === "zh-CN"
+      ? /^下载电脑版$/
+      : /^Desktop$/
     : expectedText.downloadName;
   const downloadVisible = await page
     .getByRole("link", { name: downloadName })
@@ -278,6 +280,25 @@ const assertDom = async (page, viewportName, locale) => {
   if (featureCards.length !== 3) {
     throw new Error(`${viewportName}: expected 3 feature cards`);
   }
+
+  const featureDescriptions = await page
+    .locator(".web-preview__chip dd")
+    .evaluateAll((descriptions) =>
+      descriptions.map((description) => {
+        const rect = description.getBoundingClientRect();
+        const styles = window.getComputedStyle(description);
+        const lineHeight = Number.parseFloat(styles.lineHeight);
+
+        return {
+          height: rect.height,
+          lineHeight,
+          text: description.textContent?.trim(),
+          visible: rect.width > 0 && rect.height > 0,
+          whiteSpace: styles.whiteSpace,
+          wrapped: Number.isFinite(lineHeight) && rect.height > lineHeight * 1.35,
+        };
+      }),
+    );
 
   if (viewportName.includes("mobile")) {
     const cardTop = featureCards[0].top;
@@ -312,6 +333,16 @@ const assertDom = async (page, viewportName, locale) => {
       if (currentCard.right > nextCard.left + 1) {
         throw new Error(`${viewportName}: feature cards overlap horizontally`);
       }
+    }
+
+    if (
+      featureDescriptions.some(
+        (description) => description.visible && description.wrapped,
+      )
+    ) {
+      throw new Error(
+        `${viewportName}: feature descriptions wrapped ${JSON.stringify(featureDescriptions)}`,
+      );
     }
   }
 
@@ -408,25 +439,118 @@ const assertDom = async (page, viewportName, locale) => {
     );
   }
 
-  if (viewportName.includes("mobile")) {
-    const [featureStripBox, footerBox, leadMetrics] = await Promise.all([
-      page.locator(".web-preview__feature-strip").boundingBox(),
-      page.locator(".web-preview__footer").boundingBox(),
-      page.locator(".web-preview__lead").evaluate((lead) => {
-        const rect = lead.getBoundingClientRect();
-        const styles = window.getComputedStyle(lead);
-        const headlineRect = document
-          .querySelector(".web-preview h1")
-          ?.getBoundingClientRect();
-
+  if (viewportName.includes("medium")) {
+    const mediumHeroFlow = await page.evaluate(() => {
+      const rectFor = (selector) => {
+        const element = document.querySelector(selector);
+        if (!element) return null;
+        const rect = element.getBoundingClientRect();
         return {
-          fontSize: Number.parseFloat(styles.fontSize),
-          fontWeight: Number.parseFloat(styles.fontWeight),
-          gapFromHeadline: headlineRect ? rect.top - headlineRect.bottom : 0,
+          bottom: rect.bottom,
+          centerX: rect.left + rect.width / 2,
+          height: rect.height,
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
           width: rect.width,
         };
-      }),
-    ]);
+      };
+      const viewportWidth = document.documentElement.clientWidth;
+      const actions = rectFor(".web-preview__actions");
+      const copy = rectFor(".web-preview__copy");
+      const showcase = rectFor("#paydance-preview");
+      const preview = document.querySelector(".web-preview");
+      const previewStyles = preview ? window.getComputedStyle(preview) : null;
+      const rootStyles = window.getComputedStyle(document.documentElement);
+      const bodyStyles = window.getComputedStyle(document.body);
+
+      return {
+        actions,
+        bodyOverflowY: bodyStyles.overflowY,
+        copy,
+        copyCenterOffset: copy ? Math.abs(copy.centerX - viewportWidth / 2) : 0,
+        documentScrollHeight: document.documentElement.scrollHeight,
+        previewOverflowY: previewStyles?.overflowY ?? "",
+        rootOverflowY: rootStyles.overflowY,
+        showcase,
+        showcaseCenterOffset: showcase
+          ? Math.abs(showcase.centerX - viewportWidth / 2)
+          : 0,
+        viewportHeight: window.innerHeight,
+        verticalGap: copy && showcase ? showcase.top - copy.bottom : 0,
+      };
+    });
+
+    if (
+      !mediumHeroFlow.copy ||
+      !mediumHeroFlow.showcase ||
+      mediumHeroFlow.verticalGap < 28 ||
+      mediumHeroFlow.copyCenterOffset > 24 ||
+      mediumHeroFlow.showcaseCenterOffset > 24
+    ) {
+      throw new Error(
+        `${viewportName}: medium viewport hero should use centered single-column flow ${JSON.stringify(
+          mediumHeroFlow,
+        )}`,
+      );
+    }
+
+    if (
+      mediumHeroFlow.documentScrollHeight <= mediumHeroFlow.viewportHeight + 24 ||
+      mediumHeroFlow.rootOverflowY === "hidden" ||
+      mediumHeroFlow.bodyOverflowY === "hidden" ||
+      mediumHeroFlow.previewOverflowY !== "visible"
+    ) {
+      throw new Error(
+        `${viewportName}: medium viewport content must use document-level vertical scrolling ${JSON.stringify(
+          mediumHeroFlow,
+        )}`,
+      );
+    }
+  }
+
+  if (viewportName.includes("mobile")) {
+    const [featureStripBox, footerBox, leadMetrics, salaryInfoMetrics] =
+      await Promise.all([
+        page.locator(".web-preview__feature-strip").boundingBox(),
+        page.locator(".web-preview__footer").boundingBox(),
+        page.locator(".web-preview__lead").evaluate((lead) => {
+          const rect = lead.getBoundingClientRect();
+          const styles = window.getComputedStyle(lead);
+          const headlineRect = document
+            .querySelector(".web-preview h1")
+            ?.getBoundingClientRect();
+
+          return {
+            fontSize: Number.parseFloat(styles.fontSize),
+            fontWeight: Number.parseFloat(styles.fontWeight),
+            gapFromHeadline: headlineRect ? rect.top - headlineRect.bottom : 0,
+            width: rect.width,
+          };
+        }),
+        page.locator(".web-preview__frame").evaluate((frame) => {
+          const frameRect = frame.getBoundingClientRect();
+          const button = frame.querySelector(".salary-info-button");
+          const progressTrack = frame.querySelector(".progress-track");
+          const buttonRect = button?.getBoundingClientRect();
+          const progressRect = progressTrack?.getBoundingClientRect();
+
+          return buttonRect && progressRect
+            ? {
+                buttonCenter: buttonRect.top + buttonRect.height / 2,
+                bottomGap: frameRect.bottom - buttonRect.bottom,
+                centerOffset: Math.abs(
+                  buttonRect.top +
+                    buttonRect.height / 2 -
+                    (progressRect.bottom + frameRect.bottom) / 2,
+                ),
+                height: buttonRect.height,
+                midpoint: (progressRect.bottom + frameRect.bottom) / 2,
+                progressBottom: progressRect.bottom,
+              }
+            : null;
+        }),
+      ]);
 
     if (!featureStripBox || !footerBox) {
       throw new Error(`${viewportName}: feature strip or footer is missing`);
@@ -452,6 +576,19 @@ const assertDom = async (page, viewportName, locale) => {
       leadMetrics.gapFromHeadline < 12
     ) {
       throw new Error(`${viewportName}: lead typography is too large or too tight`);
+    }
+
+    if (
+      !salaryInfoMetrics ||
+      salaryInfoMetrics.bottomGap < 18 ||
+      salaryInfoMetrics.centerOffset > 6 ||
+      salaryInfoMetrics.height > 30
+    ) {
+      throw new Error(
+        `${viewportName}: salary info button should sit midway between progress and frame edge ${JSON.stringify(
+          salaryInfoMetrics,
+        )}`,
+      );
     }
   }
 

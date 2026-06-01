@@ -183,6 +183,7 @@ const zhCN: Messages = {
   "web.heroHeadline2": "收入跳动",
   "web.heroLead": "具象化你的劳动价值，专注工作，也看见回报",
   "web.downloadWindows": "下载 Windows 版",
+  "web.downloadShort": "下载电脑版",
   "web.featureRealtime": "毫秒级更新",
   "web.featureRealtimeDesc": "今日收入实时跳动",
   "web.featureFocus": "安心专注",

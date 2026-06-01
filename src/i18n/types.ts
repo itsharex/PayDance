@@ -188,6 +188,7 @@ export interface Messages {
   "web.heroHeadline2": string;
   "web.heroLead": string;
   "web.downloadWindows": string;
+  "web.downloadShort": string;
   "web.featureRealtime": string;
   "web.featureRealtimeDesc": string;
   "web.featureFocus": string;
