@@ -9,6 +9,7 @@ import appSource from "./App.vue?raw";
 import webPreviewAppSource from "./WebPreviewApp.vue?raw";
 import webPreviewFeatureStripSource from "./web-preview/WebPreviewFeatureStrip.vue?raw";
 import gitHubMarkSource from "./web-preview/components/GitHubMark.vue?raw";
+import languageSwitcherSource from "./web-preview/components/LanguageSwitcher.vue?raw";
 import webMiniOpacityPanelSource from "./web-preview/components/WebMiniOpacityPanel.vue?raw";
 import webPreviewActionsSource from "./web-preview/components/WebPreviewActions.vue?raw";
 import webPreviewFooterSource from "./web-preview/components/WebPreviewFooter.vue?raw";
@@ -34,6 +35,7 @@ const webPreviewSource = [
   webPreviewAppSource,
   webPreviewPageSource,
   webPreviewTopbarSource,
+  languageSwitcherSource,
   webPreviewHeroCopySource,
   webPreviewActionsSource,
   webPreviewShowcaseSource,
@@ -106,6 +108,16 @@ describe("PayDance Web Preview", () => {
     expect(cssBlock(".web-preview__version")).not.toContain("box-shadow:");
   });
 
+  it("uses a segmented language switcher instead of a tiny single-label button", () => {
+    expect(webPreviewPageSource).toContain(':data-locale="locale"');
+    expect(webPreviewTopbarSource).toContain("<LanguageSwitcher />");
+    expect(webPreviewSource).toContain('class="lang-switcher__track"');
+    expect(webPreviewSource).toContain('class="lang-switcher__option"');
+    expect(webPreviewSource).toContain("'is-active': locale === 'zh-CN'");
+    expect(webPreviewSource).toContain("'is-active': locale === 'en'");
+    expect(webPreviewSource).not.toContain('{{ locale === "zh-CN" ? "EN" : "中" }}');
+  });
+
   it("uses a more expressive web typography system", () => {
     expect(webPreviewSource).not.toContain("fonts.googleapis.com");
     expect(webPreviewSource).not.toContain("@fontsource");
@@ -148,6 +160,24 @@ describe("PayDance Web Preview", () => {
     expect(webPreviewSource).not.toContain("max-width: 7.6em");
   });
 
+  it("adds English-specific layout rules so long copy never collides with the preview", () => {
+    expect(webPreviewSource).toContain('.web-preview[data-locale="en"]');
+    expect(webPreviewSource).toContain(
+      '.web-preview[data-locale="en"] .web-preview__headline-main',
+    );
+    expect(webPreviewSource).toContain(
+      '.web-preview[data-locale="en"] .web-preview__headline-accent',
+    );
+    expect(webPreviewSource).toContain(
+      '.web-preview[data-locale="en"] .web-preview__lead',
+    );
+    expect(webPreviewSource).toContain("white-space: nowrap");
+    expect(webPreviewSource).toContain("@media (max-width: 1180px)");
+    expect(webPreviewSource).toContain(
+      '.web-preview[data-locale="en"] .web-preview__hero',
+    );
+  });
+
   it("keeps the web hero roomy while preserving the software preview on narrower windows", () => {
     expect(cssBlock(".web-preview")).toContain("--web-max-width: 1280px");
     expect(cssBlock(".web-preview__topbar")).toContain(
@@ -182,6 +212,19 @@ describe("PayDance Web Preview", () => {
     expect(webPreviewSource).toContain("font-size: clamp(14px, 3.65vw, 15.5px)");
     expect(webPreviewSource).toContain("font-weight: 500");
     expect(webPreviewSource).toContain("line-height: 1.62");
+  });
+
+  it("keeps mobile actions and the software preview inside the viewport", () => {
+    expect(webPreviewSource).toContain("width: min(100%, 390px)");
+    expect(webPreviewSource).toContain("max-width: 358px");
+    expect(webPreviewSource).toContain("flex: 1 1 100%");
+    expect(webPreviewSource).toContain(
+      '.web-preview[data-locale="en"] .web-preview__actions',
+    );
+    expect(webPreviewSource).toContain("flex-wrap: nowrap");
+    expect(webPreviewSource).toContain("flex: 1 1 auto");
+    expect(webPreviewSource).toContain("height: clamp(326px, 86vw, 348px)");
+    expect(webPreviewSource).not.toContain("x: -");
   });
 
   it("separates the dark web background from the software preview with quiet material layers", () => {
@@ -249,6 +292,7 @@ describe("PayDance Web Preview", () => {
     expect(webPreviewFeatureStripSource).toContain('t("web.featurePrivacyDesc")');
     expect(webPreviewFeatureStripSource).toContain('class="web-preview__chip-icon"');
     expect(webPreviewFeatureStripSource).toContain('class="web-preview__chip-copy"');
+    expect(featureCssBlock(".web-preview__chip-copy")).toContain("white-space: nowrap");
     expect(webPreviewFeatureStripSource.indexOf('t("web.featureRealtime")')).toBeLessThan(
       webPreviewFeatureStripSource.indexOf('t("web.featureFocus")'),
     );
@@ -270,7 +314,7 @@ describe("PayDance Web Preview", () => {
     expect(webPreviewFeatureStripSource).not.toContain("无账号，无遥测");
   });
 
-  it("keeps the three feature tags in one row by scaling instead of wrapping", () => {
+  it("keeps feature tags compact on desktop and readable on mobile", () => {
     const featureStripBlock = featureCssBlock(".web-preview__feature-strip");
     const chipsBlock = featureCssBlock(".web-preview__chips");
     const chipBlock = featureCssBlock(".web-preview__chip");
@@ -286,12 +330,18 @@ describe("PayDance Web Preview", () => {
       "width: calc(var(--web-chip-base-width) * var(--web-chip-scale))",
     );
     expect(chipBlock).toContain("align-items: center");
-    expect(featureCssBlock(".web-preview__chips dd")).toContain("white-space: nowrap");
+    expect(featureCssBlock(".web-preview__chips dd")).toContain("white-space: normal");
     expect(webPreviewFeatureStripSource).toContain("@media (max-width: 560px)");
     expect(webPreviewFeatureStripSource).toContain("margin-bottom: 24px");
     expect(webPreviewFeatureStripSource).toContain("padding-bottom: 4px");
-    expect(webPreviewFeatureStripSource).toContain(
-      "--web-chip-scale: min(0.74, calc((100vw - 40px) / 564px));",
+    expect(webPreviewFeatureStripSource).toContain("grid-template-columns: 1fr");
+    expect(webPreviewFeatureStripSource).toContain("white-space: normal");
+    expect(webPreviewSource).toContain(
+      '.web-preview[data-locale="en"] .web-preview__chips dd',
+    );
+    expect(webPreviewSource).toContain("display: none");
+    expect(webPreviewFeatureStripSource).not.toContain(
+      ':global(.web-preview[data-locale="en"])',
     );
   });
 
@@ -438,9 +488,11 @@ describe("PayDance Web Preview", () => {
   });
 
   it("builds the web preview for GitHub Pages", () => {
-    expect(read("vite.config.ts")).toContain(
-      'base: mode === "web" ? "/PayDance/" : "./"',
-    );
+    const viteConfig = read("vite.config.ts");
+
+    expect(viteConfig).toContain('base: mode === "web" ? "/PayDance/" : "./"');
+    expect(viteConfig).toContain('entries: ["index.html"]');
+    expect(viteConfig).toContain("src-tauri/target/**");
     expect(read(".github/workflows/web-preview.yml")).toContain("npm run build:web");
     expect(read(".github/workflows/web-preview.yml")).toContain(
       "actions/upload-pages-artifact@v5",

@@ -1,7 +1,8 @@
-// SPDX-FileCopyrightText: 2026 Mr.Baoboer // SPDX-License-Identifier: AGPL-3.0-only // //
-Additional terms: see /legal/ADDITIONAL_TERMS.md
-
 <script setup lang="ts">
+// SPDX-FileCopyrightText: 2026 Mr.Baoboer
+// SPDX-License-Identifier: AGPL-3.0-only
+//
+// Additional terms: see /legal/ADDITIONAL_TERMS.md
 import { Focus, ShieldCheck, Zap } from "@lucide/vue";
 import { useI18n } from "../composables/useI18n";
 
@@ -49,12 +50,12 @@ const { t } = useI18n();
 }
 
 .web-preview__chips {
-  --web-chip-base-width: 188px;
+  --web-chip-base-width: 220px;
   --web-chip-gap: 0px;
   --web-chip-scale: 1;
   display: grid;
   width: 100%;
-  max-width: min(100%, 860px);
+  max-width: min(100%, 980px);
   grid-template-columns: repeat(
     3,
     calc(var(--web-chip-base-width) * var(--web-chip-scale))
@@ -111,6 +112,10 @@ const { t } = useI18n();
   line-height: 1.1;
 }
 
+.web-preview__chip-copy {
+  white-space: nowrap;
+}
+
 .web-preview__chips dd {
   margin: 0;
   margin-top: calc(7px * var(--web-chip-scale));
@@ -118,7 +123,8 @@ const { t } = useI18n();
   font-size: calc(14px * var(--web-chip-scale));
   font-weight: 520;
   line-height: 1.36;
-  white-space: nowrap;
+  max-width: 28ch;
+  white-space: normal;
 }
 
 @media (max-width: 820px) {
@@ -136,8 +142,38 @@ const { t } = useI18n();
   }
 
   .web-preview__chips {
-    --web-chip-scale: min(0.74, calc((100vw - 40px) / 564px));
+    --web-chip-scale: 1;
     max-width: 100%;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    justify-content: stretch;
+  }
+
+  .web-preview__chip {
+    width: 100%;
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+
+  .web-preview__chip-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .web-preview__chip-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .web-preview__chips dt {
+    font-size: 15px;
+  }
+
+  .web-preview__chips dd {
+    margin-top: 4px;
+    font-size: 12.5px;
+    line-height: 1.38;
+    white-space: normal;
   }
 }
 </style>

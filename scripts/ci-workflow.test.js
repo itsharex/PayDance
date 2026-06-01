@@ -23,6 +23,9 @@ describe("CI workflow routing", () => {
     expect(packageJson.scripts["verify:metadata"]).toContain(
       "scripts/ci-workflow.test.js",
     );
+    expect(packageJson.scripts["verify:metadata"]).toContain(
+      "scripts/source-header.test.js",
+    );
     expect(packageJson.scripts["verify:metadata"]).toContain("git diff --check");
     expect(packageJson.scripts["verify:metadata"]).not.toContain("build:desktop");
     expect(packageJson.scripts["verify:metadata"]).not.toContain("build:web");

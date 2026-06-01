@@ -21,7 +21,21 @@ const viewports = [
   { name: "medium", width: 960, height: 760 },
   { name: "mobile", width: 390, height: 844 },
 ];
+const locales = ["zh-CN", "en"];
 const themes = ["light", "dark"];
+const localeStorageKey = "paydance-web-locale";
+const localeExpectations = {
+  "zh-CN": {
+    downloadName: /下载 Windows 版/,
+    headline: "看见每一秒的",
+    themeToggleLabels: ["切换到深色模式", "切换到浅色模式"],
+  },
+  en: {
+    downloadName: /Download for Windows/,
+    headline: "Pay in Motion",
+    themeToggleLabels: ["Switch to dark mode", "Switch to light mode"],
+  },
+};
 
 const createPreviewState = (themeMode) => ({
   amountMode: "rolling",
@@ -109,7 +123,12 @@ const startServer = () => {
     process.platform === "win32"
       ? spawn(
           "cmd.exe",
-          ["/d", "/s", "/c", `npm run dev:web -- --host 127.0.0.1 --port ${port}`],
+          [
+            "/d",
+            "/s",
+            "/c",
+            `npm run dev:web -- --host 127.0.0.1 --port ${port} --force`,
+          ],
           {
             cwd: resolve("."),
             env: { ...process.env, BROWSER: "none" },
@@ -118,7 +137,16 @@ const startServer = () => {
         )
       : spawn(
           "npm",
-          ["run", "dev:web", "--", "--host", "127.0.0.1", "--port", String(port)],
+          [
+            "run",
+            "dev:web",
+            "--",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            String(port),
+            "--force",
+          ],
           {
             cwd: resolve("."),
             env: { ...process.env, BROWSER: "none" },
@@ -139,8 +167,9 @@ const startServer = () => {
   return { logs, server };
 };
 
-const assertDom = async (page, viewportName) => {
+const assertDom = async (page, viewportName, locale) => {
   const viewport = page.viewportSize();
+  const expectedText = localeExpectations[locale];
   const title = await page.title();
   if (title !== "薪跳 PayDance") {
     throw new Error(`${viewportName}: unexpected title "${title}"`);
@@ -152,7 +181,10 @@ const assertDom = async (page, viewportName) => {
   }
 
   const versionText = await page.locator(".web-preview__version").innerText();
-  if (!versionText.includes("Web Preview") || !versionText.includes(version)) {
+  if (
+    !versionText.includes(version) ||
+    (!viewportName.includes("mobile") && !versionText.includes("Web Preview"))
+  ) {
     throw new Error(`${viewportName}: version text mismatch "${versionText}"`);
   }
 
@@ -174,11 +206,31 @@ const assertDom = async (page, viewportName) => {
     throw new Error(`${viewportName}: software showcase collapsed`);
   }
 
+  const rootLocale = await page.locator(".web-preview").getAttribute("data-locale");
+  if (rootLocale !== locale) {
+    throw new Error(`${viewportName}: locale marker mismatch "${rootLocale}"`);
+  }
+
+  const languageOptions = await page
+    .locator(".lang-switcher__option")
+    .evaluateAll((options) =>
+      options.map((option) => ({
+        active: option.classList.contains("is-active"),
+        text: option.textContent?.trim(),
+      })),
+    );
+  if (
+    languageOptions.length !== 2 ||
+    languageOptions.filter((option) => option.active).length !== 1
+  ) {
+    throw new Error(`${viewportName}: language switcher state is unclear`);
+  }
+
   const headlineVisible = await page
-    .getByText("看见每一秒的", { exact: true })
+    .getByText(expectedText.headline, { exact: true })
     .isVisible();
   const downloadVisible = await page
-    .getByRole("link", { name: /下载 Windows 版/ })
+    .getByRole("link", { name: expectedText.downloadName })
     .isVisible();
   if (!headlineVisible || !downloadVisible) {
     throw new Error(`${viewportName}: core hero content is not visible`);
@@ -201,21 +253,125 @@ const assertDom = async (page, viewportName) => {
     throw new Error(`${viewportName}: expected 3 feature cards`);
   }
 
-  const cardTop = featureCards[0].top;
-  const cardsShareRow = featureCards.every((card) => Math.abs(card.top - cardTop) <= 3);
-  if (!cardsShareRow) {
-    throw new Error(
-      `${viewportName}: feature cards wrapped instead of staying in one row`,
-    );
+  if (viewportName.includes("mobile")) {
+    const sortedFeatureCards = [...featureCards].sort((a, b) => a.top - b.top);
+    for (let index = 0; index < sortedFeatureCards.length - 1; index += 1) {
+      const currentCard = sortedFeatureCards[index];
+      const nextCard = sortedFeatureCards[index + 1];
+      if (currentCard.bottom > nextCard.top + 1) {
+        throw new Error(`${viewportName}: feature cards overlap vertically`);
+      }
+    }
+  } else {
+    const cardTop = featureCards[0].top;
+    const cardsShareRow = featureCards.every((card) => Math.abs(card.top - cardTop) <= 3);
+    if (!cardsShareRow) {
+      throw new Error(
+        `${viewportName}: feature cards wrapped instead of staying in one row`,
+      );
+    }
+
+    const sortedFeatureCards = [...featureCards].sort((a, b) => a.left - b.left);
+    for (let index = 0; index < sortedFeatureCards.length - 1; index += 1) {
+      const currentCard = sortedFeatureCards[index];
+      const nextCard = sortedFeatureCards[index + 1];
+      if (currentCard.right > nextCard.left + 1) {
+        throw new Error(`${viewportName}: feature cards overlap horizontally`);
+      }
+    }
   }
 
-  const sortedFeatureCards = [...featureCards].sort((a, b) => a.left - b.left);
-  for (let index = 0; index < sortedFeatureCards.length - 1; index += 1) {
-    const currentCard = sortedFeatureCards[index];
-    const nextCard = sortedFeatureCards[index + 1];
-    if (currentCard.right > nextCard.left + 1) {
-      throw new Error(`${viewportName}: feature cards overlap horizontally`);
-    }
+  const layout = await page.evaluate(() => {
+    const rectFor = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return null;
+      const rect = element.getBoundingClientRect();
+      return {
+        bottom: rect.bottom,
+        height: rect.height,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        width: rect.width,
+      };
+    };
+    const viewportWidth = document.documentElement.clientWidth;
+    const h1 = rectFor(".web-preview h1");
+    const headlineMain = rectFor(".web-preview__headline-main");
+    const headlineAccent = rectFor(".web-preview__headline-accent");
+    const actions = rectFor(".web-preview__actions");
+    const showcase = rectFor("#paydance-preview");
+    const topbar = rectFor(".web-preview__topbar");
+    const version = rectFor(".web-preview__version");
+    const languageSwitcher = rectFor(".lang-switcher");
+    const featureStrip = rectFor(".web-preview__feature-strip");
+    const visibleRects = [
+      ["topbar", topbar],
+      ["language-switcher", languageSwitcher],
+      ["version", version],
+      ["headline-main", headlineMain],
+      ["headline-accent", headlineAccent],
+      ["actions", actions],
+      ["showcase", showcase],
+      ["feature-strip", featureStrip],
+    ].filter(([, rect]) => rect && rect.width > 0 && rect.height > 0);
+    const outOfViewport = visibleRects
+      .filter(([, rect]) => rect.left < -1 || rect.right > viewportWidth + 1)
+      .map(([name, rect]) => ({
+        left: rect.left,
+        name,
+        right: rect.right,
+        viewportWidth,
+      }));
+    const h1PreviewOverlap =
+      h1 && showcase
+        ? h1.right > showcase.left - 8 &&
+          h1.left < showcase.right &&
+          h1.bottom > showcase.top &&
+          h1.top < showcase.bottom
+        : false;
+    const wrappedLabels = [
+      ".web-preview__headline-main",
+      ".web-preview__headline-accent",
+      ".web-preview__lead",
+      ".web-preview__chip-copy",
+    ]
+      .flatMap((selector) =>
+        [...document.querySelectorAll(selector)].map((element) => {
+          const rect = element.getBoundingClientRect();
+          const styles = window.getComputedStyle(element);
+          const lineHeight = Number.parseFloat(styles.lineHeight);
+          return {
+            height: rect.height,
+            lineHeight,
+            selector,
+            text: element.textContent?.trim(),
+            wrapped: Number.isFinite(lineHeight) && rect.height > lineHeight * 1.35,
+          };
+        }),
+      )
+      .filter((entry) => entry.wrapped);
+
+    return {
+      documentOverflow: document.documentElement.scrollWidth - viewportWidth,
+      h1PreviewOverlap,
+      outOfViewport,
+      wrappedLabels,
+    };
+  });
+
+  if (layout.documentOverflow > 1 || layout.outOfViewport.length > 0) {
+    throw new Error(
+      `${viewportName}: storefront elements overflow viewport ${JSON.stringify(layout)}`,
+    );
+  }
+  if (layout.h1PreviewOverlap) {
+    throw new Error(`${viewportName}: headline overlaps the software preview`);
+  }
+  if (layout.wrappedLabels.length > 0) {
+    throw new Error(
+      `${viewportName}: key storefront labels wrapped ${JSON.stringify(layout.wrappedLabels)}`,
+    );
   }
 
   if (viewportName.includes("mobile")) {
@@ -265,7 +421,7 @@ const assertDom = async (page, viewportName) => {
     }
   }
 
-  if (viewportName.startsWith("dark/")) {
+  if (viewportName.includes("/dark/")) {
     const darkStage = await page.locator(".web-preview").evaluate((root) => {
       const hero = root.querySelector(".web-preview__hero");
       const frame = root.querySelector(".web-preview__frame");
@@ -357,8 +513,8 @@ const assertDom = async (page, viewportName) => {
   }
 };
 
-const assertThemeToggleEdge = async (page, viewportName) => {
-  const themeToggleLabels = ["切换到深色模式", "切换到浅色模式"];
+const assertThemeToggleEdge = async (page, viewportName, locale) => {
+  const themeToggleLabels = localeExpectations[locale].themeToggleLabels;
   const themeToggleNamePattern = new RegExp(themeToggleLabels.join("|"));
 
   for (let index = 0; index < 8; index += 1) {
@@ -409,43 +565,57 @@ const runQa = async () => {
     const consoleFindings = [];
     const pageErrors = [];
 
-    for (const themeMode of themes) {
-      for (const viewport of viewports) {
-        const context = await browser.newContext({
-          deviceScaleFactor: 1,
-          viewport: { width: viewport.width, height: viewport.height },
-        });
-        await context.addInitScript(
-          ({ key, state }) => {
-            window.localStorage.setItem(key, JSON.stringify(state));
-          },
-          { key: storageKey, state: createPreviewState(themeMode) },
-        );
+    for (const locale of locales) {
+      for (const themeMode of themes) {
+        for (const viewport of viewports) {
+          const context = await browser.newContext({
+            deviceScaleFactor: 1,
+            viewport: { width: viewport.width, height: viewport.height },
+          });
+          await context.addInitScript(
+            ({ key, localeKey, localeValue, state }) => {
+              window.localStorage.setItem(localeKey, localeValue);
+              window.localStorage.setItem(key, JSON.stringify(state));
+            },
+            {
+              key: storageKey,
+              localeKey: localeStorageKey,
+              localeValue: locale,
+              state: createPreviewState(themeMode),
+            },
+          );
 
-        const page = await context.newPage();
-        page.on("console", (message) => {
-          if (message.type() === "error") {
-            consoleFindings.push(`${themeMode}/${viewport.name}: ${message.text()}`);
-          }
-        });
-        page.on("pageerror", (error) => {
-          pageErrors.push(`${themeMode}/${viewport.name}: ${error.message}`);
-        });
+          const page = await context.newPage();
+          page.on("console", (message) => {
+            if (message.type() === "error") {
+              consoleFindings.push(
+                `${locale}/${themeMode}/${viewport.name}: ${message.text()}`,
+              );
+            }
+          });
+          page.on("pageerror", (error) => {
+            pageErrors.push(`${locale}/${themeMode}/${viewport.name}: ${error.message}`);
+          });
 
-        await page.goto(localUrl, { timeout: 60_000, waitUntil: "commit" });
-        await page.locator("#paydance-preview").waitFor({
-          state: "visible",
-          timeout: 45_000,
-        });
-        await assertDom(page, `${themeMode}/${viewport.name}`);
-        await assertThemeToggleEdge(page, `${themeMode}/${viewport.name}`);
+          await page.goto(localUrl, { timeout: 60_000, waitUntil: "domcontentloaded" });
+          await page.locator("#paydance-preview").waitFor({
+            state: "visible",
+            timeout: 45_000,
+          });
+          await assertDom(page, `${locale}/${themeMode}/${viewport.name}`, locale);
+          await assertThemeToggleEdge(
+            page,
+            `${locale}/${themeMode}/${viewport.name}`,
+            locale,
+          );
 
-        const screenshotPath = join(
-          qaDir,
-          `web-preview-${themeMode}-${viewport.name}-${viewport.width}x${viewport.height}.png`,
-        );
-        await page.screenshot({ fullPage: true, path: screenshotPath });
-        await context.close();
+          const screenshotPath = join(
+            qaDir,
+            `web-preview-${locale}-${themeMode}-${viewport.name}-${viewport.width}x${viewport.height}.png`,
+          );
+          await page.screenshot({ fullPage: true, path: screenshotPath });
+          await context.close();
+        }
       }
     }
 
@@ -467,16 +637,19 @@ const runQa = async () => {
         {
           localUrl,
           qaDir,
-          screenshots: themes.flatMap((themeMode) =>
-            viewports.map((viewport) => ({
-              name: `${themeMode}-${viewport.name}`,
-              path: join(
-                qaDir,
-                `web-preview-${themeMode}-${viewport.name}-${viewport.width}x${viewport.height}.png`,
-              ),
-              themeMode,
-              viewport,
-            })),
+          screenshots: locales.flatMap((locale) =>
+            themes.flatMap((themeMode) =>
+              viewports.map((viewport) => ({
+                locale,
+                name: `${locale}-${themeMode}-${viewport.name}`,
+                path: join(
+                  qaDir,
+                  `web-preview-${locale}-${themeMode}-${viewport.name}-${viewport.width}x${viewport.height}.png`,
+                ),
+                themeMode,
+                viewport,
+              })),
+            ),
           ),
           version,
         },

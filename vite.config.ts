@@ -22,6 +22,9 @@ export default defineConfig(({ mode }) => ({
     },
   },
   clearScreen: false,
+  optimizeDeps: {
+    entries: ["index.html"],
+  },
   build: {
     rolldownOptions: {
       checks: {
@@ -33,5 +36,8 @@ export default defineConfig(({ mode }) => ({
     strictPort: true,
     port: 1420,
     host: "127.0.0.1",
+    watch: {
+      ignored: ["**/src-tauri/target/**"],
+    },
   },
 }));

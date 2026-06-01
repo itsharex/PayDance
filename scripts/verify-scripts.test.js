@@ -93,10 +93,12 @@ describe("verification scripts", () => {
     expect(qaScript).toContain("desktop");
     expect(qaScript).toContain("medium");
     expect(qaScript).toContain("mobile");
+    expect(qaScript).toContain('const locales = ["zh-CN", "en"]');
     expect(qaScript).toContain("1440");
     expect(qaScript).toContain("960");
     expect(qaScript).toContain("390");
     expect(qaScript).toContain("console");
+    expect(qaScript).toContain("--force");
     expect(qaScript).toContain("Web Preview");
     expect(qaScript).toContain("paydance-web-preview-qa-");
     expect(qaScript).toContain(".web-preview__chip");
@@ -106,8 +108,9 @@ describe("verification scripts", () => {
     expect(qaScript).toContain("切换到深色模式");
     expect(qaScript).toContain("切换到浅色模式");
     expect(qaScript).toContain(
-      'page.goto(localUrl, { timeout: 60_000, waitUntil: "commit" })',
+      'page.goto(localUrl, { timeout: 60_000, waitUntil: "domcontentloaded" })',
     );
+    expect(qaScript).toContain("paydance-web-locale");
 
     const qaGuide = readRoot("docs/web-preview-qa.md");
     expect(qaGuide).toContain(
