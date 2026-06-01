@@ -27,7 +27,7 @@ Modified versions and derivative products must use clearly distinguishable names
 
 ## Commercial Licensing
 
-AGPL-3.0-only permits commercial use in compliance with the license. For closed-source integration, OEM, white-label, official brand licensing, or other licensing models that do not fit AGPL-3.0-only, please contact the author for a separate commercial license.
+AGPL-3.0-only permits commercial use in compliance with the license. For closed-source integration, OEM, white-label, official brand licensing, or other licensing models that do not fit AGPL-3.0-only, contact via the email listed on the [author's GitHub profile](https://github.com/MasterBao66) for a separate commercial license.
 
 ## Third-Party Components
 
@@ -35,7 +35,7 @@ This project uses several open-source third-party components. For the license li
 
 ## Contributor Licensing
 
-Before submitting code contributions, please read **[CONTRIBUTING_EN.md](../CONTRIBUTING_EN.md)** (Contribution Guidelines). Ordinary contributions enter the project under AGPL-3.0-only plus the additional terms. If the maintainer needs to include a contribution in commercial, OEM, or white-label licensing, the contributor will be asked to explicitly sign **[CLA_EN.md](CLA_EN.md)** (Contributor License Agreement).
+Before submitting code contributions, please read **[CONTRIBUTING_EN.md](../docs/CONTRIBUTING_EN.md)** (Contribution Guidelines). Ordinary contributions enter the project under AGPL-3.0-only plus the additional terms. If the maintainer needs to include a contribution in commercial, OEM, or white-label licensing, the contributor will be asked to explicitly sign **[CLA_EN.md](CLA_EN.md)** (Contributor License Agreement).
 
 ## Legal Notice
 

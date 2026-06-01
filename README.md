@@ -18,7 +18,7 @@
 
 ## 产品简介
 
-薪跳 PayDance 是一款面向 Windows 11 的桌面实时工资看板。配置薪资与上下班时间后，它会把今日入账放在桌面上，随着工作时间实时增长。
+薪跳 PayDance 是一款桌面实时工资看板。配置薪资与上下班时间后，它会把今日入账放在桌面上，随着工作时间实时增长。
 
 主窗口展示今日入账、工作进度、剩余时间和今日预计；迷你悬浮窗口只保留金额，适合放在屏幕角落随时查看。
 
@@ -42,7 +42,7 @@
 - **迷你悬浮模式**：只显示核心金额，支持拖拽、双击恢复主窗口、默认置顶和 `10% - 100%` 透明度调节。
 - **Windows 11 桌面体验**：无边框窗口、圆角、亮色/暗色主题、托盘常驻、窗口置顶、开机自启动和静默后台自动更新。
 - **本地优先隐私**：薪资与上下班时间配置保存在本机，不需要账号，不上传数据，不包含遥测。
-- **在线体验入口**：Web Preview 可在浏览器中预览核心看板、首次配置和迷你悬浮手感。
+- **在线体验入口**：Web Preview 可在浏览器中体验所有核心功能。
 - **发布可靠性**：Release 提供便携版 EXE，附带 SHA256 校验与数字签名，CI 覆盖代码卫生、行为测试、桌面构建和 Web Preview 部署。
 
 ## 快速下载
@@ -50,7 +50,7 @@
 | 平台 | 推荐下载 | 说明 |
 | --- | --- | --- |
 | 在线体验 | [PayDance Web](https://masterbao66.github.io/PayDance/) | 网页端，含所有核心功能 |
-| Windows 11 桌面端 | [pay-dance-v0.9.3-windows-x64.exe](https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe) | 含开机自启动、窗口置顶、迷你悬浮模式、系统托盘等完整功能 |
+| Windows 11 桌面端 | [pay-dance-v0.9.3-windows-x64.exe](https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe) | 当前官方桌面发布，含开机自启动、窗口置顶、迷你悬浮模式、系统托盘等完整功能 |
 
 Release 页面会同时提供 `pay-dance-v0.9.3-windows-x64.exe` 与 `pay-dance-v0.9.3-windows-x64.exe.sha256`。Windows 对未签名二进制可能展示发布者验证提示，建议以 GitHub Release 来源与 SHA256 校验作为下载后的完整性确认。
 
@@ -72,7 +72,7 @@ Get-Content .\pay-dance-v0.9.3-windows-x64.exe.sha256
 | 本地存储    | `@tauri-apps/plugin-store`，配置写入本机应用数据目录                                                                                       |
 | 测试        | Vitest, @vue/test-utils, happy-dom, vue-tsc, cargo fmt, cargo clippy, cargo check                                                          |
 
-项目采用 Vue 3 + TypeScript + Tauri 2 架构，核心薪资逻辑、状态模型和前端界面服务于 Web Preview 与 Windows 桌面端。当前正式验证平台是 Windows 11，网页端用于在线体验与核心功能预览。
+项目采用 Vue 3 + TypeScript + Tauri 2 架构，核心薪资逻辑、状态模型和前端界面服务于 Web Preview 与桌面端。当前官方验证平台是 Windows 11，网页端用于在线体验与核心功能预览。
 
 ## 开发者指南
 

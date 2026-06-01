@@ -1,6 +1,6 @@
 # Security Policy
 
-> [中文版 →](.github/SECURITY.md)
+> [中文版 →](../.github/SECURITY.md)
 
 ## Supported Versions
 
@@ -13,9 +13,7 @@ Only the latest release receives security fixes. Older versions are not supporte
 
 ## Supported Platforms
 
-The currently released and security-supported surfaces are the **Windows 11 desktop app** and the **Web Preview**. The Tauri dependency graph may include upstream cross-platform dependencies for macOS/Linux in `Cargo.lock`, but those platforms are not part of the current supported release surface unless a release note explicitly ships a build for them.
-
-For third-party dependency alerts that only affect unreleased platform code paths, maintainers will document the assessment and continue tracking upstream Tauri/Wry/GTK updates. If PayDance starts shipping that platform, those dependencies become part of the normal security fix scope.
+The currently released and security-supported surfaces are the **Windows 11 desktop app** and the **Web Preview**. The Tauri dependency graph may include upstream cross-platform dependencies for macOS/Linux in `Cargo.lock`; these dependencies are not ignored, but until a platform is officially shipped, related findings are assessed as unreleased-platform paths, documented, and tracked upstream.
 
 ## Reporting a Vulnerability
 

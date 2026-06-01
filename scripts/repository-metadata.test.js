@@ -3,12 +3,13 @@
 //
 // Additional terms: see /legal/ADDITIONAL_TERMS.md
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { extname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const read = (path) => readFileSync(resolve(import.meta.dirname, "..", path), "utf8");
+const repoRoot = resolve(import.meta.dirname, "..");
+const read = (path) => readFileSync(resolve(repoRoot, path), "utf8");
 const packageJson = JSON.parse(read("package.json"));
 const versionedDesktopAssetName = `pay-dance-v${packageJson.version}-windows-x64.exe`;
 const versionedDesktopChecksumName = `${versionedDesktopAssetName}.sha256`;
@@ -18,7 +19,6 @@ const blockedAudienceTerms = [
   String.fromCodePoint(0x6253, 0x5de5, 0x4eba),
   String.fromCodePoint(0x6253, 0x5de5, 0x4eba, 0x7684),
 ];
-const macOsName = ["mac", "OS"].join("");
 const blockedDashboardTerm = String.fromCodePoint(0x4eea, 0x8868, 0x76d8);
 const legacyAdditionalTermsReference = `see /${["ADDITIONAL_TERMS", "md"].join(".")}`;
 const binaryExtensions = new Set([".ico", ".png", ".woff2"]);
@@ -38,12 +38,36 @@ const textFiles = [
 ].filter((path) => !binaryExtensions.has(extname(path).toLowerCase()));
 const trackedTextFiles = () =>
   execFileSync("git", ["ls-files"], {
-    cwd: resolve(import.meta.dirname, ".."),
+    cwd: repoRoot,
     encoding: "utf8",
   })
     .split(/\r?\n/)
     .filter(Boolean)
     .filter((path) => !binaryExtensions.has(extname(path).toLowerCase()));
+const trackedMarkdownFiles = () =>
+  execFileSync("git", ["ls-files", "*.md"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  })
+    .split(/\r?\n/)
+    .filter(Boolean);
+
+function resolveMarkdownLink(file, rawTarget) {
+  const target = rawTarget.trim().replace(/^<|>$/g, "").split(/\s+/)[0];
+  if (
+    !target ||
+    target.startsWith("#") ||
+    target.startsWith("http://") ||
+    target.startsWith("https://") ||
+    target.startsWith("mailto:")
+  ) {
+    return null;
+  }
+
+  const withoutAnchor = target.split("#")[0];
+  if (!withoutAnchor) return null;
+  return resolve(repoRoot, file.includes("/") ? file.replace(/\/[^/]+$/, "") : ".", withoutAnchor);
+}
 
 describe("repository metadata", () => {
   it("keeps README desktop download links on the versioned Windows release executable", () => {
@@ -135,6 +159,111 @@ describe("repository metadata", () => {
     expect(read(".github/ISSUE_TEMPLATE/bug_report.yml")).toContain(currentVersion);
   });
 
+  it("keeps repository markdown links resolvable after documentation moves", () => {
+    const missingLinks = [];
+    const markdownLinkPattern = /(?<!!)\[[^\]]+\]\(([^)]+)\)/g;
+
+    for (const file of trackedMarkdownFiles()) {
+      const source = read(file);
+      for (const match of source.matchAll(markdownLinkPattern)) {
+        const resolved = resolveMarkdownLink(file, match[1]);
+        if (resolved && !existsSync(resolved)) {
+          missingLinks.push(`${file}: ${match[1]}`);
+        }
+      }
+    }
+
+    expect(missingLinks).toEqual([]);
+  });
+
+  it("keeps gitleaks configuration parseable and intentional", () => {
+    const config = read(".gitleaks.toml");
+
+    expect(config).toContain('title = "PayDance gitleaks config"');
+    expect(config).toContain("[allowlist]");
+    expect(config).toContain("paths = [");
+    expect(config.split(/\r?\n/).length).toBeGreaterThan(10);
+    expect(config).not.toContain("PayDance#");
+  });
+
+  it("keeps brand asset documentation Chinese-first with English mirrors", () => {
+    expect(read("docs/brand/official.md")).toContain("# 官方品牌资产");
+    expect(read("docs/brand/official.md")).toContain(
+      "> [English version →](official_EN.md)",
+    );
+    expect(read("docs/brand/official_EN.md")).toContain("# Official Brand Assets");
+
+    expect(read("docs/brand/community-placeholder.md")).toContain("# 社区占位资产");
+    expect(read("docs/brand/community-placeholder.md")).toContain(
+      "> [English version →](community-placeholder_EN.md)",
+    );
+    expect(read("docs/brand/community-placeholder_EN.md")).toContain(
+      "# Community Placeholder Assets",
+    );
+  });
+
+  it("keeps maintainer contact guidance on the public GitHub profile email", () => {
+    const githubProfile = "https://github.com/MasterBao66";
+    const blockedContactPhrases = [
+      ["提交", "历史", "中的", "邮箱"].join(""),
+      ["email", "found", "in", "commit", "history"].join(" "),
+      ["contact", "Mr.Baoboer"].join(" "),
+      ["联系", "Mr.Baoboer"].join(" "),
+    ];
+
+    expect(read("docs/SUPPORT.md")).toContain(githubProfile);
+    expect(read("docs/SUPPORT_EN.md")).toContain(githubProfile);
+    expect(read("legal/LEGAL.md")).toContain(githubProfile);
+    expect(read("legal/LEGAL_EN.md")).toContain(githubProfile);
+
+    for (const file of trackedTextFiles()) {
+      const source = read(file);
+      for (const phrase of blockedContactPhrases) {
+        expect(source, file).not.toContain(phrase);
+      }
+    }
+  });
+
+  it("keeps platform positioning Windows-focused but community-extensible", () => {
+    expect(read("README.md")).toContain(
+      "薪跳 PayDance 是一款桌面实时工资看板。配置薪资与上下班时间后",
+    );
+    expect(read("README.md")).toContain("当前官方验证平台是 Windows 11");
+    expect(read("docs/README_EN.md")).toContain(
+      "PayDance (薪跳) is a desktop real-time salary dashboard.",
+    );
+    expect(read("docs/PRODUCT.md")).toContain("这并不排斥 macOS、Linux 等平台");
+    expect(read(".github/CONTRIBUTING.md")).toContain(
+      "平台适配贡献需附验证边界",
+    );
+    expect(read(".github/SECURITY.md")).not.toContain(
+      ["不属于", "当前正式支持", "或发布范围"].join(""),
+    );
+    expect(read("docs/SECURITY_EN.md")).not.toContain(
+      "not part of the current supported release surface",
+    );
+  });
+
+  it("keeps stage-dependent docs from over-promising future scope", () => {
+    const blockedScopePhrases = [
+      ["永", "不", "做"].join(""),
+      ["will", "not", "be", "accepted"].join(" "),
+      ["不会", "合并"].join(""),
+    ];
+
+    expect(read("README.md")).toContain("网页端，含所有核心功能");
+    expect(read("docs/README_EN.md")).toContain("Browser-based, all core features");
+    expect(read("docs/ROADMAP.md")).toContain("长期排除方向");
+    expect(read("docs/ROADMAP_EN.md")).toContain("Long-Term Exclusions");
+
+    for (const file of trackedTextFiles()) {
+      const source = read(file);
+      for (const phrase of blockedScopePhrases) {
+        expect(source, file).not.toContain(phrase);
+      }
+    }
+  });
+
   it("removes legacy audience and desktop migration wording from product text", () => {
     for (const file of textFiles) {
       const source = read(file);
@@ -143,7 +272,6 @@ describe("repository metadata", () => {
         expect(source, file).not.toContain(term);
       }
 
-      expect(source, file).not.toContain(macOsName);
       expect(source, file).not.toContain(String.fromCodePoint(0x8fc1, 0x79fb));
     }
   });

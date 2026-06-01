@@ -68,7 +68,7 @@ Unless otherwise announced, only the `MasterBao66/PayDance` repository, that rep
 
 ## Authorization
 
-To use the PayDance name, logo, icon, visual assets, or official release channels beyond factual reference, contact Mr.Baoboer for written permission. Authorization is granted case by case and may include limits on scope, term, territory, and presentation.
+To use the PayDance name, logo, icon, visual assets, or official release channels beyond factual reference, contact via the email listed on the [author's GitHub profile](https://github.com/MasterBao66) for written permission. Authorization is granted case by case and may include limits on scope, term, territory, and presentation.
 
 ## Rationale
 

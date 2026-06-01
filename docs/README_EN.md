@@ -17,7 +17,7 @@
 
 ## About
 
-PayDance (薪跳) is a real-time salary dashboard for Windows 11. Configure your salary and work hours, and it displays today's earnings on your desktop, increasing continuously as you work.
+PayDance (薪跳) is a desktop real-time salary dashboard. Configure your salary and work hours, and it displays today's earnings on your desktop, increasing continuously as you work.
 
 The main window shows today's earnings, work progress, remaining time, and daily estimate. The mini floating window keeps only the amount — perfect for tucking into a corner of your screen.
 
@@ -41,7 +41,7 @@ The main window shows today's earnings, work progress, remaining time, and daily
 - **Mini floating mode**: Shows only the core amount. Supports drag, double-click to restore the main window, always-on-top, and 10%–100% transparency.
 - **Windows 11 desktop experience**: Frameless window, rounded corners, light/dark themes, system tray, always-on-top, auto-start, and silent background auto-update.
 - **Local-first privacy**: No account required. Salary data stays on your machine. No telemetry, remote sync, or online accounts.
-- **Web preview**: Try the core dashboard, setup wizard, and mini floating mode in your browser before downloading.
+- **Web preview**: Try all core features in your browser before downloading.
 - **Release reliability**: Every release includes a portable EXE with SHA256 checksums and digital signatures. CI covers code hygiene, behavioral tests, desktop and web builds.
 
 ## Quick Download
@@ -49,7 +49,7 @@ The main window shows today's earnings, work progress, remaining time, and daily
 | Platform | Download | Notes |
 | --- | --- | --- |
 | Web Preview | [PayDance Web](https://masterbao66.github.io/PayDance/) | Browser-based, all core features |
-| Windows 11 Desktop | [pay-dance-v0.9.3-windows-x64.exe](https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe) | Full desktop experience: auto-start, always-on-top, mini floating mode, system tray |
+| Windows 11 Desktop | [pay-dance-v0.9.3-windows-x64.exe](https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe) | Current official desktop release: auto-start, always-on-top, mini floating mode, system tray |
 
 Each release includes `pay-dance-v0.9.3-windows-x64.exe` and its `pay-dance-v0.9.3-windows-x64.exe.sha256`. On Windows, unsigned binaries may trigger a publisher verification prompt. Verify integrity using the SHA256 checksum:
 
@@ -71,7 +71,7 @@ If the values match, your local file is identical to the release asset. If not, 
 | Local storage | `@tauri-apps/plugin-store`, config saved to local app data directory                                                                     |
 | Testing     | Vitest, @vue/test-utils, happy-dom, vue-tsc, cargo fmt, cargo clippy, cargo check                                                          |
 
-Built with Vue 3 + TypeScript + Tauri 2. Core salary logic, state model, and UI are shared between the Web Preview and Windows desktop app. The primary validated platform is Windows 11. The web version serves as an online preview of core functionality.
+Built with Vue 3 + TypeScript + Tauri 2. Core salary logic, state model, and UI are shared between the Web Preview and desktop app. The current official validated platform is Windows 11, while the web version serves as an online preview of core functionality.
 
 ## Developer Guide
 

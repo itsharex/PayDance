@@ -2,41 +2,46 @@
 
 > [中文版 →](ROADMAP.md)
 
-This document describes the development direction for PayDance. No release dates are promised.
+This document records the development direction for PayDance. It is not a release-date promise; it helps maintainers, contributors, and users understand the current priorities.
+
+## Recently Completed
+
+- Web Preview automated QA: local server, multi-viewport screenshots, DOM checks, and console checks.
+- Supply-chain baseline governance: `cargo audit`, `cargo deny`, gitleaks, locked dependencies, and metadata tests.
+- Brand and licensing documentation: official asset boundaries, Chinese-first docs, and English mirrors.
+- Release asset constraints: versioned Windows file names, `latest.json`, updater signing, and post-release smoke checks.
 
 ## Now
 
-- Complete auto-update system (real signing, portable self-update, `latest.json`)
-- Window position memory with multi-monitor recovery
-- System clock calibration (sleep resume, timezone change, day crossing)
-- Explicit config migration version chain
-- Onboarding wizard "example awareness" (live preview)
+- Auto-update release-chain review: key rotation drills, `latest.json` compatibility, and portable update paths.
+- Window position memory with multi-monitor recovery.
+- System clock calibration: sleep resume, timezone changes, day crossing, and night-shift boundaries.
+- Explicit config migration version chain so future settings changes stay traceable and reversible.
+- Onboarding wizard example awareness: a preview that feels closer to the real live wage tick during setup.
 
 ## Next
 
-- Authenticode code signing (reduce SmartScreen warnings)
-- Mini window right-click menu (opacity, reset position, restore)
-- Post-release asset smoke test automation
-- Supply chain hardening (cargo audit, gitleaks, pinned Actions SHAs)
-- SBOM generation
+- Authenticode code signing to reduce Windows SmartScreen warnings.
+- Mini floating window context menu: opacity, reset position, and restore main window.
+- Windows desktop smoke tests for native capabilities: tray, always-on-top, autostart, and single instance.
+- SBOM generation and release archiving.
+- Community contribution labels so new contributors can find suitable entry points.
 
 ## Later
 
-- English website entry (`/en/` + `hreflang`)
-- Playwright screenshot regression
-- Accessibility auto-check (axe-core)
-- Windows native integration smoke tests
-- Community contribution task labels
-- Multi-currency support
+- English website entry: `/en/`, `hreflang`, and language switching.
+- Playwright screenshot regression for the Web Preview first screen and key states.
+- Accessibility automation such as axe-core.
+- Multi-currency support, while keeping the main interface lightweight.
 
-## Never
+## Long-Term Exclusions
 
-These features are explicitly excluded. Related PRs will not be accepted:
+These directions are outside the long-term product focus. Related proposals should start with an Issue explaining why they still serve the core desktop real-time wage board experience:
 
 - Keyboard shortcuts / hotkeys
 - Reminders / notifications / alerts
-- Historical timeline / charts / trends
+- Historical timelines / charts / trends
 - Clock-in / attendance / timesheet tracking
 - Cloud sync / accounts / online services
 
-See `PRODUCT.md` and `CONTRIBUTING.md` for details.
+Roadmap decisions are grounded in [PRODUCT.md](PRODUCT.md) and the [Contributing Guide](../.github/CONTRIBUTING.md).

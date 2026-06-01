@@ -28,6 +28,17 @@ import appMetaSource from "./lib/app-meta.ts?raw";
 
 const read = (path: string) =>
   readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const pngSize = (path: string) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url));
+  const pngSignature = "89504e470d0a1a0a";
+
+  expect(source.subarray(0, 8).toString("hex")).toBe(pngSignature);
+
+  return {
+    width: source.readUInt32BE(16),
+    height: source.readUInt32BE(20),
+  };
+};
 const appStyles = read("src/style.css");
 const webPreviewStyles = read("src/web-preview/web-preview.css");
 const cssBlockFrom = (source: string, selector: string) =>
@@ -86,6 +97,7 @@ describe("PayDance Web Preview", () => {
 
   it("brands the web storefront with the product logo and current version", () => {
     const favicon = statSync(new URL("../public/favicon.png", import.meta.url));
+    const ogImage = statSync(new URL("../public/og-image.png", import.meta.url));
     const htmlSource = read("index.html");
 
     expect(webPreviewSource).toContain("productLogoUrl");
@@ -93,6 +105,9 @@ describe("PayDance Web Preview", () => {
     expect(htmlSource).toContain('rel="icon"');
     expect(htmlSource).toContain("%BASE_URL%favicon.png");
     expect(favicon.size).toBeGreaterThan(1_000);
+    expect(ogImage.size).toBeGreaterThan(20_000);
+    expect(pngSize("public/og-image.png")).toEqual({ width: 1200, height: 630 });
+    expect(htmlSource).toContain("https://masterbao66.github.io/PayDance/og-image.png");
     expect(webPreviewSource).toContain('class="web-preview__brand"');
     expect(webPreviewSource).toContain('class="web-preview__brand-logo"');
     expect(webPreviewSource).not.toContain("web-preview__brand-icon");

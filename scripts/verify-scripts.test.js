@@ -85,6 +85,24 @@ describe("verification scripts", () => {
     expect(readRoot("docs/CONTRIBUTING_EN.md")).toContain("npm run push:main");
   });
 
+  it("keeps Rust dependency governance explicit and warning-free", () => {
+    const auditConfig = readRoot("src-tauri/.cargo/audit.toml");
+    const denyConfig = readRoot("src-tauri/deny.toml");
+
+    expect(auditConfig).toContain("# Tauri/Wry upstream advisories");
+    expect(auditConfig).toContain("RUSTSEC-2024-0411");
+    expect(auditConfig).toContain("RUSTSEC-2024-0413");
+    expect(auditConfig).toContain("RUSTSEC-2025-0100");
+
+    expect(denyConfig).toContain('multiple-versions = "allow"');
+    expect(denyConfig).not.toContain("RUSTSEC-2024-0370");
+    expect(denyConfig).not.toContain('"GPL-3.0-only"');
+    expect(denyConfig).not.toContain('"GPL-3.0-or-later"');
+    expect(denyConfig).not.toContain('"OpenSSL"');
+    expect(denyConfig).not.toContain('"Unicode-DFS-2016"');
+    expect(denyConfig).not.toContain('"BSL-1.0"');
+  });
+
   it("codifies Web Preview QA through the Codex Playwright workflow", () => {
     expect(packageJson.scripts["qa:web-preview"]).toBe("node scripts/qa-web-preview.mjs");
 

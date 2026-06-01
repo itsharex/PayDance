@@ -1,6 +1,8 @@
-# Web Preview QA
+# Web Preview 质量验证
 
-Web Preview 视觉验证的标准流程是：本地服务 + 内置 Playwright + 多视口截图 + DOM/console 双校验。
+> [English version →](web-preview-qa_EN.md)
+
+Web Preview 的验证标准是：本地服务 + 内置 Playwright + 多视口截图 + DOM/console 双校验。目标不是“截到一张图”，而是确认线上橱窗在真实浏览器里能稳定展示、切换主题、保留关键文案和布局边界。
 
 ## 禁用方法
 
@@ -24,3 +26,11 @@ npm run qa:web-preview
 ```
 
 脚本会自动启动 `npm run dev:web`，使用内置 Playwright 完成三种视口截图与 DOM/console 校验，然后关闭本地服务。截图和 `summary.json` 会写入本次运行的唯一临时 QA 目录；`summary.json` 会记录 run id、commit 和页面实际读取到的中英文 DOM 文案，避免误把旧截图当作新证据。
+
+## 通过标准
+
+- 三种视口都有非空截图，首屏没有文字重叠、按钮溢出或主体塌缩。
+- 中英文文案都来自当前页面 DOM，而不是旧截图或手工判断。
+- 浅色/深色主题切换后，预览窗口边缘没有明显闪白、错色或残影。
+- `summary.json` 中没有严重 console error 或 page error。
+- 验证结束后本地 dev server 已退出。
