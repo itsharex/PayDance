@@ -691,7 +691,8 @@
   .web-preview__hero {
     flex: 0 0 auto;
     gap: 30px;
-    padding-top: 18px; padding-bottom: 24px;
+    padding-top: 18px;
+    padding-bottom: 24px;
   }
 
   .web-preview h1 {

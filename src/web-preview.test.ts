@@ -210,13 +210,9 @@ describe("PayDance Web Preview", () => {
       '"web.heroLead": "具象化你的劳动价值，专注工作，也看见回报"',
     );
     expect(zhLocaleSource).toContain('"web.featureRealtime": "毫秒级更新"');
-    expect(zhLocaleSource).toContain(
-      '"web.featureRealtimeDesc": "今日收入实时跳动"',
-    );
+    expect(zhLocaleSource).toContain('"web.featureRealtimeDesc": "今日收入实时跳动"');
     expect(zhLocaleSource).toContain('"web.featureFocus": "安心专注"');
-    expect(zhLocaleSource).toContain(
-      '"web.featureFocusDesc": "轻量窗口，静默运行"',
-    );
+    expect(zhLocaleSource).toContain('"web.featureFocusDesc": "轻量窗口，静默运行"');
     expect(zhLocaleSource).toContain('"web.featurePrivacy": "隐私优先"');
     expect(zhLocaleSource).toContain('"web.featurePrivacyDesc": "所有数据本地处理"');
     expect(htmlSource).toContain("具象化你的劳动价值，专注工作，也看见回报");

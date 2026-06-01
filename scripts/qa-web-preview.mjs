@@ -516,16 +516,12 @@ const assertDom = async (page, viewportName, locale) => {
           iconRect.top + iconRect.height / 2 - (linkRect.top + linkRect.height / 2),
         );
       });
-      const labelOffsets = Array.from(
-        link.querySelectorAll(".web-preview__action-label"),
-      )
+      const labelOffsets = Array.from(link.querySelectorAll(".web-preview__action-label"))
         .map((label) => label.getBoundingClientRect())
         .filter((labelRect) => labelRect.width > 0 && labelRect.height > 0)
         .map((labelRect) =>
           Math.abs(
-            labelRect.top +
-              labelRect.height / 2 -
-              (linkRect.top + linkRect.height / 2),
+            labelRect.top + labelRect.height / 2 - (linkRect.top + linkRect.height / 2),
           ),
         );
 
