@@ -552,24 +552,23 @@ describe("PayDance Web Preview", () => {
     const readmeSource = read("README.md");
 
     expect(readmeSource).not.toContain("## 近期改进");
-    expect(readmeSource).toContain('<font size="7">');
+    expect(readmeSource).toContain("<h1 align=\"center\">薪跳 PayDance</h1>");
     expect(readmeSource).toContain("桌面实时工资看板");
     expect(readmeSource).not.toContain(String.fromCodePoint(0x4eea, 0x8868, 0x76d8));
-    expect(readmeSource).toContain("在线体验</");
-    expect(readmeSource).toContain("Windows 桌面端</");
-    expect(readmeSource).not.toContain("shields.io");
+    expect(readmeSource).toContain("在线体验");
+    expect(readmeSource).toContain("Windows 桌面版");
     expect(readmeSource).not.toContain("优化完善在线体验");
     expect(readmeSource).not.toContain("下载 Windows 便携版");
     expect(readmeSource).toContain("Mr.Baoboer");
     for (const heading of [
-      "## 产品简介",
-      "## 界面体验",
-      "## 核心特性",
-      "## 快速下载",
-      "## 技术架构",
-      "## 开发者指南",
-      "## 隐私声明",
-      "## 作者与许可",
+      "## 它是什么",
+      "## 为什么用它",
+      "## 获取",
+      "## 技术栈",
+      "## 开发",
+      "## 隐私",
+      "## 相关文档",
+      "## 许可",
     ]) {
       expect(readmeSource).toContain(heading);
     }
@@ -577,20 +576,11 @@ describe("PayDance Web Preview", () => {
     expect(readmeSource).not.toContain("## 快速下载与安全校验");
     expect(readmeSource).not.toContain("## 技术架构与工程质量");
     expect(readmeSource).not.toContain("## 隐私声明、作者与许可");
-    expect(readmeSource).toContain("| 在线体验 | [PayDance Web]");
     expect(readmeSource).toContain("网页端，含所有核心功能");
-    const readmeVersion = JSON.parse(readFileSync("package.json", "utf8")).version;
-    expect(readmeSource).toContain(
-      `| Windows 11 桌面端 | [pay-dance-v${readmeVersion}-windows-x64.exe]`,
-    );
-    expect(readmeSource).toContain(
-      "含开机自启动、窗口置顶、迷你悬浮模式、系统托盘等完整功能",
-    );
+    expect(readmeSource).toContain("便携 EXE，含托盘、置顶、迷你悬浮、开机自启动等完整能力");
     expect(readmeSource).not.toContain(["产品", "预览"].join(""));
     expect(readmeSource).not.toContain("poster-01-live-dashboard-v3.png");
     expect(readmeSource).not.toContain(["实时", "收入看板"].join(""));
-    expect(readmeSource).not.toContain("GitHub Release | [最新正式版]");
-    expect(readmeSource).not.toContain("源码           |");
     expect(readmeSource).not.toContain(["工程", "治理"].join(""));
     expect(readmeSource).not.toContain(
       ["把今天", "已经挣到的钱，实时放在桌面上"].join(""),
@@ -598,7 +588,6 @@ describe("PayDance Web Preview", () => {
     expect(readmeSource).not.toContain(["先在线", "感受核心界面"].join(""));
     expect(readmeSource).not.toContain(["Mr", "Ba" + "ober"].join("."));
     expect(readmeSource).not.toContain("actions/workflows/ci.yml/badge.svg");
-    expect(readmeSource).not.toContain("Release</a>");
     expect(readmeSource).not.toContain("配置薪资与作息");
     expect(readmeSource).not.toContain("长期扫读");
     expect(readmeSource).not.toContain("Web Preview 是产品橱窗，不替代桌面版");

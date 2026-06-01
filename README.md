@@ -55,11 +55,7 @@
 | 🌐 | **[在线体验](https://masterbao66.github.io/PayDance/)** | 网页端，含所有核心功能 |
 | ⬇️ | **[Windows 桌面版](https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe)** | 便携 EXE，含托盘、置顶、迷你悬浮、开机自启动等完整能力 |
 
-Release 页面同时提供 [pay-dance-v0.9.3-windows-x64.exe](https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe) 与 `pay-dance-v0.9.3-windows-x64.exe.sha256`，下载后可验证完整性：
-
-```powershell
-Get-FileHash .\pay-dance-v0.9.3-windows-x64.exe -Algorithm SHA256
-```
+Release 页面同时提供 SHA256 校验文件，下载后可验证完整性。
 
 ## 技术栈
 
@@ -71,7 +67,7 @@ Get-FileHash .\pay-dance-v0.9.3-windows-x64.exe -Algorithm SHA256
 | 存储 | 本机应用数据目录（Tauri Store） |
 | 测试 | Vitest + vue-tsc + cargo clippy |
 
-Web Preview 与桌面端共享核心薪资逻辑和前端界面，部署在 GitHub Pages 上作为在线体验入口。当前官方验证平台是 Windows 11，网页端用于在线体验与核心功能预览。
+Web Preview 与桌面端共享核心薪资逻辑和前端界面，部署在 GitHub Pages 上作为在线体验入口。
 
 ## 开发
 
