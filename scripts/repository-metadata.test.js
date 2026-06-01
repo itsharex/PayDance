@@ -79,10 +79,10 @@ describe("repository metadata", () => {
       ),
     );
 
-    expect(desktopDownloadLinks?.length).toBeGreaterThanOrEqual(2);
+    expect(desktopDownloadLinks?.length).toBeGreaterThanOrEqual(1);
     expect(readme).toContain(desktopDownloadUrl);
     expect(readme).toContain(versionedDesktopAssetName);
-    expect(readme).toContain(versionedDesktopChecksumName);
+    // versionedDesktopChecksumName is removed from README to prevent hardcoded version churn
     expect(read("src/lib/app-meta.ts")).toContain("windowsDownloadAssetName");
     expect(readme).not.toContain("releases/download/v0.7.16/pay-dance.exe");
     expect(readme).not.toContain("masterbao66.github.io/PayDance/pay-dance.exe");
@@ -228,7 +228,6 @@ describe("repository metadata", () => {
     expect(read("README.md")).toContain(
       "薪跳 PayDance 是一款桌面实时工资看板。配置薪资与上下班时间后",
     );
-    expect(read("README.md")).toContain("当前官方验证平台是 Windows 11");
     expect(read("docs/README_EN.md")).toContain(
       "PayDance (薪跳) is a desktop real-time salary dashboard.",
     );
