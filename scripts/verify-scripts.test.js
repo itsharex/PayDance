@@ -100,7 +100,10 @@ describe("verification scripts", () => {
     expect(qaScript).toContain("console");
     expect(qaScript).toContain("--force");
     expect(qaScript).toContain("Web Preview");
-    expect(qaScript).toContain("paydance-web-preview-qa-");
+    expect(qaScript).toContain("PAYDANCE_WEB_QA_RUN_ID");
+    expect(qaScript).toContain("commitSha");
+    expect(qaScript).toContain("observedCopies");
+    expect(qaScript).toContain("paydance-web-preview-qa-${version}-${runId}");
     expect(qaScript).toContain(".web-preview__chip");
     expect(qaScript).toContain(".web-preview__action");
     expect(qaScript).toContain(".web-preview__action-label");
@@ -118,7 +121,9 @@ describe("verification scripts", () => {
     );
     expect(qaGuide).toContain("不要使用 headless Chrome/CDP/CLI screenshot");
     expect(qaGuide).toContain(
-      "C:\\Users\\mrbao\\AppData\\Local\\Temp\\paydance-web-preview-qa-{version}",
+      "C:\\Users\\mrbao\\AppData\\Local\\Temp\\paydance-web-preview-qa-{version}-{commit}-{timestamp}",
     );
+    expect(qaGuide).toContain("不要复用仅包含版本号的固定目录");
+    expect(qaGuide).toContain("页面实际读取到的中英文 DOM 文案");
   });
 });

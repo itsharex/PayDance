@@ -12,9 +12,32 @@ import packageMetadata from "../package.json" with { type: "json" };
 
 const require = createRequire(import.meta.url);
 const version = packageMetadata.version;
+const sanitizeRunId = (value) =>
+  value
+    .replace(/[^a-zA-Z0-9._-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
+const readCurrentCommit = () => {
+  try {
+    return execFileSync("git", ["rev-parse", "--short=12", "HEAD"], {
+      cwd: resolve("."),
+      encoding: "utf8",
+    }).trim();
+  } catch {
+    return "unknown";
+  }
+};
+const commitSha = sanitizeRunId(
+  (process.env.GITHUB_SHA?.slice(0, 12) || readCurrentCommit()).trim(),
+);
+const runTimestamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
+const runId = sanitizeRunId(
+  process.env.PAYDANCE_WEB_QA_RUN_ID || `${commitSha}-${runTimestamp}`,
+);
 const port = Number(process.env.PAYDANCE_WEB_QA_PORT ?? 4174);
 const localUrl = `http://127.0.0.1:${port}/PayDance/`;
-const qaDir = join(tmpdir(), `paydance-web-preview-qa-${version}`);
+const qaDir = join(tmpdir(), `paydance-web-preview-qa-${version}-${runId}`);
 const storageKey = "paydance-web-preview-settings";
 const viewports = [
   { name: "desktop", width: 1440, height: 900 },
@@ -511,6 +534,20 @@ const assertDom = async (page, viewportName, locale) => {
   ) {
     throw new Error(`${viewportName}: action button content is not vertically centered`);
   }
+
+  return page.evaluate(() => ({
+    chips: Array.from(document.querySelectorAll(".web-preview__chip-copy")).map((node) =>
+      node.textContent?.trim(),
+    ),
+    headlineAccent: document
+      .querySelector(".web-preview__headline-accent")
+      ?.textContent?.trim(),
+    headlineMain: document
+      .querySelector(".web-preview__headline-main")
+      ?.textContent?.trim(),
+    lead: document.querySelector(".web-preview__lead")?.textContent?.trim(),
+    locale: document.querySelector(".web-preview")?.getAttribute("data-locale"),
+  }));
 };
 
 const assertThemeToggleEdge = async (page, viewportName, locale) => {
@@ -564,6 +601,7 @@ const runQa = async () => {
     const browser = await chromium.launch({ headless: true });
     const consoleFindings = [];
     const pageErrors = [];
+    const observations = [];
 
     for (const locale of locales) {
       for (const themeMode of themes) {
@@ -602,7 +640,17 @@ const runQa = async () => {
             state: "visible",
             timeout: 45_000,
           });
-          await assertDom(page, `${locale}/${themeMode}/${viewport.name}`, locale);
+          const observedCopy = await assertDom(
+            page,
+            `${locale}/${themeMode}/${viewport.name}`,
+            locale,
+          );
+          observations.push({
+            locale,
+            observedCopy,
+            themeMode,
+            viewport,
+          });
           await assertThemeToggleEdge(
             page,
             `${locale}/${themeMode}/${viewport.name}`,
@@ -635,8 +683,11 @@ const runQa = async () => {
       join(qaDir, "summary.json"),
       JSON.stringify(
         {
+          commitSha,
           localUrl,
           qaDir,
+          observedCopies: observations,
+          runId,
           screenshots: locales.flatMap((locale) =>
             themes.flatMap((themeMode) =>
               viewports.map((viewport) => ({
