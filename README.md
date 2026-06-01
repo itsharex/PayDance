@@ -106,12 +106,6 @@ npm run build:web
 ```powershell
 Remove-Item "$env:APPDATA\com.masterbao.paydance\salary-settings.json"
 ```
-```
-
-```powershell
-# 重置本地配置，重新体验首次启动向导
-Remove-Item "$env:APPDATA\com.masterbao.paydance\salary-settings.json"
-```
 
 详细的提交规范、验证命令和贡献方向请参阅 [贡献指南](.github/CONTRIBUTING.md)。
 
