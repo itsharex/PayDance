@@ -135,7 +135,7 @@ const { t } = useI18n();
 
 @media (max-width: 560px) {
   .web-preview__feature-strip {
-    width: min(100%, 360px);
+    width: min(100%, 358px);
     margin-top: 2px;
     margin-bottom: 24px;
     padding-bottom: 4px;
@@ -144,36 +144,40 @@ const { t } = useI18n();
   .web-preview__chips {
     --web-chip-scale: 1;
     max-width: 100%;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    justify-content: stretch;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-content: center;
+    justify-items: center;
+    gap: 8px;
   }
 
   .web-preview__chip {
     width: 100%;
-    grid-template-columns: 40px minmax(0, 1fr);
-    column-gap: 12px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    row-gap: 8px;
+    text-align: center;
   }
 
   .web-preview__chip-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    grid-row: auto;
   }
 
   .web-preview__chip-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   .web-preview__chips dt {
-    font-size: 15px;
+    font-size: 13px;
+    line-height: 1.18;
+    white-space: normal;
   }
 
   .web-preview__chips dd {
-    margin-top: 4px;
-    font-size: 12.5px;
-    line-height: 1.38;
-    white-space: normal;
+    display: none;
   }
 }
 </style>

@@ -29,13 +29,15 @@ defineProps<{
     </a>
     <div class="web-preview__topbar-right">
       <LanguageSwitcher />
-      <span
-        class="web-preview__version"
-        :aria-label="t('web.versionLabel') + ' ' + appVersion"
-      >
-        <span>Web Preview</span>
-        <span class="web-preview__version-dot" aria-hidden="true">·</span>
-        <strong>{{ appVersion }}</strong>
+      <span class="web-preview__status">
+        <span
+          class="web-preview__version"
+          :aria-label="t('web.versionLabel') + ' ' + appVersion"
+        >
+          <span>Web Preview</span>
+          <span class="web-preview__version-dot" aria-hidden="true">·</span>
+          <strong>{{ appVersion }}</strong>
+        </span>
       </span>
     </div>
   </header>

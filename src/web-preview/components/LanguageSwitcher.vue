@@ -38,13 +38,13 @@ const toggle = () => {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  height: 34px;
+  height: 32px;
   border: 1px solid color-mix(in srgb, var(--web-border) 84%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--web-surface-strong) 78%, transparent);
+  background: color-mix(in srgb, var(--web-surface-strong) 86%, transparent);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.45),
-    0 10px 24px rgb(24 24 27 / 0.06);
+    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    0 6px 14px rgb(24 24 27 / 0.045);
   color: var(--muted);
   font-family: var(--web-font-action, var(--font-dashboard, inherit));
   padding: 2px;
@@ -57,8 +57,8 @@ const toggle = () => {
 
 .lang-switcher__track {
   display: grid;
-  width: 88px;
-  height: 28px;
+  width: 86px;
+  height: 26px;
   grid-template-columns: 1fr 1fr;
   gap: 2px;
 }
@@ -87,7 +87,7 @@ const toggle = () => {
   border-color: color-mix(in srgb, var(--income-accent) 34%, var(--web-border));
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.52),
-    0 12px 28px rgb(24 24 27 / 0.08);
+    0 8px 18px rgb(24 24 27 / 0.06);
 }
 
 :global(.theme-dark.web-preview) .lang-switcher {

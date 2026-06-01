@@ -23,7 +23,12 @@ defineProps<{
       :href="windowsDownloadUrl"
     >
       <Windows11Mark />
-      <span class="web-preview__action-label">{{ t("web.downloadWindows") }}</span>
+      <span class="web-preview__action-label web-preview__action-label-full">
+        {{ t("web.downloadWindows") }}
+      </span>
+      <span class="web-preview__action-label web-preview__action-label-short">
+        Download
+      </span>
       <Download :size="16" />
     </a>
     <a class="web-preview__action web-preview__action--quiet" :href="repositoryUrl">

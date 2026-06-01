@@ -55,7 +55,7 @@ const localeExpectations = {
   },
   en: {
     downloadName: /Download for Windows/,
-    headline: "Pay in Motion",
+    headline: "See your pay",
     themeToggleLabels: ["Switch to dark mode", "Switch to light mode"],
   },
 };
@@ -252,8 +252,11 @@ const assertDom = async (page, viewportName, locale) => {
   const headlineVisible = await page
     .getByText(expectedText.headline, { exact: true })
     .isVisible();
+  const downloadName = viewportName.includes("mobile")
+    ? /^Download$/
+    : expectedText.downloadName;
   const downloadVisible = await page
-    .getByRole("link", { name: expectedText.downloadName })
+    .getByRole("link", { name: downloadName })
     .isVisible();
   if (!headlineVisible || !downloadVisible) {
     throw new Error(`${viewportName}: core hero content is not visible`);
@@ -277,12 +280,20 @@ const assertDom = async (page, viewportName, locale) => {
   }
 
   if (viewportName.includes("mobile")) {
-    const sortedFeatureCards = [...featureCards].sort((a, b) => a.top - b.top);
+    const cardTop = featureCards[0].top;
+    const cardsShareRow = featureCards.every((card) => Math.abs(card.top - cardTop) <= 6);
+    if (!cardsShareRow) {
+      throw new Error(
+        `${viewportName}: feature cards stacked instead of staying centered in one row`,
+      );
+    }
+
+    const sortedFeatureCards = [...featureCards].sort((a, b) => a.left - b.left);
     for (let index = 0; index < sortedFeatureCards.length - 1; index += 1) {
       const currentCard = sortedFeatureCards[index];
       const nextCard = sortedFeatureCards[index + 1];
-      if (currentCard.bottom > nextCard.top + 1) {
-        throw new Error(`${viewportName}: feature cards overlap vertically`);
+      if (currentCard.right > nextCard.left + 1) {
+        throw new Error(`${viewportName}: feature cards overlap horizontally`);
       }
     }
   } else {
@@ -507,12 +518,16 @@ const assertDom = async (page, viewportName, locale) => {
       });
       const labelOffsets = Array.from(
         link.querySelectorAll(".web-preview__action-label"),
-      ).map((label) => {
-        const labelRect = label.getBoundingClientRect();
-        return Math.abs(
-          labelRect.top + labelRect.height / 2 - (linkRect.top + linkRect.height / 2),
+      )
+        .map((label) => label.getBoundingClientRect())
+        .filter((labelRect) => labelRect.width > 0 && labelRect.height > 0)
+        .map((labelRect) =>
+          Math.abs(
+            labelRect.top +
+              labelRect.height / 2 -
+              (linkRect.top + linkRect.height / 2),
+          ),
         );
-      });
 
       return {
         alignItems: styles.alignItems,
