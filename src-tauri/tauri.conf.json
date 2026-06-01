@@ -51,7 +51,7 @@
       "endpoints": [
         "https://github.com/MasterBao66/PayDance/releases/latest/download/latest.json"
       ],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDk5OUJBMjQwRDVEQ0Q1M0MKUldRODFkelZRS0tibWNjQnNkRW1VbWRpSDZRaFpGa3FFMmdwdmdHeDBHZjJNTEdhZlFTLzBRckgK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IHRhdXJpIHB1YmxpYyBrZXkKUldTaVJPMzVIY0tNZnlOU0tBd1RxZFM5K2F3TzA4YTVYaURmaFFPZVRnWXNpMVRjRFhZCg==",
       "windows": {
         "installMode": "passive"
       }

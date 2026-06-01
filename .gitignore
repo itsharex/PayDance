@@ -7,3 +7,5 @@ release-assets/
 .tools
 *.log
 .claude/
+paydance-updater-key
+paydance-updater-key.pub
