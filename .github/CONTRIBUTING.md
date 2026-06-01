@@ -1,6 +1,6 @@
 # 参与贡献
 
-> [English version →](CONTRIBUTING_EN.md)
+> [English version →](docs/CONTRIBUTING_EN.md)
 
 感谢你的关注！薪跳 PayDance 是一款聚焦的桌面工具——提交前请阅读以下指引。
 
@@ -70,7 +70,7 @@ gh auth login
 
 ## 我们接受
 
-薪跳 PayDance 是一款**桌面实时工资看板**。所有贡献必须符合 `PRODUCT.md` 中记载的产品边界。
+薪跳 PayDance 是一款**桌面实时工资看板**。所有贡献必须符合 `docs/PRODUCT.md` 中记载的产品边界。
 
 **欢迎：**
 

@@ -12,7 +12,7 @@
   &nbsp;&nbsp;&nbsp;
   <font size="5"><strong><a href="https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe">Windows Desktop</a></strong></font>
   &nbsp;&nbsp;&nbsp;
-  <a href="README.md"><strong>中文</strong></a>
+  <a href="../README.md"><strong>中文</strong></a>
 </p>
 
 ## About
@@ -120,10 +120,10 @@ Designed and developed by Mr.Baoboer.
 - "薪跳", `PayDance`, the logo, icons, website visuals, official screenshots, and release channels are not licensed with the code. Modified versions must use clearly distinguishable names, icons, application identifiers, and update channels.
 - Compliant commercial use is allowed. Closed-source integration, OEM, white-label, or official brand licensing requires a separate commercial license.
 
-For full license information, trademark policy, and commercial licensing terms, see the **[Legal Guide](legal/LEGAL_EN.md)**.
+For full license information, trademark policy, and commercial licensing terms, see the **[Legal Guide](../legal/LEGAL_EN.md)**.
 
 ---
 
-Full version history in [CHANGELOG.md](CHANGELOG.md). Build artifacts and checksums on [Releases](https://github.com/MasterBao66/PayDance/releases).
+Full version history in [CHANGELOG.md](../CHANGELOG.md). Build artifacts and checksums on [Releases](https://github.com/MasterBao66/PayDance/releases).
 
-> [中文版 README →](README.md)
+> [中文版 README →](../README.md)

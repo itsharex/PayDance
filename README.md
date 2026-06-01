@@ -13,7 +13,7 @@
   &nbsp;&nbsp;&nbsp;
   <font size="5"><strong><a href="https://github.com/MasterBao66/PayDance/releases/latest/download/pay-dance-v0.9.3-windows-x64.exe">Windows 桌面端</a></strong></font>
   &nbsp;&nbsp;&nbsp;
-  <a href="README_EN.md"><strong>English Version</strong></a>
+  <a href="docs/README_EN.md"><strong>English Version</strong></a>
 </p>
 
 ## 产品简介
@@ -123,4 +123,4 @@ Remove-Item "$env:APPDATA\com.masterbao.paydance\salary-settings.json" -ErrorAct
 
 完整版本记录请查看 [CHANGELOG.md](CHANGELOG.md)，构建产物与校验文件请查看 [Releases](https://github.com/MasterBao66/PayDance/releases)。
 
-> [English version of this README →](README_EN.md)
+> [English version of this README →](docs/README_EN.md)

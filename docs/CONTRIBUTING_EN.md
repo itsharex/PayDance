@@ -1,6 +1,6 @@
 # Contributing to PayDance
 
-> [中文版 →](CONTRIBUTING.md)
+> [中文版 →](.github/CONTRIBUTING.md)
 
 Thanks for your interest! PayDance is a focused desktop tool — please read the guidelines below before submitting anything.
 
@@ -70,7 +70,7 @@ Do not run `npm run build:desktop` and `npm run build:web` in parallel because b
 
 ## What We Accept
 
-PayDance is a **desktop real-time salary dashboard**. Contributions should align with the product boundaries documented in `PRODUCT.md`.
+PayDance is a **desktop real-time salary dashboard**. Contributions should align with the product boundaries documented in `docs/PRODUCT.md`.
 
 **Welcome:**
 
