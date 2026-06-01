@@ -6,13 +6,13 @@
 <h1 align="center">PayDance 薪跳</h1>
 
 <p align="center">
-  A desktop real-time salary dashboard — watch today's earnings tick upward, second by second, as you work.
+  A desktop real-time salary dashboard that turns today's earnings into a quietly ticking number on your screen.
 </p>
 
 <p align="center">
-  <a href="https://masterbao66.github.io/PayDance/"><strong>Live Preview</strong></a>
+  <a href="https://masterbao66.github.io/PayDance/"><strong>🌐 Live Preview</strong></a>
   &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://github.com/MasterBao66/PayDance/releases/latest"><strong>Download</strong></a>
+  <a href="https://github.com/MasterBao66/PayDance/releases/latest"><strong>⬇️ Download</strong></a>
   &nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="../README.md">中文</a>
 </p>
@@ -25,10 +25,18 @@
 
 ---
 
-Configure your salary and work hours, and today's earnings appear on your desktop, ticking upward in real time. The main window shows earnings, work progress, and time remaining; the mini floating window keeps only the amount — perfect for a corner of your screen.
+## What It Is
+
+PayDance (薪跳) is a desktop real-time salary dashboard. Configure your salary and work hours, and today's earnings appear on your desktop, ticking upward as you work.
+
+The main window shows today's earnings, work progress, time remaining, and daily estimate. The mini floating window keeps only the amount — perfect for a corner of your screen.
 
 <p align="center">
   <img src="posters/poster-02-three-step-setup-v3.png" alt="PayDance three-step setup" width="100%">
+</p>
+
+<p align="center">
+  Salary mode, work hours, preferences — set once, remembered forever.
 </p>
 
 ## Why Use It
@@ -59,7 +67,7 @@ Each release includes a SHA256 checksum file for integrity verification.
 | Storage | Local app data directory (Tauri Store) |
 | Testing | Vitest + vue-tsc + cargo clippy |
 
-The Web Preview shares core salary logic with the desktop app, deployed to GitHub Pages as an online demo.
+The Web Preview and desktop app share core salary logic and frontend UI, deployed to GitHub Pages as an online demo.
 
 ## Development
 
@@ -86,7 +94,9 @@ PayDance requires no login, uploads no data, and includes no telemetry. All conf
 
 ## License
 
-Code licensed under [AGPL-3.0-only](../LICENSE), designed and developed by Mr.Baoboer. Full license information at [Legal Guide](../legal/LEGAL_EN.md).
+Designed and developed by Mr.Baoboer. Code licensed under [AGPL-3.0-only](../LICENSE).
+
+For full license information and trademark policy, see the [Legal Guide](../legal/LEGAL_EN.md).
 
 ---
 
