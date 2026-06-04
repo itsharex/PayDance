@@ -179,6 +179,25 @@ describe("repository metadata", () => {
     expect(read("docs/CONTRIBUTING_EN.md")).toContain("good first issue");
   });
 
+  it("keeps .github contributing governance links on canonical GitHub blob URLs", () => {
+    const contributing = read(".github/CONTRIBUTING.md");
+    const githubBlobBase = "https://github.com/MasterBao66/PayDance/blob/main";
+
+    expect(contributing).toContain(
+      `[CODE_OF_CONDUCT.md](${githubBlobBase}/CODE_OF_CONDUCT.md)`,
+    );
+    expect(contributing).toContain(
+      `[docs/MAINTAINERS.md](${githubBlobBase}/docs/MAINTAINERS.md)`,
+    );
+    expect(contributing).toContain(
+      `[docs/GOVERNANCE.md](${githubBlobBase}/docs/GOVERNANCE.md)`,
+    );
+    expect(contributing).toContain(
+      `[docs/MAINTENANCE.md](${githubBlobBase}/docs/MAINTENANCE.md)`,
+    );
+    expect(contributing).not.toContain("github.com/MasterBao66/PayDance/blob/docs/");
+  });
+
   it("keeps issue template version hints aligned with the current release line", () => {
     const currentVersion = `v${packageJson.version}`;
     expect(read(".github/ISSUE_TEMPLATE.md")).toContain(currentVersion);

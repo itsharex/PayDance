@@ -123,7 +123,7 @@ gh auth login
 
 ## 维护与治理
 
-- 行为准则：[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)
-- 维护者说明：[docs/MAINTAINERS.md](../docs/MAINTAINERS.md)
-- 治理说明：[docs/GOVERNANCE.md](../docs/GOVERNANCE.md)
-- 维护约定：[docs/MAINTENANCE.md](../docs/MAINTENANCE.md)
+- 行为准则：[CODE_OF_CONDUCT.md](https://github.com/MasterBao66/PayDance/blob/main/CODE_OF_CONDUCT.md)
+- 维护者说明：[docs/MAINTAINERS.md](https://github.com/MasterBao66/PayDance/blob/main/docs/MAINTAINERS.md)
+- 治理说明：[docs/GOVERNANCE.md](https://github.com/MasterBao66/PayDance/blob/main/docs/GOVERNANCE.md)
+- 维护约定：[docs/MAINTENANCE.md](https://github.com/MasterBao66/PayDance/blob/main/docs/MAINTENANCE.md)
