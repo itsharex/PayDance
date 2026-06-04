@@ -122,4 +122,30 @@ describe("CI change scope", () => {
       expect(summary.changedFiles).toEqual(["README.md", "legal/ADDITIONAL_TERMS.md"]);
     });
   });
+
+  it("falls back to the head tree when the push base is unavailable", () => {
+    withTempDir((cwd) => {
+      const jsonPath = join(cwd, "scope.json");
+
+      execFileSync(
+        "node",
+        [
+          scriptPath,
+          "--base",
+          "0123456789abcdef0123456789abcdef01234567",
+          "--head",
+          "HEAD",
+          "--json-file",
+          jsonPath,
+        ],
+        { encoding: "utf8" },
+      );
+
+      const summary = JSON.parse(readFileSync(jsonPath, "utf8"));
+
+      expect(summary.scope).toBe("full");
+      expect(summary.requiresFullCi).toBe(true);
+      expect(summary.changedFiles).toContain("package.json");
+    });
+  });
 });
