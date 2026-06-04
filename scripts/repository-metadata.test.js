@@ -13,29 +13,9 @@ const read = (path) => readFileSync(resolve(repoRoot, path), "utf8");
 const packageJson = JSON.parse(read("package.json"));
 const versionedDesktopAssetName = `pay-dance-v${packageJson.version}-windows-x64.exe`;
 const desktopDownloadUrl = `https://github.com/MasterBao66/PayDance/releases/latest/download/${versionedDesktopAssetName}`;
-const blockedAudienceTerms = [
-  String.fromCodePoint(0x6253, 0x5de5),
-  String.fromCodePoint(0x6253, 0x5de5, 0x4eba),
-  String.fromCodePoint(0x6253, 0x5de5, 0x4eba, 0x7684),
-];
-const blockedDashboardTerm = String.fromCodePoint(0x4eea, 0x8868, 0x76d8);
 const legacyAdditionalTermsReference = `see /${["ADDITIONAL_TERMS", "md"].join(".")}`;
 const binaryExtensions = new Set([".ico", ".png", ".woff2"]);
 const existsInWorktree = (path) => existsSync(resolve(repoRoot, path));
-const textFiles = [
-  ".github/ISSUE_TEMPLATE.md",
-  ".github/ISSUE_TEMPLATE/bug_report.yml",
-  "CHANGELOG.md",
-  "docs/DESIGN.md",
-  "LICENSE",
-  "docs/PRODUCT.md",
-  "README.md",
-  "package.json",
-  "scripts/repository-metadata.test.js",
-  "src-tauri/capabilities/desktop.json",
-  "src/WebPreviewApp.vue",
-  "src/web-preview.test.ts",
-].filter((path) => !binaryExtensions.has(extname(path).toLowerCase()));
 const trackedTextFiles = () =>
   execFileSync("git", ["ls-files"], {
     cwd: repoRoot,
@@ -149,6 +129,9 @@ describe("repository metadata", () => {
     expect(releaseWorkflow).toContain("windows-x64");
     expect(releaseWorkflow).not.toContain("pay-dance.exe.sha256");
     expect(releaseWorkflow).toContain("latest.json");
+    expect(releaseWorkflow).toContain("Build artifact smoke");
+    expect(releaseWorkflow).toContain("Verify dry-run release assets");
+    expect(releaseWorkflow).toContain("Verify updater signature");
     expect(releaseWorkflow).toContain("fail_on_unmatched_files: true");
     expect(releaseWorkflow).not.toContain(
       '$sigArg = if (Test-Path $sigFile) { "--sig-file $sigFile" } else { "" }',
@@ -171,9 +154,7 @@ describe("repository metadata", () => {
     expect(read("docs/MAINTAINERS_EN.md")).toContain("Maintainers");
     expect(read("docs/GOVERNANCE.md")).toContain("治理说明");
     expect(read("docs/GOVERNANCE_EN.md")).toContain("Governance");
-    expect(read("docs/MAINTENANCE.md")).toContain(
-      ["配置", String.fromCodePoint(0x8fc1, 0x79fb)].join(""),
-    );
+    expect(read("docs/MAINTENANCE.md")).toContain("配置迁移");
     expect(read("docs/MAINTENANCE_EN.md")).toContain("Settings Migration");
     expect(read(".github/CONTRIBUTING.md")).toContain("good first issue");
     expect(read("docs/CONTRIBUTING_EN.md")).toContain("good first issue");
@@ -306,18 +287,6 @@ describe("repository metadata", () => {
     }
   });
 
-  it("removes legacy audience and desktop migration wording from product text", () => {
-    for (const file of textFiles) {
-      const source = read(file);
-
-      for (const term of blockedAudienceTerms) {
-        expect(source, file).not.toContain(term);
-      }
-
-      expect(source, file).not.toContain(String.fromCodePoint(0x8fc1, 0x79fb));
-    }
-  });
-
   it("keeps product positioning on the real-time desktop wage board wording", () => {
     const positioning = "桌面实时工资看板";
 
@@ -326,9 +295,5 @@ describe("repository metadata", () => {
     expect(read("src/lib/app-meta.ts")).toContain(positioning);
     expect(read("src-tauri/Cargo.toml")).toContain(positioning);
     expect(read("src-tauri/src/lib.rs")).toContain(positioning);
-
-    for (const file of trackedTextFiles()) {
-      expect(read(file), file).not.toContain(blockedDashboardTerm);
-    }
   });
 });

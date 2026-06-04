@@ -47,7 +47,7 @@ body:
     id: version
     attributes:
       label: 应用版本
-      placeholder: v0.9.3
+      placeholder: v0.9.4
     validations:
       required: true
   - type: dropdown

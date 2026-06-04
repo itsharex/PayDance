@@ -36,7 +36,25 @@ jobs:
           echo "=== Latest Release ==="
           gh release view --repo ${{ github.repository }} --json tagName,name,publishedAt,assets | tee latest-release.json
 
+      - name: Confirm this workflow published a release
+        id: public_release
+        run: |
+          RUN_CREATED="${{ github.event.workflow_run.created_at }}"
+          PUBLISHED_AT=$(jq -r '.publishedAt // ""' latest-release.json)
+
+          echo "Release workflow created at: $RUN_CREATED"
+          echo "Latest public release published at: $PUBLISHED_AT"
+
+          if [ -z "$PUBLISHED_AT" ] || [ "$PUBLISHED_AT" \< "$RUN_CREATED" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "No new public release was created by this workflow run; skipping published Release smoke."
+            exit 0
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
       - name: Verify latest release exists
+        if: steps.public_release.outputs.skip != 'true'
         run: |
           TAG=$(gh release view --repo ${{ github.repository }} --json tagName -q '.tagName')
           echo "Latest release tag: $TAG"
@@ -46,6 +64,7 @@ jobs:
           fi
 
       - name: Verify critical assets exist
+        if: steps.public_release.outputs.skip != 'true'
         run: |
           ASSETS=$(gh release view --repo ${{ github.repository }} --json assets -q '.assets[].name')
           echo "Release assets:"
@@ -66,6 +85,7 @@ jobs:
           echo "All critical assets present."
 
       - name: Verify SHA256 checksum
+        if: steps.public_release.outputs.skip != 'true'
         run: |
           VERSION=$(gh release view --repo ${{ github.repository }} --json tagName -q '.tagName' | sed 's/^v//')
           EXE="pay-dance-v${VERSION}-windows-x64.exe"
@@ -86,6 +106,7 @@ jobs:
           echo "SHA256 verified: $ACTUAL"
 
       - name: Validate latest.json structure
+        if: steps.public_release.outputs.skip != 'true'
         run: |
           gh release download --repo ${{ github.repository }} --pattern latest.json --dir /tmp/smoke --clobber
 
@@ -105,6 +126,7 @@ jobs:
           echo "latest.json structure valid."
 
       - name: Verify latest.json points at the checksummed asset
+        if: steps.public_release.outputs.skip != 'true'
         run: |
           VERSION=$(gh release view --repo ${{ github.repository }} --json tagName -q '.tagName' | sed 's/^v//')
           EXE="pay-dance-v${VERSION}-windows-x64.exe"
@@ -143,6 +165,7 @@ jobs:
           fi
 
       - name: Verify latest.json download URL is accessible
+        if: steps.public_release.outputs.skip != 'true'
         run: |
           URL=$(jq -r '.platforms["windows-x86_64"].url' /tmp/smoke/latest.json)
           echo "Checking: $URL"
@@ -154,6 +177,7 @@ jobs:
           echo "Download URL accessible (HTTP $HTTP_CODE)."
 
       - name: Verify README download link
+        if: steps.public_release.outputs.skip != 'true'
         run: |
           VERSION=$(gh release view --repo ${{ github.repository }} --json tagName -q '.tagName' | sed 's/^v//')
           DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/latest/download/pay-dance-v${VERSION}-windows-x64.exe"

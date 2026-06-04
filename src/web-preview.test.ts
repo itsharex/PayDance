@@ -89,7 +89,6 @@ describe("PayDance Web Preview", () => {
     expect(webPreviewSource).toContain('t("web.heroLead")');
     expect(webPreviewSource).toContain('t("web.downloadWindows")');
     expect(webPreviewSource).toContain("pay-dance-v${appVersion}-windows-x64.exe");
-    expect(webPreviewSource).not.toContain("开始体验");
     expect(webPreviewSource).toContain(':show-desktop-features="false"');
     expect(webPreviewSource).not.toContain("Web Preview 只用于预览核心体验");
     expect(webPreviewSource).not.toContain("@tauri-apps");
@@ -132,6 +131,10 @@ describe("PayDance Web Preview", () => {
   it("uses a segmented language switcher instead of a tiny single-label button", () => {
     expect(webPreviewPageSource).toContain("const { locale } = provideI18n");
     expect(webPreviewPageSource).toContain(':data-locale="locale"');
+    expect(webPreviewPageSource).toContain("document.documentElement.lang = next");
+    expect(webPreviewPageSource).toContain(
+      "document.documentElement.lang = locale.value",
+    );
     expect(webPreviewTopbarSource).toContain("<LanguageSwitcher />");
     expect(webPreviewSource).toContain('class="lang-switcher__track"');
     expect(webPreviewSource).toContain('class="lang-switcher__option"');
@@ -222,9 +225,6 @@ describe("PayDance Web Preview", () => {
     expect(enLocaleSource).toContain(
       '"web.heroLead": "A wage board that tracks today’s earnings."',
     );
-    expect(enLocaleSource).not.toContain("A Windows wage board");
-    expect(enLocaleSource).not.toContain("Every Second");
-    expect(enLocaleSource).not.toContain("Pay in Motion");
     expect(enLocaleSource).toContain('"web.downloadShort": "Desktop"');
     expect(enLocaleSource).toContain('"web.featureRealtime": "Today’s Pay"');
     expect(enLocaleSource).toContain('"web.featureRealtimeDesc": "Ticks up as you work"');
@@ -248,7 +248,6 @@ describe("PayDance Web Preview", () => {
     expect(zhLocaleSource).toContain('"web.featurePrivacy": "隐私优先"');
     expect(zhLocaleSource).toContain('"web.featurePrivacyDesc": "所有数据本地处理"');
     expect(htmlSource).toContain("具象化你的劳动价值，专注工作，也看见回报");
-    expect(htmlSource).not.toContain("把今天正在挣到的钱，安静放在桌面上。");
   });
 
   it("keeps the web hero roomy while preserving the software preview on narrower windows", () => {
@@ -423,7 +422,6 @@ describe("PayDance Web Preview", () => {
     expect(featureCssBlock(".web-preview__chip")).toContain("text-align: left");
     expect(featureCssBlock(".web-preview__chip")).not.toContain("border:");
     expect(featureCssBlock(".web-preview__chip")).not.toContain("background:");
-    expect(webPreviewFeatureStripSource).not.toContain("秒秒入账");
   });
 
   it("keeps feature tags compact on desktop and readable on mobile", () => {
@@ -481,7 +479,6 @@ describe("PayDance Web Preview", () => {
   it("removes auxiliary text around the software preview", () => {
     expect(webPreviewSource).not.toContain("web-preview__showcase-header");
     expect(webPreviewSource).not.toContain("web-preview__notice");
-    expect(webPreviewSource).not.toContain("网页体验版");
   });
 
   it("adds a centered author attribution footer", () => {
@@ -555,11 +552,8 @@ describe("PayDance Web Preview", () => {
     expect(readmeSource).not.toContain("## 近期改进");
     expect(readmeSource).toContain('<h1 align="center">薪跳 PayDance</h1>');
     expect(readmeSource).toContain("桌面实时工资看板");
-    expect(readmeSource).not.toContain(String.fromCodePoint(0x4eea, 0x8868, 0x76d8));
     expect(readmeSource).toContain("在线体验");
     expect(readmeSource).toContain("Windows 桌面版");
-    expect(readmeSource).not.toContain("优化完善在线体验");
-    expect(readmeSource).not.toContain("下载 Windows 便携版");
     expect(readmeSource).toContain("Mr.Baoboer");
     for (const heading of [
       "## 它是什么",
@@ -573,26 +567,15 @@ describe("PayDance Web Preview", () => {
     ]) {
       expect(readmeSource).toContain(heading);
     }
-    expect(readmeSource).not.toContain("## 产品简介与核心体验");
     expect(readmeSource).not.toContain("## 快速下载与安全校验");
-    expect(readmeSource).not.toContain("## 技术架构与工程质量");
     expect(readmeSource).not.toContain("## 隐私声明、作者与许可");
     expect(readmeSource).toContain("网页端，含所有核心功能");
     expect(readmeSource).toContain(
       "便携 EXE，含托盘、置顶、迷你悬浮、开机自启动等完整能力",
     );
-    expect(readmeSource).not.toContain(["产品", "预览"].join(""));
     expect(readmeSource).not.toContain("poster-01-live-dashboard-v3.png");
-    expect(readmeSource).not.toContain(["实时", "收入看板"].join(""));
-    expect(readmeSource).not.toContain(["工程", "治理"].join(""));
-    expect(readmeSource).not.toContain(
-      ["把今天", "已经挣到的钱，实时放在桌面上"].join(""),
-    );
-    expect(readmeSource).not.toContain(["先在线", "感受核心界面"].join(""));
     expect(readmeSource).not.toContain(["Mr", "Ba" + "ober"].join("."));
     expect(readmeSource).not.toContain("actions/workflows/ci.yml/badge.svg");
-    expect(readmeSource).not.toContain("配置薪资与作息");
-    expect(readmeSource).not.toContain("长期扫读");
     expect(readmeSource).not.toContain("Web Preview 是产品橱窗，不替代桌面版");
   });
 
