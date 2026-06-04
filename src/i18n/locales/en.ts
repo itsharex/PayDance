@@ -60,6 +60,7 @@ const en: Messages = {
   "settings.autostart": "Launch at startup",
   "settings.autostartError": "Failed to update autostart setting",
   "settings.language": "Language",
+  "settings.saveFailed": "Settings could not be saved. Please try again.",
 
   // ── Settings → salary mode ─────────────────────────────────────────────
   "salaryMode.label": "Salary type",
@@ -117,6 +118,9 @@ const en: Messages = {
   "onboarding.back": "Back",
   "onboarding.next": "Next",
   "onboarding.start": "Start",
+  "onboardingPreview.today": "Today",
+  "onboardingPreview.perMinute": "Per minute",
+  "onboardingPreview.lunchPaused": "Earnings pause during lunch break",
 
   // ── Onboarding → preferences ───────────────────────────────────────────
   "preferences.language": "Language",

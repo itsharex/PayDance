@@ -27,6 +27,7 @@ const savedLocale =
 const initialLocale = ref<Locale>(detectLocale(savedLocale));
 const { locale } = provideI18n(initialLocale, (next) => {
   localStorage.setItem("paydance-web-locale", next);
+  document.documentElement.lang = next;
 });
 
 const shellClass = ref("theme-light");
@@ -37,7 +38,10 @@ const toggleDocumentScroll = (enabled: boolean) => {
   document.body.classList.toggle(documentScrollClass, enabled);
 };
 
-onMounted(() => toggleDocumentScroll(true));
+onMounted(() => {
+  document.documentElement.lang = locale.value;
+  toggleDocumentScroll(true);
+});
 onBeforeUnmount(() => toggleDocumentScroll(false));
 </script>
 
