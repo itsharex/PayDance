@@ -4,13 +4,12 @@
 // Additional terms: see /legal/ADDITIONAL_TERMS.md
 
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { homedir, tmpdir } from "node:os";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createRequire } from "node:module";
 import packageMetadata from "../package.json" with { type: "json" };
+import { resolvePlaywright } from "./resolve-playwright.mjs";
 
-const require = createRequire(import.meta.url);
 const version = packageMetadata.version;
 const sanitizeRunId = (value) =>
   value
@@ -81,32 +80,6 @@ const createPreviewState = (themeMode) => ({
   settingsVersion: 3,
   themeMode,
 });
-
-const resolvePlaywright = () => {
-  const moduleDirs = [
-    process.env.PLAYWRIGHT_NODE_MODULES,
-    process.env.CODEX_NODE_MODULES,
-    join(
-      homedir(),
-      ".cache",
-      "codex-runtimes",
-      "codex-primary-runtime",
-      "dependencies",
-      "node",
-      "node_modules",
-    ),
-    resolve("node_modules"),
-  ].filter(Boolean);
-
-  for (const moduleDir of moduleDirs) {
-    const packageDir = join(moduleDir, "playwright");
-    if (existsSync(packageDir)) {
-      return require(packageDir);
-    }
-  }
-
-  return require("playwright");
-};
 
 const waitForServer = async () => {
   const deadline = Date.now() + 30_000;

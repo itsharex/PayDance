@@ -2,7 +2,7 @@
 
 > [English version →](web-preview-qa_EN.md)
 
-Web Preview 的验证标准：本地服务 + 内置 Playwright + 多视口截图 + DOM/console 双校验。目标不是”截到一张图”，而是确认线上橱窗在真实浏览器里能稳定展示、切换主题、保留关键文案和布局边界。
+Web Preview 的验证标准：本地服务 + 项目声明的 Playwright + 多视口截图 + DOM/console 双校验。目标不是”截到一张图”，而是确认线上橱窗在真实浏览器里能稳定展示、切换主题、保留关键文案和布局边界。
 
 ## 禁用方法
 
@@ -11,7 +11,7 @@ Web Preview 的验证标准：本地服务 + 内置 Playwright + 多视口截图
 ## 标准流程
 
 1. 启动本地 Web Preview dev server，并记录本地 URL。
-2. 使用 Codex 内置 Node + Playwright 打开页面。
+2. 使用项目 `devDependency` 中的 Playwright 打开页面；如需调试特殊环境，可用 `PLAYWRIGHT_NODE_MODULES` 指向外部 `node_modules`。
 3. 按固定视口截图：桌面端 `1440x900`，中等窗口 `960x760`，移动端 `390x844`。
 4. 浅色和深色主题都要覆盖；只改首屏橱窗时也不能只看浅色。
 5. 同步做 DOM 校验：页面标题、`Web Preview · appVersion` 版本号、软件展示区、移动端展示区不消失也不塌缩。
@@ -25,7 +25,7 @@ Web Preview 的验证标准：本地服务 + 内置 Playwright + 多视口截图
 npm run qa:web-preview
 ```
 
-脚本会自动启动 `npm run dev:web`，使用内置 Playwright 完成三种视口截图与 DOM/console 校验，然后关闭本地服务。截图和 `summary.json` 会写入本次运行的唯一临时 QA 目录；`summary.json` 会记录 run id、commit 和页面实际读取到的中英文 DOM 文案，避免误把旧截图当作新证据。
+脚本会自动启动 `npm run dev:web`，使用项目自带 Playwright 完成三种视口截图与 DOM/console 校验，然后关闭本地服务。截图和 `summary.json` 会写入本次运行的唯一临时 QA 目录；`summary.json` 会记录 run id、commit 和页面实际读取到的中英文 DOM 文案，避免误把旧截图当作新证据。
 
 ## 通过标准
 

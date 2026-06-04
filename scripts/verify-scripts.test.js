@@ -103,11 +103,19 @@ describe("verification scripts", () => {
     expect(denyConfig).not.toContain('"BSL-1.0"');
   });
 
-  it("codifies Web Preview QA through the Codex Playwright workflow", () => {
+  it("codifies Web Preview QA through the project-owned Playwright workflow", () => {
     expect(packageJson.scripts["qa:web-preview"]).toBe("node scripts/qa-web-preview.mjs");
+    expect(packageJson.devDependencies.playwright).toBeDefined();
 
     const qaScript = readRoot("scripts/qa-web-preview.mjs");
+    const resolverScript = readRoot("scripts/resolve-playwright.mjs");
     expect(qaScript).toContain("playwright");
+    expect(qaScript).toContain('from "./resolve-playwright.mjs"');
+    expect(resolverScript).toContain("resolvePlaywright");
+    expect(resolverScript).toContain('resolve(projectRoot, "node_modules")');
+    expect(resolverScript.indexOf('resolve(projectRoot, "node_modules")')).toBeLessThan(
+      resolverScript.indexOf("CODEX_NODE_MODULES"),
+    );
     expect(qaScript).toContain("desktop");
     expect(qaScript).toContain("medium");
     expect(qaScript).toContain("mobile");
@@ -135,8 +143,9 @@ describe("verification scripts", () => {
 
     const qaGuide = readRoot("docs/web-preview-qa.md");
     expect(qaGuide).toContain(
-      "本地服务 + 内置 Playwright + 多视口截图 + DOM/console 双校验",
+      "本地服务 + 项目声明的 Playwright + 多视口截图 + DOM/console 双校验",
     );
+    expect(qaGuide).toContain("PLAYWRIGHT_NODE_MODULES");
     expect(qaGuide).toContain("不要使用 headless Chrome/CDP/CLI screenshot");
     expect(qaGuide).toContain(
       "C:\\Users\\mrbao\\AppData\\Local\\Temp\\paydance-web-preview-qa-{version}-{commit}-{timestamp}",
