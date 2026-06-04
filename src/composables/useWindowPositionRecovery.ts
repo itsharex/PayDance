@@ -68,13 +68,7 @@ export function useWindowPositionRecovery({
     }
   };
 
-  const resetWindowPosition = async () => {
-    await moveWindowTo(fallbackMainPosition);
-    await saveStateNow();
-  };
-
   return {
-    resetWindowPosition,
     restoreWindowPosition,
   };
 }

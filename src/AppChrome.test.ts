@@ -77,9 +77,8 @@ describe("app chrome", () => {
     expect(windowStatePersistenceSource).toContain("defaultWindowPreferences");
   });
 
-  it("can reset a restored window position from the tray", () => {
+  it("can restore a saved window position from the tray", () => {
     expect(desktopAppSource).toContain("useWindowPositionRecovery");
-    expect(desktopAppSource).toContain("resetWindowPosition");
     expect(desktopAppSource).toContain("restoreWindowPosition");
     expect(windowPositionRecoverySource).toContain("availableMonitors");
     expect(windowPositionRecoverySource).toContain("resolveVisibleWindowPosition");

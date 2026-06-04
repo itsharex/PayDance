@@ -197,7 +197,7 @@ const startResize = async (direction: ResizeDirection) => {
   await appWindow.startResizeDragging(direction);
 };
 
-const { resetWindowPosition, restoreWindowPosition } = useWindowPositionRecovery({
+const { restoreWindowPosition } = useWindowPositionRecovery({
   appWindow,
   fullSize,
   isMiniMode,
@@ -252,7 +252,6 @@ onMounted(async () => {
     ...(await registerWindowLifecycle()),
     ...(await registerTrayActions(appWindow, {
       openSettings,
-      resetWindowPosition,
       toggleAlwaysOnTop,
       toggleMiniMode,
     })),
