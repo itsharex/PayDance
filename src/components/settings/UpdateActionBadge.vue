@@ -63,7 +63,7 @@ const downloadUpdate = async () => {
 <style scoped>
 .update-badge {
   position: relative;
-  inset-block-start: -1px;
+  inset-block-start: 0;
   inset-inline-start: -1px;
   display: inline-block;
   margin-left: 0;
@@ -100,7 +100,7 @@ const downloadUpdate = async () => {
 }
 
 .update-badge-button :deep(svg) {
-  transform: translate(-1px, -1px);
+  transform: translateX(-1px);
 }
 
 .update-badge-button--error {

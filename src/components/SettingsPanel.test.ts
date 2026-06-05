@@ -118,10 +118,11 @@ describe("settings panel", () => {
     expect(settingsPanelSource).toContain("gap: 3px");
     expect(updateActionBadgeSource).toContain("display: inline-flex");
     expect(updateActionBadgeSource).toContain("vertical-align: middle");
-    expect(updateActionBadgeSource).toContain("transform: translate(-1px, -1px)");
-    expect(updateActionBadgeSource).toContain("inset-block-start: -1px");
+    expect(updateActionBadgeSource).toContain("transform: translateX(-1px)");
+    expect(updateActionBadgeSource).toContain("inset-block-start: 0");
     expect(updateActionBadgeSource).toContain("inset-inline-start: -1px");
     expect(updateActionBadgeSource).toContain("margin-left: 0");
+    expect(updateActionBadgeSource).not.toContain("translate(-1px, -1px)");
     expect(updateActionBadgeSource).not.toContain("top: 1px");
     expect(updateActionBadgeSource).not.toContain("vertical-align: text-bottom");
     expect(updateActionBadgeSource).not.toContain("place-items: center");
