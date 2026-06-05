@@ -112,8 +112,16 @@ describe("settings panel", () => {
   });
 
   it("keeps the update badge visually centered with the version text", () => {
+    expect(settingsPanelSource).toContain("about-footer__version-line");
+    expect(settingsPanelSource).toContain("display: inline-flex");
+    expect(settingsPanelSource).toContain("align-items: center");
+    expect(settingsPanelSource).toContain("gap: 3px");
     expect(updateActionBadgeSource).toContain("display: inline-flex");
     expect(updateActionBadgeSource).toContain("vertical-align: middle");
+    expect(updateActionBadgeSource).toContain("transform: translate(-1px, -1px)");
+    expect(updateActionBadgeSource).toContain("inset-block-start: -1px");
+    expect(updateActionBadgeSource).toContain("inset-inline-start: -1px");
+    expect(updateActionBadgeSource).toContain("margin-left: 0");
     expect(updateActionBadgeSource).not.toContain("top: 1px");
     expect(updateActionBadgeSource).not.toContain("vertical-align: text-bottom");
     expect(updateActionBadgeSource).not.toContain("place-items: center");

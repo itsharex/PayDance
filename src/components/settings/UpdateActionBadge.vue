@@ -62,8 +62,11 @@ const downloadUpdate = async () => {
 
 <style scoped>
 .update-badge {
+  position: relative;
+  inset-block-start: -1px;
+  inset-inline-start: -1px;
   display: inline-block;
-  margin-left: 4px;
+  margin-left: 0;
   color: var(--income-accent);
   vertical-align: middle;
 }
@@ -78,7 +81,7 @@ const downloadUpdate = async () => {
   height: 18px;
   align-items: center;
   justify-content: center;
-  margin-left: 4px;
+  margin-left: 0;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -94,6 +97,10 @@ const downloadUpdate = async () => {
 .update-badge-button:hover {
   color: var(--income-accent-bright);
   transform: scale(1.15);
+}
+
+.update-badge-button :deep(svg) {
+  transform: translate(-1px, -1px);
 }
 
 .update-badge-button--error {

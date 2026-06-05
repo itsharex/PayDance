@@ -101,6 +101,22 @@ describe("desktop window chrome", () => {
     expect(desktopCapability.permissions).toContain("process:allow-restart");
   });
 
+  it("uses a portable updater command for in-place exe replacement", () => {
+    expect(libRs).toContain("install_portable_update");
+    expect(libRs).toContain("tauri_plugin_updater::UpdaterExt");
+    expect(libRs).toContain(".download(|_, _| {}, || {})");
+    expect(libRs).toContain("apply-update.ps1");
+    expect(libRs).toContain(
+      "Copy-Item -LiteralPath $Source -Destination $Destination -Force",
+    );
+    expect(defaultCapability.permissions).toContain("updater:allow-check");
+    expect(defaultCapability.permissions).not.toContain(
+      "updater:allow-download-and-install",
+    );
+    expect(libRs).not.toContain("ShellExecuteW");
+    expect(libRs).not.toContain("/UPDATE");
+  });
+
   it("limits the mini opacity companion window to slider-only permissions", () => {
     expect(miniOpacityCapability.windows).toEqual(["mini-opacity"]);
     expect(miniOpacityCapability.permissions).toEqual([
