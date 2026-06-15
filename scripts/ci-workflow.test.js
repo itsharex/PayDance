@@ -95,8 +95,14 @@ describe("CI workflow routing", () => {
     expect(codeqlWorkflow).toContain("github/codeql-action/analyze@");
     expect(codeqlWorkflow).toContain("javascript-typescript");
     expect(codeqlWorkflow).toContain("rust");
+    expect(codeqlWorkflow).toContain("Detect CodeQL change scope");
+    expect(codeqlWorkflow).toContain("node scripts/ci-change-scope.mjs");
+    expect(codeqlWorkflow).toContain("needs.changes.outputs.requires_full_ci");
+    expect(codeqlWorkflow).toContain("github.event_name == 'schedule'");
     expect(codeqlWorkflow).toContain("name: CodeQL gate");
+    expect(codeqlWorkflow).toContain("needs.changes.result");
     expect(codeqlWorkflow).toContain("needs.analyze.result");
+    expect(codeqlWorkflow).toContain('[ "$ANALYZE_RESULT" != "skipped" ]');
     expect(releaseWorkflow).toContain("Smoke test Windows executable");
     expect(releaseWorkflow).toContain("scripts/smoke-windows-exe.ps1");
     expect(releaseWorkflow).toContain("Generate release SBOM");
